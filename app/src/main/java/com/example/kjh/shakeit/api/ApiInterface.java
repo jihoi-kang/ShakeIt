@@ -18,4 +18,14 @@ public interface ApiInterface {
             @Field(value = "login_type", encoded = true) String login_type
     );
 
+    /** 이메일 회원가입 */
+    @FormUrlEncoded
+    @POST("/" + Statics.SINGUP)
+    Call<ResponseBody> signUp(
+            @Field(value = "email", encoded = true) String email,
+            @Field(value = "password", encoded = true) String password,
+            @Field(value = "name", encoded = true) String name,
+            @Field(value = "login_type", encoded = true) String login_type
+    );
+
 }

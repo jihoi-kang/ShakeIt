@@ -1,6 +1,8 @@
 package com.example.kjh.shakeit.data;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 
     private int _id;
     private String email;
