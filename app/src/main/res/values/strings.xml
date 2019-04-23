@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">Shakeit</string>
+
+    <!-- EditText Hint -->
+    <string name="input_email_hint">이메일을 입력해주세요</string>
+    <string name="input_password_hint">비밀번호를 입력해주세요</string>
+    <string name="input_name_hint">이름을 입력해주세요</string>
+    <string name="input_password_again_hint">비밀번호를 한번더 입력해주세요</string>
+
+
+    <string name="msg_login">로그인</string>
+    <string name="msg_for_incorrect_email">이메일 형식을 잘못 입력하셨습니다</string>
+    <string name="msg_for_incorrect_password">비밀번호 형식을 잘못 입력하셨습니다</string>
+    <string name="msg_for_incorrect_password_again">비밀번호가 일치 하지 않습니다</string>
+    <string name="msg_for_incorrect_name">이름 형식을 잘못 입력하셨습니다</string>
+    <string name="msg_for_success_login">로그인에 성공하였습니다</string>
+    <string name="msg_for_failure_login">로그인에 실패하였습니다</string>
+    <string name="msg_facebook_login">페이스북 로그인</string>
+    <string name="msg_signup">회원가입</string>
+    <string name="msg_for_success_signUp">회원가입에 성공하셨습니다</string>
+    <string name="msg_for_failure_signUp">회원가입에 실패하셨습니다</string>
+    <string name="msg_for_failure_signUp_becauseOfOverlapEmail">이미 사용중인 사용자가 있습니다</string>
 </resources>
