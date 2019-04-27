@@ -1,4 +1,6 @@
-package com.example.kjh.shakeit;
+package com.example.kjh.shakeit.etc;
+
+import com.example.kjh.shakeit.R;
 
 /**
  * 앱에서 사용하는 변수들 집합

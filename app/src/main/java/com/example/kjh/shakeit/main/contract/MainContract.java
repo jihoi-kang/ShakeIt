@@ -1,4 +1,19 @@
 package com.example.kjh.shakeit.main.contract;
 
-public class MainContract {
+import com.example.kjh.shakeit.data.User;
+
+public interface MainContract {
+
+    interface View {
+        User getUser();
+    }
+
+    interface Presenter {
+
+    }
+
+    interface Model {
+
+    }
+
 }

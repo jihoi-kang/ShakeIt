@@ -1,4 +1,4 @@
-package com.example.kjh.shakeit.beforelogin.activity;
+package com.example.kjh.shakeit.beforelogin.view;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;

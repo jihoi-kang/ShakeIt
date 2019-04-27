@@ -1,4 +1,4 @@
-package com.example.kjh.shakeit.beforelogin.activity;
+package com.example.kjh.shakeit.beforelogin.view;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -29,9 +29,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-import static com.example.kjh.shakeit.Statics.REQUEST_CODE_FACEBOOK_LOGIN;
-import static com.example.kjh.shakeit.Statics.REQUEST_CODE_GOOGLE_LOGIN;
-import static com.example.kjh.shakeit.Statics.REQUEST_CODE_MAIN_BEFORE_LOGIN_TO_EMAILLOGIN;
+import static com.example.kjh.shakeit.etc.Statics.REQUEST_CODE_FACEBOOK_LOGIN;
+import static com.example.kjh.shakeit.etc.Statics.REQUEST_CODE_GOOGLE_LOGIN;
+import static com.example.kjh.shakeit.etc.Statics.REQUEST_CODE_MAIN_BEFORE_LOGIN_TO_EMAILLOGIN;
 
 /**
  * 로그인 전 메인 액티비티 클래스
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     public void moveActivityWithUserInfo(String userInfo) {
         user = Serializer.deserialize(userInfo, User.class);
 
-        Intent intent = new Intent(MainActivity.this, com.example.kjh.shakeit.main.MainActivity.class);
+        Intent intent = new Intent(MainActivity.this, com.example.kjh.shakeit.main.view.MainActivity.class);
         intent.putExtra("user", user);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK );
         startActivity(intent);

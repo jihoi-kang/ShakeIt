@@ -1,4 +1,4 @@
-package com.example.kjh.shakeit.beforelogin.activity;
+package com.example.kjh.shakeit.beforelogin.view;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -42,7 +42,7 @@ public class EmailLoginActivity extends AppCompatActivity implements EmailLoginC
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_email_login);
 
         unbinder = ButterKnife.bind(this);
 
