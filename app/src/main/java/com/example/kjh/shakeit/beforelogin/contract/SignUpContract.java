@@ -25,10 +25,12 @@ public interface SignUpContract {
     interface Presenter {
 
         void onClickSignUp();
+
     }
 
     interface Model {
 
         void signUp(String email, String password, String name, ResultCallback callback);
+
     }
 }

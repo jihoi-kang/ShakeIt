@@ -14,6 +14,9 @@ public class SignUpPresenter implements SignUpContract.Presenter {
         this.model = model;
     }
 
+    /**------------------------------------------------------------------
+     메서드 ==> 회원가입 클릭시 로직
+     ------------------------------------------------------------------*/
     @Override
     public void onClickSignUp() {
         String email = view.getInputEmail();
@@ -21,6 +24,8 @@ public class SignUpPresenter implements SignUpContract.Presenter {
         String passwordAgain = view.getInputPasswordAgain();
         String name = view.getInputName();
 
+
+        /** 정규식 확인 */
         if(!Validator.isValidEmail(email)) {
             view.showMessageForIncorrectEmail();
             return;

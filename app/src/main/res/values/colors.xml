@@ -5,4 +5,12 @@
     <color name="colorAccent">#D81B60</color>
 
     <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="google_background">#d62d20</color>
+    
+    <color name="background_grey_light">#EAEAEA</color>
+    <color name="background_grey_primary">#AAAAAA</color>
+    <color name="background_grey_dark1">#888888</color>
+    <color name="background_grey_dark2">#666666</color>
+
 </resources>

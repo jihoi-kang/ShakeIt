@@ -2,6 +2,12 @@ package com.example.kjh.shakeit.data;
 
 import java.io.Serializable;
 
+/**
+ * 사용자의 정보를 담는 데이터 클래스
+ * @author 강지회
+ * @version 1.0.0
+ * @since 2019. 4. 26. PM 5:47
+ **/
 public class User implements Serializable {
 
     private int _id;

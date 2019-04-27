@@ -10,6 +10,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -21,6 +22,8 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-inline:2.27.0'
@@ -36,4 +39,18 @@ dependencies {
     /** 버터나이프 */
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    /** 파이어베이스 api */
+    implementation 'com.google.firebase:firebase-core:16.0.7'
+    implementation 'com.google.firebase:firebase-auth:16.0.5'
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
+
+    /** 구글 로그인 api */
+    implementation 'com.google.android.gms:play-services-auth:16.0.0'
+
+    /** 페이스북 로그인 api */
+    implementation 'com.facebook.android:facebook-login:[4,5)'
+
 }
+
+apply plugin: 'com.google.gms.google-services'

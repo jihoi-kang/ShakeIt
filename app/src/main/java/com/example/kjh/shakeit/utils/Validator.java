@@ -3,6 +3,12 @@ package com.example.kjh.shakeit.utils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * 정규식 확인 클래스
+ * @author 강지회
+ * @version 1.0.0
+ * @since 2019. 4. 26. PM 5:57
+ **/
 public class Validator {
 
     public static boolean isValidEmail(String email) {

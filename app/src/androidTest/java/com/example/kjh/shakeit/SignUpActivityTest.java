@@ -2,7 +2,7 @@ package com.example.kjh.shakeit;
 
 import android.support.test.rule.ActivityTestRule;
 
-import com.example.kjh.shakeit.beforelogin.activity.SignUpActivity;
+import com.example.kjh.shakeit.beforelogin.view.SignUpActivity;
 import com.example.kjh.shakeit.utils.ToastMatcher;
 
 import org.junit.Rule;
@@ -91,7 +91,7 @@ public class SignUpActivityTest {
 //        onView(withId(R.id.inputPasswordAgain)).check(matches(isDisplayed()));
 //        onView(withId(R.id.inputName)).check(matches(isDisplayed()));
 //
-//        onView(withId(R.id.inputEmail)).perform(typeText("test24@gmail.com"));
+//        onView(withId(R.id.inputEmail)).perform(typeText("test28@gmail.com"));
 //        onView(withId(R.id.inputPassword)).perform(typeText("@Abcd1234"));
 //        onView(withId(R.id.inputPasswordAgain)).perform(typeText("@Abcd1234"));
 //        onView(withId(R.id.inputName)).perform(typeText("KangJiHoi"));
@@ -108,10 +108,10 @@ public class SignUpActivityTest {
         onView(withId(R.id.inputPasswordAgain)).check(matches(isDisplayed()));
         onView(withId(R.id.inputName)).check(matches(isDisplayed()));
 
-        onView(withId(R.id.inputEmail)).perform(typeText("jihoi.kang@gmail.com"));
-        onView(withId(R.id.inputPassword)).perform(typeText("@Abcd1234"));
-        onView(withId(R.id.inputPasswordAgain)).perform(typeText("@Abcd1234"));
-        onView(withId(R.id.inputName)).perform(typeText("KangJiHoi"));
+        onView(withId(R.id.inputEmail)).perform(typeText("jihoi@hoi.com"));
+        onView(withId(R.id.inputPassword)).perform(typeText("password"));
+        onView(withId(R.id.inputPasswordAgain)).perform(typeText("password"));
+        onView(withId(R.id.inputName)).perform(typeText("jihoi"));
 
         onView(withId(R.id.signUpButton)).perform(click());
 

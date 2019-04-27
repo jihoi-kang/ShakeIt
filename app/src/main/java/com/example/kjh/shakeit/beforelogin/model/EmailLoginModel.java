@@ -1,7 +1,6 @@
 package com.example.kjh.shakeit.beforelogin.model;
 
 import com.example.kjh.shakeit.api.ApiClient;
-import com.example.kjh.shakeit.beforelogin.activity.EmailLoginActivity;
 import com.example.kjh.shakeit.beforelogin.callback.ResultCallback;
 import com.example.kjh.shakeit.beforelogin.contract.EmailLoginContract;
 
@@ -12,15 +11,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.example.kjh.shakeit.Statics.ERROR_BAD_REQUEST;
-import static com.example.kjh.shakeit.Statics.ERROR_SERVICE_UNAVAILABLE;
-import static com.example.kjh.shakeit.Statics.SUCCESS_OK;
-
+import static com.example.kjh.shakeit.etc.Statics.ERROR_BAD_REQUEST;
+import static com.example.kjh.shakeit.etc.Statics.ERROR_SERVICE_UNAVAILABLE;
+import static com.example.kjh.shakeit.etc.Statics.SUCCESS_OK;
 
 public class EmailLoginModel implements EmailLoginContract.Model {
 
-    private String TAG = EmailLoginActivity.class.getSimpleName();
-
+    /**------------------------------------------------------------------
+     메서드 ==> 이메일 로그인 요청
+     ------------------------------------------------------------------*/
     @Override
     public void login(String email, String password, final ResultCallback callback) {
         Call<ResponseBody> result = ApiClient.create().login(email,password,"e");

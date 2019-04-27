@@ -11,7 +11,7 @@ import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.beforelogin.contract.EmailLoginContract;
 import com.example.kjh.shakeit.beforelogin.presenter.EmailLoginPresenter;
 import com.example.kjh.shakeit.utils.Injector;
-import com.example.kjh.shakeit.utils.KeboardManager;
+import com.example.kjh.shakeit.utils.KeyboardManager;
 import com.example.kjh.shakeit.utils.ProgressDialogGenerator;
 import com.example.kjh.shakeit.utils.ToastGenerator;
 
@@ -20,16 +20,25 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+/**
+ * 이메일로 로그인
+ * @author 강지회
+ * @version 1.0.0
+ * @since 2019. 4. 26. PM 5:33
+ **/
 public class EmailLoginActivity extends AppCompatActivity implements EmailLoginContract.View {
 
     private EmailLoginContract.Presenter presenter;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
     @BindView(R.id.inputEmail) EditText inputEmail;
     @BindView(R.id.inputPassword) EditText inputPassword;
 
     private ProgressDialog progressDialog;
 
+    /**------------------------------------------------------------------
+     생명주기 ==> onCreate()
+     ------------------------------------------------------------------*/
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,15 +49,29 @@ public class EmailLoginActivity extends AppCompatActivity implements EmailLoginC
         presenter = new EmailLoginPresenter(this, Injector.provideEmailLoginModel());
     }
 
+    /**------------------------------------------------------------------
+     생명주기 ==> onDestroy()
+     ------------------------------------------------------------------*/
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
     }
 
+    /**------------------------------------------------------------------
+     클릭이벤트 ==> 이메일 로그인
+     ------------------------------------------------------------------*/
     @OnClick(R.id.emailLoginButton)
     void onClickEmailLogin() {
         presenter.onClickEmailLogin();
+    }
+
+    /**------------------------------------------------------------------
+     클릭이벤트 ==> 화면 닫기
+     ------------------------------------------------------------------*/
+    @OnClick(R.id.back)
+    void onClickBack() {
+        finish();
     }
 
     @Override
@@ -73,8 +96,8 @@ public class EmailLoginActivity extends AppCompatActivity implements EmailLoginC
 
     @Override
     public void hideSoftKeyboard() {
-        KeboardManager.hideKeyboard(this, inputEmail);
-        KeboardManager.hideKeyboard(this, inputPassword);
+        KeyboardManager.hideKeyboard(this, inputEmail);
+        KeyboardManager.hideKeyboard(this, inputPassword);
     }
 
     @Override

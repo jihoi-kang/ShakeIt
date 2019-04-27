@@ -12,6 +12,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import com.example.kjh.shakeit.R;
 
+/**
+ * EditText 입력 값 클리어를 돕는 클래스
+ * @author 강지회
+ * @version 1.0.0
+ * @since 2019. 4. 26. PM 5:54
+ **/
 public class ClearEditText extends AppCompatEditText implements TextWatcher, View.OnTouchListener, View.OnFocusChangeListener {
     private Drawable clearDrawable;
     private OnFocusChangeListener onFocusChangeListener;

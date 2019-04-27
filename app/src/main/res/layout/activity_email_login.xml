@@ -35,8 +35,8 @@
             android:fontFamily="sans-serif"
             android:hint="@string/input_email_hint"
             android:inputType="textEmailAddress"
-            android:padding="16dp"
             android:singleLine="true"
+            android:padding="16dp"
             android:textColor="@color/background_grey_dark2"
             android:textSize="21sp" />
 
@@ -44,6 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/background_grey_primary" />
+
 
         <com.example.kjh.shakeit.utils.ClearEditText
             android:id="@+id/inputPassword"
@@ -52,44 +53,8 @@
             android:background="@null"
             android:padding="16dp"
             android:hint="@string/input_password_hint"
+            android:singleLine="true"
             android:inputType="textPassword"
-            android:singleLine="true"
-            android:fontFamily="sans-serif"
-            android:textColor="@color/background_grey_dark2"
-            android:textSize="21sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/background_grey_primary" />
-
-        <com.example.kjh.shakeit.utils.ClearEditText
-            android:id="@+id/inputPasswordAgain"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:padding="16dp"
-            android:hint="@string/input_password_again_hint"
-            android:inputType="textPassword"
-            android:singleLine="true"
-            android:fontFamily="sans-serif"
-            android:textColor="@color/background_grey_dark2"
-            android:textSize="21sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/background_grey_primary" />
-
-        <com.example.kjh.shakeit.utils.ClearEditText
-            android:id="@+id/inputName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:padding="16dp"
-            android:hint="@string/input_name_hint"
-            android:inputType="text"
-            android:singleLine="true"
             android:fontFamily="sans-serif"
             android:textColor="@color/background_grey_dark2"
             android:textSize="21sp" />
@@ -97,15 +62,14 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/signUpButton"
+        android:id="@+id/emailLoginButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:background="@color/background_grey_light"
         android:fontFamily="@font/bmjua_otf"
-        android:text="@string/msg_signup"
+        android:text="@string/msg_login"
         android:textColor="@color/colorPrimary"
         android:textSize="21sp" />
-
 
 </LinearLayout>

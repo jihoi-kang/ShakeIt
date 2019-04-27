@@ -2,7 +2,7 @@ package com.example.kjh.shakeit;
 
 import android.support.test.rule.ActivityTestRule;
 
-import com.example.kjh.shakeit.beforelogin.activity.EmailLoginActivity;
+import com.example.kjh.shakeit.beforelogin.view.EmailLoginActivity;
 import com.example.kjh.shakeit.utils.ToastMatcher;
 
 import org.junit.Rule;
@@ -51,8 +51,8 @@ public class EmailLoginActivityTest {
         onView(withId(R.id.inputEmail)).check(matches(isDisplayed()));
         onView(withId(R.id.inputPassword)).check(matches(isDisplayed()));
 
-        onView(withId(R.id.inputEmail)).perform(typeText("jihoi.kang@gmail.com"));
-        onView(withId(R.id.inputPassword)).perform(typeText("@Abcd1234"));
+        onView(withId(R.id.inputEmail)).perform(typeText("jihoi@hoi.com"));
+        onView(withId(R.id.inputPassword)).perform(typeText("password"));
 
         onView(withId(R.id.emailLoginButton)).perform(click());
 
@@ -60,12 +60,12 @@ public class EmailLoginActivityTest {
     }
 
     @Test
-    public void test_SuccessFailure() {
+    public void test_FailureLogin() {
         onView(withId(R.id.inputEmail)).check(matches(isDisplayed()));
         onView(withId(R.id.inputPassword)).check(matches(isDisplayed()));
 
-        onView(withId(R.id.inputEmail)).perform(typeText("jihoi.kang@gmail.com"));
-        onView(withId(R.id.inputPassword)).perform(typeText("@Abcd123"));
+        onView(withId(R.id.inputEmail)).perform(typeText("jihoi.kang@hoi.com"));
+        onView(withId(R.id.inputPassword)).perform(typeText("password1"));
 
         onView(withId(R.id.emailLoginButton)).perform(click());
 

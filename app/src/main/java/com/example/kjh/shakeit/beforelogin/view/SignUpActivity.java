@@ -10,7 +10,7 @@ import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.beforelogin.contract.SignUpContract;
 import com.example.kjh.shakeit.beforelogin.presenter.SignUpPresenter;
 import com.example.kjh.shakeit.utils.Injector;
-import com.example.kjh.shakeit.utils.KeboardManager;
+import com.example.kjh.shakeit.utils.KeyboardManager;
 import com.example.kjh.shakeit.utils.ProgressDialogGenerator;
 import com.example.kjh.shakeit.utils.ToastGenerator;
 
@@ -19,11 +19,17 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+/**
+ * 회원가입 클래스
+ * @author 강지회
+ * @version 1.0.0
+ * @since 2019. 4. 26. PM 5:35
+ **/
 public class SignUpActivity extends AppCompatActivity implements SignUpContract.View {
 
     private SignUpContract.Presenter presenter;
 
-    Unbinder unbinder;
+    private Unbinder unbinder;
     @BindView(R.id.inputEmail) EditText inputEmail;
     @BindView(R.id.inputPassword) EditText inputPassword;
     @BindView(R.id.inputPasswordAgain) EditText inputPasswordAgain;
@@ -31,6 +37,9 @@ public class SignUpActivity extends AppCompatActivity implements SignUpContract.
 
     private ProgressDialog progressDialog;
 
+    /**------------------------------------------------------------------
+     생명주기 ==> onCreate()
+     ------------------------------------------------------------------*/
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,15 +51,29 @@ public class SignUpActivity extends AppCompatActivity implements SignUpContract.
 
     }
 
+    /**------------------------------------------------------------------
+     생명주기 ==> onDestroy()
+     ------------------------------------------------------------------*/
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
     }
 
+    /**------------------------------------------------------------------
+     클릭이벤트 ==> 회원가입
+     ------------------------------------------------------------------*/
     @OnClick(R.id.signUpButton)
     void onClickSignUp() {
         presenter.onClickSignUp();
+    }
+
+    /**------------------------------------------------------------------
+     클릭이벤트 ==> 화면 닫기
+     ------------------------------------------------------------------*/
+    @OnClick(R.id.back)
+    void onClickBack() {
+        finish();
     }
 
     @Override
@@ -95,10 +118,10 @@ public class SignUpActivity extends AppCompatActivity implements SignUpContract.
 
     @Override
     public void hideSoftKeyboard() {
-        KeboardManager.hideKeyboard(this, inputEmail);
-        KeboardManager.hideKeyboard(this, inputPassword);
-        KeboardManager.hideKeyboard(this, inputPasswordAgain);
-        KeboardManager.hideKeyboard(this, inputName);
+        KeyboardManager.hideKeyboard(this, inputEmail);
+        KeyboardManager.hideKeyboard(this, inputPassword);
+        KeyboardManager.hideKeyboard(this, inputPasswordAgain);
+        KeyboardManager.hideKeyboard(this, inputName);
     }
 
     @Override

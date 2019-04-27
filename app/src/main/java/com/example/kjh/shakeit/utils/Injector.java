@@ -7,6 +7,12 @@ import com.example.kjh.shakeit.beforelogin.model.EmailLoginModel;
 import com.example.kjh.shakeit.beforelogin.model.MainModel;
 import com.example.kjh.shakeit.beforelogin.model.SignUpModel;
 
+/**
+ * 모델을 주입 할 때 사용
+ * @author 강지회
+ * @version 1.0.0
+ * @since 2019. 4. 26. PM 5:54
+ **/
 public class Injector {
 
     public static EmailLoginContract.Model provideEmailLoginModel() {

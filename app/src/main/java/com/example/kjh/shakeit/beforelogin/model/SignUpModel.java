@@ -10,11 +10,15 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
-import static com.example.kjh.shakeit.Statics.ERROR_BAD_REQUEST;
-import static com.example.kjh.shakeit.Statics.ERROR_SERVICE_UNAVAILABLE;
-import static com.example.kjh.shakeit.Statics.SUCCESS_CREATED;
+import static com.example.kjh.shakeit.etc.Statics.ERROR_BAD_REQUEST;
+import static com.example.kjh.shakeit.etc.Statics.ERROR_SERVICE_UNAVAILABLE;
+import static com.example.kjh.shakeit.etc.Statics.SUCCESS_CREATED;
 
 public class SignUpModel implements SignUpContract.Model {
+
+    /**------------------------------------------------------------------
+     메서드 ==> 회원가입
+     ------------------------------------------------------------------*/
     @Override
     public void signUp(String email, String password, String name, final ResultCallback callback) {
         Call<ResponseBody> result = ApiClient.create().signUp(email, password, name, "e");

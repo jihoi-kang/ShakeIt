@@ -14,11 +14,15 @@ public class EmailLoginPresenter implements EmailLoginContract.Presenter {
         this.model = model;
     }
 
+    /**------------------------------------------------------------------
+     메서드 ==> 이메일 로그인 클릭시 로직
+     ------------------------------------------------------------------*/
     @Override
     public void onClickEmailLogin() {
         String inputEmail = view.getInputEmail();
         String inputPassword = view.getInputPassword();
 
+        /** 정규식 확인 */
         if(!Validator.isValidEmail(inputEmail)) {
             view.showMessageForIncorrectEmail();
             return;
@@ -32,7 +36,7 @@ public class EmailLoginPresenter implements EmailLoginContract.Presenter {
         view.hideSoftKeyboard();
         view.showLoadingDialog();
 
-        model.login(inputEmail,inputPassword, new ResultCallback(){
+        model.login(inputEmail, inputPassword, new ResultCallback(){
 
             @Override
             public void onSuccess(String body) {

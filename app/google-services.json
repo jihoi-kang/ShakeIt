@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "641992248315",
+    "firebase_url": "https://shakeit-646ca.firebaseio.com",
+    "project_id": "shakeit-646ca",
+    "storage_bucket": "shakeit-646ca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:641992248315:android:f878b8bc221ced74",
+        "android_client_info": {
+          "package_name": "com.example.kjh.shakeit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "641992248315-b6q9keei0t28ap7859jeepnr07g9pi3a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kjh.shakeit",
+            "certificate_hash": "08b586751bdf666cf2a6ff1b76b53f7f94639043"
+          }
+        },
+        {
+          "client_id": "641992248315-3b4causcesa5dj1q5ni5r58qdr2acdf3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQHEfMAoYH9IEZLYlg3uTex5IhzgaIN84"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "641992248315-3b4causcesa5dj1q5ni5r58qdr2acdf3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

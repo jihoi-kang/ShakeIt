@@ -1,11 +1,17 @@
 <resources>
-    <string name="app_name">Shakeit</string>
+    <string name="app_name">Shake It</string>
+
+    <!-- 소셜 로그인 -->
+    <string name="facebook_app_id">427990257959693</string>
+    <string name="fb_login_protocol_scheme">fb427990257959693</string>
+
+
 
     <!-- EditText Hint -->
-    <string name="input_email_hint">이메일을 입력해주세요</string>
-    <string name="input_password_hint">비밀번호를 입력해주세요</string>
-    <string name="input_name_hint">이름을 입력해주세요</string>
-    <string name="input_password_again_hint">비밀번호를 한번더 입력해주세요</string>
+    <string name="input_email_hint">이메일</string>
+    <string name="input_password_hint">비밀번호</string>
+    <string name="input_name_hint">이름</string>
+    <string name="input_password_again_hint">비밀번호 확인</string>
 
 
     <string name="msg_login">로그인</string>
@@ -20,4 +26,5 @@
     <string name="msg_for_success_signUp">회원가입에 성공하셨습니다</string>
     <string name="msg_for_failure_signUp">회원가입에 실패하셨습니다</string>
     <string name="msg_for_failure_signUp_becauseOfOverlapEmail">이미 사용중인 사용자가 있습니다</string>
+    <string name="msg_logout">로그아웃</string>
 </resources>
