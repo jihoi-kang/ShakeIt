@@ -2,7 +2,7 @@ package com.example.kjh.shakeit.beforelogin.presenter;
 
 import android.support.annotation.NonNull;
 
-import com.example.kjh.shakeit.beforelogin.callback.ResultCallback;
+import com.example.kjh.shakeit.callback.ResultCallback;
 import com.example.kjh.shakeit.beforelogin.contract.MainContract;
 import com.facebook.AccessToken;
 import com.facebook.FacebookCallback;

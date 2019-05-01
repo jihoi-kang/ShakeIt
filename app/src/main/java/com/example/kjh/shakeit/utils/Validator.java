@@ -28,7 +28,7 @@ public class Validator {
     }
 
     public static boolean isValidName(String name) {
-        String patternString = "^[가-힣]{2,8}|[a-zA-Z]{4,20}$";
+        String patternString = "^[가-힣a-zA-Z]{2,20}$";
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(name);
 

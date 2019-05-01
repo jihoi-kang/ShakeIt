@@ -2,12 +2,16 @@ package com.example.kjh.shakeit.api;
 
 import com.example.kjh.shakeit.etc.Statics;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 /**
@@ -62,5 +66,24 @@ public interface ApiInterface {
     Call<ResponseBody> getUser(
             @Query("_id") Integer _id
     );
+
+    /** 이미지 업로드 */
+    @Multipart
+    @POST("/" + Statics.UPLOAD_IMAGE)
+    Call<ResponseBody> uploadImage(
+            @Part MultipartBody.Part file,
+            @Part("type") RequestBody type
+    );
+
+    /** 프로필 업데이트 */
+    @FormUrlEncoded
+    @POST("/" + Statics.UPDATE_PROFILE)
+    Call<ResponseBody> updateProfile(
+            @Field(value = "_id") int _id,
+            @Field(value = "image_url") String image_url,
+            @Field(value = "name") String name,
+            @Field(value = "status_message") String status_message
+    );
+
 }
 

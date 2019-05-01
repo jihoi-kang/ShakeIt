@@ -14,6 +14,9 @@ import com.example.kjh.shakeit.adapter.ViewPagerAdapter;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.fcm.FcmGenerator;
 import com.example.kjh.shakeit.main.contract.MainContract;
+import com.example.kjh.shakeit.otto.BusProvider;
+import com.example.kjh.shakeit.otto.Events;
+import com.squareup.otto.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
         unbinder = ButterKnife.bind(this);
 
+        BusProvider.getInstance().register(this);
+
         Intent intent = getIntent();
         user = (User) intent.getSerializableExtra("user");
 
@@ -89,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+        BusProvider.getInstance().unregister(this);
     }
 
     /**------------------------------------------------------------------
@@ -128,5 +134,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 tabLayout.getTabAt(i).setIcon(nonTabIcon[i]);
         }
 
+    }
+
+    /**------------------------------------------------------------------
+     구독이벤트 ==> 프로필 변경시 발생
+     ------------------------------------------------------------------*/
+    @Subscribe
+    public void getUpdateProfileInfo(Events.updateProfileEvent event) {
+        user = event.getUser();
     }
 }

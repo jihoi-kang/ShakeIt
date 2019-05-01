@@ -2,7 +2,7 @@ package com.example.kjh.shakeit.beforelogin.contract;
 
 import android.app.Activity;
 
-import com.example.kjh.shakeit.beforelogin.callback.ResultCallback;
+import com.example.kjh.shakeit.callback.ResultCallback;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.firebase.auth.FirebaseAuth;

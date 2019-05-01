@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.kjh.shakeit">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -11,6 +15,7 @@
         android:screenOrientation="portrait"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true" >
+
         <activity android:name=".beforelogin.view.MainActivity"
             android:theme="@style/AppTheme_StatusBar_Black">
             <intent-filter>
@@ -34,6 +39,12 @@
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".profile.UpdateProfileActivity"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait" />
+
+        <!-- Crop Image -->
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
 
         <!-- 페이스북 -->
         <meta-data
@@ -63,6 +74,16 @@
             </intent-filter>
         </service>
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.kjh.shakeit.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
     </application>
 

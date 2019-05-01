@@ -17,6 +17,8 @@ public class Statics {
     public static final String SOCIAL_LOGIN = "api/user/social_login.php";
     public static final String UPDATE_TOKEN = "api/user/update_token.php";
     public static final String GET_USER = "api/user/read_one.php";
+    public static final String UPDATE_PROFILE = "api/user/update_profile.php";
+    public static final String UPLOAD_IMAGE = "api/uploads.php";
 
     /** HTTP RESPONSE CODE */
     public static final int SUCCESS_OK = 200;
@@ -30,6 +32,9 @@ public class Statics {
     public static final int REQUEST_CODE_MAIN_BEFORE_LOGIN_TO_EMAILLOGIN = 10001;
     public static final int REQUEST_CODE_FACEBOOK_LOGIN = 64206;
     public static final int REQUEST_CODE_GOOGLE_LOGIN = 10002;
+
+    public static final int REQUEST_CODE_CAMERA = 10003;
+    public static final int REQUEST_CODE_GALLERY = 10004;
 
 
     /** 뷰페이저 */
@@ -50,5 +55,4 @@ public class Statics {
             R.drawable.ic_add_person_white_18dp,
             R.drawable.ic_add_chat_room_white_24dp
     };
-
 }

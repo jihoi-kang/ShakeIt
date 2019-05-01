@@ -6,6 +6,8 @@ import com.example.kjh.shakeit.beforelogin.contract.SignUpContract;
 import com.example.kjh.shakeit.beforelogin.model.EmailLoginModel;
 import com.example.kjh.shakeit.beforelogin.model.MainModel;
 import com.example.kjh.shakeit.beforelogin.model.SignUpModel;
+import com.example.kjh.shakeit.profile.UpdateProfileContract;
+import com.example.kjh.shakeit.profile.UpdateProfileModel;
 
 /**
  * 모델을 주입 할 때 사용
@@ -24,5 +26,9 @@ public class Injector {
 
     public static SignUpContract.Model provideSignUpModel() {
         return new SignUpModel();
+    }
+
+    public static UpdateProfileContract.Model provideUpdateProfileModel() {
+        return new UpdateProfileModel();
     }
 }

@@ -1,7 +1,7 @@
 package com.example.kjh.shakeit.beforelogin.model;
 
 import com.example.kjh.shakeit.api.ApiClient;
-import com.example.kjh.shakeit.beforelogin.callback.ResultCallback;
+import com.example.kjh.shakeit.callback.ResultCallback;
 import com.example.kjh.shakeit.beforelogin.contract.MainContract;
 
 import java.io.IOException;

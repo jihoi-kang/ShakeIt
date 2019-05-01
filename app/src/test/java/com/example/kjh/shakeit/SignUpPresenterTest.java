@@ -1,6 +1,6 @@
 package com.example.kjh.shakeit;
 
-import com.example.kjh.shakeit.beforelogin.callback.ResultCallback;
+import com.example.kjh.shakeit.callback.ResultCallback;
 import com.example.kjh.shakeit.beforelogin.contract.SignUpContract;
 import com.example.kjh.shakeit.beforelogin.presenter.SignUpPresenter;
 

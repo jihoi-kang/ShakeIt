@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -30,6 +31,8 @@ public class SignUpActivityTest {
 
         onView(withId(R.id.inputEmail)).perform(typeText("jihoi.kang@gmail"));
 
+        onView(withId(R.id.inputEmail)).perform(closeSoftKeyboard());
+
         onView(withId(R.id.signUpButton)).perform(click());
 
         onView(withText(R.string.msg_for_incorrect_email)).inRoot(new ToastMatcher()).check(matches(isDisplayed()));
@@ -44,6 +47,9 @@ public class SignUpActivityTest {
 
         onView(withId(R.id.inputEmail)).perform(typeText("jihoi.kang@gmail.com"));
         onView(withId(R.id.inputPassword)).perform(typeText("1234"));
+
+        onView(withId(R.id.inputEmail)).perform(closeSoftKeyboard());
+        onView(withId(R.id.inputPassword)).perform(closeSoftKeyboard());
 
         onView(withId(R.id.signUpButton)).perform(click());
 
@@ -61,6 +67,10 @@ public class SignUpActivityTest {
         onView(withId(R.id.inputPassword)).perform(typeText("@Abcd1234"));
         onView(withId(R.id.inputPasswordAgain)).perform(typeText("@Abcd123"));
 
+        onView(withId(R.id.inputEmail)).perform(closeSoftKeyboard());
+        onView(withId(R.id.inputPassword)).perform(closeSoftKeyboard());
+        onView(withId(R.id.inputPasswordAgain)).perform(closeSoftKeyboard());
+
         onView(withId(R.id.signUpButton)).perform(click());
 
         onView(withText(R.string.msg_for_incorrect_password_again)).inRoot(new ToastMatcher()).check(matches(isDisplayed()));
@@ -76,7 +86,12 @@ public class SignUpActivityTest {
         onView(withId(R.id.inputEmail)).perform(typeText("jihoi.kang@gmail.com"));
         onView(withId(R.id.inputPassword)).perform(typeText("@Abcd1234"));
         onView(withId(R.id.inputPasswordAgain)).perform(typeText("@Abcd1234"));
-        onView(withId(R.id.inputName)).perform(typeText("ka"));
+        onView(withId(R.id.inputName)).perform(typeText("k"));
+
+        onView(withId(R.id.inputEmail)).perform(closeSoftKeyboard());
+        onView(withId(R.id.inputPassword)).perform(closeSoftKeyboard());
+        onView(withId(R.id.inputPasswordAgain)).perform(closeSoftKeyboard());
+        onView(withId(R.id.inputName)).perform(closeSoftKeyboard());
 
         onView(withId(R.id.signUpButton)).perform(click());
 
@@ -112,6 +127,11 @@ public class SignUpActivityTest {
         onView(withId(R.id.inputPassword)).perform(typeText("password"));
         onView(withId(R.id.inputPasswordAgain)).perform(typeText("password"));
         onView(withId(R.id.inputName)).perform(typeText("jihoi"));
+
+        onView(withId(R.id.inputEmail)).perform(closeSoftKeyboard());
+        onView(withId(R.id.inputPassword)).perform(closeSoftKeyboard());
+        onView(withId(R.id.inputPasswordAgain)).perform(closeSoftKeyboard());
+        onView(withId(R.id.inputName)).perform(closeSoftKeyboard());
 
         onView(withId(R.id.signUpButton)).perform(click());
 
