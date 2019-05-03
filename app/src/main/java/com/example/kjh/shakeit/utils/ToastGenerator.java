@@ -1,7 +1,8 @@
 package com.example.kjh.shakeit.utils;
 
-import android.content.Context;
 import android.widget.Toast;
+
+import com.example.kjh.shakeit.MyApp;
 
 /**
  * Toast를 발생시키는 클래스
@@ -11,8 +12,8 @@ import android.widget.Toast;
  **/
 public class ToastGenerator {
 
-    public static void show(Context context, int redId) {
-        Toast.makeText(context, redId, Toast.LENGTH_SHORT).show();
+    public static void show(int redId) {
+        Toast.makeText(MyApp.getInstance(), redId, Toast.LENGTH_SHORT).show();
     }
 
 }

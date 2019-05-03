@@ -1,6 +1,6 @@
 package com.example.kjh.shakeit.api;
 
-import com.example.kjh.shakeit.etc.Statics;
+import com.example.kjh.shakeit.Statics;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

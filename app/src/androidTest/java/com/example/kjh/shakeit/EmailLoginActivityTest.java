@@ -2,7 +2,7 @@ package com.example.kjh.shakeit;
 
 import android.support.test.rule.ActivityTestRule;
 
-import com.example.kjh.shakeit.beforelogin.view.EmailLoginActivity;
+import com.example.kjh.shakeit.login.EmailLoginActivity;
 import com.example.kjh.shakeit.utils.ToastMatcher;
 
 import org.junit.Rule;

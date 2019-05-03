@@ -1,8 +1,8 @@
 package com.example.kjh.shakeit;
 
 import com.example.kjh.shakeit.data.User;
-import com.example.kjh.shakeit.profile.UpdateProfileContract;
-import com.example.kjh.shakeit.profile.UpdateProfilePresenter;
+import com.example.kjh.shakeit.main.more.contract.UpdateProfileContract;
+import com.example.kjh.shakeit.main.more.presenter.UpdateProfilePresenter;
 
 import org.junit.Before;
 import org.junit.Test;

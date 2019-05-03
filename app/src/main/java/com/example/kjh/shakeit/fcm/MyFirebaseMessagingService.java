@@ -11,7 +11,7 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.example.kjh.shakeit.R;
-import com.example.kjh.shakeit.main.view.MainActivity;
+import com.example.kjh.shakeit.main.MainActivity;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 

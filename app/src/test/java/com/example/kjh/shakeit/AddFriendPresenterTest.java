@@ -1,8 +1,8 @@
 package com.example.kjh.shakeit;
 
 import com.example.kjh.shakeit.callback.ResultCallback;
-import com.example.kjh.shakeit.friend.AddFriendContract;
-import com.example.kjh.shakeit.friend.AddFriendPresenter;
+import com.example.kjh.shakeit.main.friend.contract.AddFriendContract;
+import com.example.kjh.shakeit.main.friend.presenter.AddFriendPresenter;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -1,8 +1,8 @@
 package com.example.kjh.shakeit;
 
 import com.example.kjh.shakeit.callback.ResultCallback;
-import com.example.kjh.shakeit.beforelogin.contract.EmailLoginContract;
-import com.example.kjh.shakeit.beforelogin.presenter.EmailLoginPresenter;
+import com.example.kjh.shakeit.login.contract.EmailLoginContract;
+import com.example.kjh.shakeit.login.presenter.EmailLoginPresenter;
 
 import org.junit.Before;
 import org.junit.Test;

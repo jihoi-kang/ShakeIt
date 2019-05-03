@@ -1,16 +1,16 @@
 package com.example.kjh.shakeit.utils;
 
-import com.example.kjh.shakeit.beforelogin.contract.EmailLoginContract;
-import com.example.kjh.shakeit.beforelogin.contract.MainContract;
-import com.example.kjh.shakeit.beforelogin.contract.SignUpContract;
-import com.example.kjh.shakeit.beforelogin.model.EmailLoginModel;
-import com.example.kjh.shakeit.beforelogin.model.MainModel;
-import com.example.kjh.shakeit.beforelogin.model.SignUpModel;
-import com.example.kjh.shakeit.friend.AddFriendModel;
-import com.example.kjh.shakeit.main.contract.TabFriendListContract;
-import com.example.kjh.shakeit.main.model.TabFriendListModel;
-import com.example.kjh.shakeit.profile.UpdateProfileContract;
-import com.example.kjh.shakeit.profile.UpdateProfileModel;
+import com.example.kjh.shakeit.login.contract.EmailLoginContract;
+import com.example.kjh.shakeit.login.contract.MainContract;
+import com.example.kjh.shakeit.login.contract.SignUpContract;
+import com.example.kjh.shakeit.login.model.EmailLoginModel;
+import com.example.kjh.shakeit.login.model.MainModel;
+import com.example.kjh.shakeit.login.model.SignUpModel;
+import com.example.kjh.shakeit.main.friend.model.AddFriendModel;
+import com.example.kjh.shakeit.main.friend.contract.TabFriendListContract;
+import com.example.kjh.shakeit.main.friend.model.TabFriendListModel;
+import com.example.kjh.shakeit.main.more.contract.UpdateProfileContract;
+import com.example.kjh.shakeit.main.more.model.UpdateProfileModel;
 
 /**
  * 모델을 주입 할 때 사용
@@ -35,8 +35,8 @@ public class Injector {
         return new UpdateProfileModel();
     }
 
-    public static com.example.kjh.shakeit.main.contract.MainContract.Model provideAfterLoginMainModel() {
-        return new com.example.kjh.shakeit.main.model.MainModel();
+    public static com.example.kjh.shakeit.main.MainContract.Model provideAfterLoginMainModel() {
+        return new com.example.kjh.shakeit.main.MainModel();
     }
 
     public static TabFriendListContract.Model provideFriendListModel() {
