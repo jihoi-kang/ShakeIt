@@ -13,7 +13,6 @@ public interface MainContract {
     }
 
     interface Model {
-
     }
 
 }

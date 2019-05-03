@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/close"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center_vertical"
+                android:background="@color/colorPrimary"
+                android:src="@drawable/ic_close_white_36dp" />
+
+            <com.example.kjh.shakeit.utils.ClearEditText
+                android:id="@+id/inputEmail"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_round_edge_back_white"
+                android:layout_gravity="center_vertical"
+                android:fontFamily="sans-serif"
+                android:hint="@string/input_email_hint"
+                android:inputType="textEmailAddress"
+                android:imeOptions="actionSearch"
+                android:singleLine="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:textSize="16sp" />
+
+
+        </LinearLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/result_layout"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_margin="64dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/profile_image"
+            android:layout_width="108dp"
+            android:layout_height="108dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_basic_profile"
+            android:contentDescription="@string/msg_profile_image"
+            app:civ_border_color="@color/background_grey_primary"
+            app:civ_border_width="1dp" />
+
+        <TextView
+            android:id="@+id/inputName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/bmjua_otf"
+            android:textSize="21sp"/>
+
+        <TextView
+            android:id="@+id/already_friend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/msg_for_already_friend"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/bmjua_otf"
+            android:textSize="21sp"/>
+
+        <Button
+            android:id="@+id/add_friend"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:fontFamily="@font/bmjua_otf"
+            android:textSize="21sp"
+            android:textColor="@color/white"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/msg_add_friend"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/no_result_layout"
+        android:orientation="vertical"
+        android:layout_margin="64dp"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bmjua_otf"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/msg_user_not_found"
+            android:textColor="@color/background_grey_dark2"
+            android:textSize="21sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bmjua_otf"
+            android:textColor="@color/background_grey_primary"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/msg_user_not_found_content"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

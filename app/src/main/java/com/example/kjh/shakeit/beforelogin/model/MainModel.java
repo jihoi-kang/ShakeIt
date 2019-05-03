@@ -56,7 +56,7 @@ public class MainModel implements MainContract.Model {
      ------------------------------------------------------------------*/
     @Override
     public void getUser(int id, final ResultCallback callback) {
-        Call<ResponseBody> result = ApiClient.create().getUser(id);
+        Call<ResponseBody> result = ApiClient.create().getUserById(id);
 
         result.enqueue(new Callback<ResponseBody>() {
             @Override

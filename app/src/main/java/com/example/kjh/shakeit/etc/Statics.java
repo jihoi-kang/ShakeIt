@@ -17,14 +17,19 @@ public class Statics {
     public static final String SOCIAL_LOGIN = "api/user/social_login.php";
     public static final String UPDATE_TOKEN = "api/user/update_token.php";
     public static final String GET_USER = "api/user/read_one.php";
+    public static final String GET_FRIEND_INFO = "api/friend/read_one.php";
     public static final String UPDATE_PROFILE = "api/user/update_profile.php";
     public static final String UPLOAD_IMAGE = "api/uploads.php";
+    public static final String GET_FRIEND_LIST = "api/friend/read.php";
+    public static final String ADD_FRIEND = "api/friend/create.php";
+
 
     /** HTTP RESPONSE CODE */
     public static final int SUCCESS_OK = 200;
     public static final int SUCCESS_CREATED = 201;
 
     public static final int ERROR_BAD_REQUEST = 400;
+    public static final int ERROR_NOT_FOUND = 404;
 
     public static final int ERROR_SERVICE_UNAVAILABLE = 503;
 
@@ -55,4 +60,6 @@ public class Statics {
             R.drawable.ic_add_person_white_18dp,
             R.drawable.ic_add_chat_room_white_24dp
     };
+
+
 }

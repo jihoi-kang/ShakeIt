@@ -61,10 +61,17 @@ public interface ApiInterface {
             @Field(value = "device_token") String device_token
     );
 
-    /** 사용자 한명의 정보 받아오기 */
+    /** 아이디 값으로 사용자 한명의 정보 받아오기 */
     @GET("/" + Statics.GET_USER + "?_id={_id}")
-    Call<ResponseBody> getUser(
+    Call<ResponseBody> getUserById(
             @Query("_id") Integer _id
+    );
+
+    /** 검색한 한명의 정보 받아오기 */
+    @GET("/" + Statics.GET_FRIEND_INFO)
+    Call<ResponseBody> getUserByEmail(
+            @Query("_id") Integer _id,
+            @Query("email") String email
     );
 
     /** 이미지 업로드 */
@@ -85,5 +92,18 @@ public interface ApiInterface {
             @Field(value = "status_message") String status_message
     );
 
+    /** 친구 목록 */
+    @GET("/" + Statics.GET_FRIEND_LIST + "?_id={_id}")
+    Call<ResponseBody> getFriendList(
+            @Query("_id") Integer _id
+    );
+
+    /** 친구 추가 */
+    @FormUrlEncoded
+    @POST("/" + Statics.ADD_FRIEND)
+    Call<ResponseBody> addFriend(
+            @Field(value = "_id") int _id,
+            @Field(value = "friend_id") int friend_id
+    );
 }
 

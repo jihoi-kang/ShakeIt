@@ -13,10 +13,15 @@ import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.adapter.ViewPagerAdapter;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.fcm.FcmGenerator;
+import com.example.kjh.shakeit.friend.AddFriendActivity;
 import com.example.kjh.shakeit.main.contract.MainContract;
+import com.example.kjh.shakeit.main.presenter.MainPresenter;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
+import com.example.kjh.shakeit.utils.Injector;
 import com.squareup.otto.Subscribe;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,7 +43,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     private String TAG = MainActivity.class.getSimpleName();
 
+    private MainContract.Presenter presenter;
+
     private User user;
+    private ArrayList<User> friendList;
 
     private Unbinder unbinder;
     @BindView(R.id.layout_tab) TabLayout tabLayout;
@@ -59,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         setContentView(R.layout.activity_main_after_login);
 
         unbinder = ButterKnife.bind(this);
+
+        presenter = new MainPresenter(this, Injector.provideAfterLoginMainModel());
 
         BusProvider.getInstance().register(this);
 
@@ -85,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 setIconToViewpager(position);
             }
         });
+
     }
 
     /**------------------------------------------------------------------
@@ -98,24 +109,29 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     /**------------------------------------------------------------------
-     클릭이벤트 ==> TabLayout 우측에 친구 추가, 채팅룸
+     클릭이벤트 ==> TabLayout 우측에 친구 추가, 채팅룸 추가
      ------------------------------------------------------------------*/
     @OnClick(R.id.add)
     void onClickAdd() {
+        Intent intent = null;
         switch (position){
             case 0:
                 /** 친구추가 */
+                intent = new Intent(MainActivity.this, AddFriendActivity.class);
+                intent.putExtra("user", user);
                 break;
             case 1:
                 /** 채팅 추가 */
                 break;
         }
+        startActivity(intent);
     }
 
     @Override
     public User getUser() {
         return user;
     }
+
 
     /**------------------------------------------------------------------
      메서드 ==> 뷰페이저 탭 변경시 적절한 탭 아이콘 변경 로직
