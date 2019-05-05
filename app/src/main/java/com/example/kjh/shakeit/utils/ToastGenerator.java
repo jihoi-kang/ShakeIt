@@ -2,7 +2,7 @@ package com.example.kjh.shakeit.utils;
 
 import android.widget.Toast;
 
-import com.example.kjh.shakeit.MyApp;
+import com.example.kjh.shakeit.App;
 
 /**
  * Toast를 발생시키는 클래스
@@ -13,7 +13,7 @@ import com.example.kjh.shakeit.MyApp;
 public class ToastGenerator {
 
     public static void show(int redId) {
-        Toast.makeText(MyApp.getInstance(), redId, Toast.LENGTH_SHORT).show();
+        Toast.makeText(App.getApplication(), redId, Toast.LENGTH_SHORT).show();
     }
 
 }

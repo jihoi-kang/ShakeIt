@@ -1,8 +1,6 @@
 package com.example.kjh.shakeit.netty.protocol;
 
-import com.example.kjh.shakeit.data.ChatLog;
 import com.example.kjh.shakeit.data.MessageHolder;
-import com.example.kjh.shakeit.utils.Serializer;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -54,7 +52,7 @@ public class ProtocolDecoder extends ByteToMessageDecoder {
         MessageHolder holder = new MessageHolder();
         holder.setSign(sign);
         holder.setType(type);
-        holder.setChatLog(Serializer.deserialize(new String(bytes, "utf-8"), ChatLog.class));
+        holder.setBody(new String(bytes, "utf-8"));
 
         out.add(holder);
     }

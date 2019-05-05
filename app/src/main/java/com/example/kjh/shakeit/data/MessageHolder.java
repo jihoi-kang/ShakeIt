@@ -4,7 +4,7 @@ public class MessageHolder {
 
     private byte sign;
     private byte type;
-    private ChatLog chatLog;
+    private String body;
 
     public byte getSign() {
         return sign;
@@ -22,12 +22,12 @@ public class MessageHolder {
         this.type = type;
     }
 
-    public ChatLog getChatLog() {
-        return chatLog;
+    public String getBody() {
+        return body;
     }
 
-    public void setChatLog(ChatLog chatLog) {
-        this.chatLog = chatLog;
+    public void setBody(String body) {
+        this.body = body;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class MessageHolder {
         return "MessageHolder{" +
                 "sign=" + sign +
                 ", type=" + type +
-                ", chatLog=" + chatLog +
+                ", body='" + body + '\'' +
                 '}';
     }
 }

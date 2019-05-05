@@ -12,14 +12,12 @@ import android.widget.TextView;
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.fcm.FcmGenerator;
-import com.example.kjh.shakeit.main.friend.AddFriendActivity;
 import com.example.kjh.shakeit.main.adapter.ViewPagerAdapter;
+import com.example.kjh.shakeit.main.friend.AddFriendActivity;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.Injector;
 import com.squareup.otto.Subscribe;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,7 +42,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private MainContract.Presenter presenter;
 
     private User user;
-    private ArrayList<User> friendList;
 
     private Unbinder unbinder;
     @BindView(R.id.layout_tab) TabLayout tabLayout;
@@ -69,9 +66,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         presenter = new MainPresenter(this, Injector.provideAfterLoginMainModel());
 
         BusProvider.getInstance().register(this);
-
-        /** Netty Server에 연결 */
-//        MyApp.getInstance().startActivity(new Intent(MyApp.getInstance(), NettyService.class));
 
         Intent intent = getIntent();
         user = (User) intent.getSerializableExtra("user");
@@ -100,6 +94,15 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     /**------------------------------------------------------------------
+     생명주기 ==> onStart()
+     ------------------------------------------------------------------*/
+    @Override
+    protected void onStart() {
+        super.onStart();
+        presenter.onStart();
+    }
+
+    /**------------------------------------------------------------------
      생명주기 ==> onDestroy()
      ------------------------------------------------------------------*/
     @Override
@@ -107,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         super.onDestroy();
         unbinder.unbind();
         BusProvider.getInstance().unregister(this);
+
+        presenter.onDestroy();
     }
 
     /**------------------------------------------------------------------

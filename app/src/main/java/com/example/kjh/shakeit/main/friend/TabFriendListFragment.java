@@ -51,8 +51,6 @@ public class TabFriendListFragment extends Fragment implements TabFriendListCont
     private FriendListAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
-    private ArrayList<User> friendList = null;
-
     public static TabFriendListFragment getInstance() {
         if(instance == null)
             instance = new TabFriendListFragment();
@@ -146,7 +144,7 @@ public class TabFriendListFragment extends Fragment implements TabFriendListCont
      구독이벤트 ==> 친구 추가시 발생
      ------------------------------------------------------------------*/
     @Subscribe
-    public void getMessage(Events.refreshEvent event){
+    public void getMessage(Events.noticeEvent event){
         if(event.getMessage().equals("addFriend")) {
             presenter.getFriendList();
             presenter.setFriendList();

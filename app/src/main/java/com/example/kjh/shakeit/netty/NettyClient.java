@@ -1,9 +1,10 @@
 package com.example.kjh.shakeit.netty;
 
-import com.example.kjh.shakeit.data.MessageHolder;
+import android.util.Log;
+
 import com.example.kjh.shakeit.Statics;
+import com.example.kjh.shakeit.data.MessageHolder;
 import com.example.kjh.shakeit.netty.protocol.ProtocolHeader;
-import com.example.kjh.shakeit.utils.Serializer;
 
 import java.io.UnsupportedEncodingException;
 
@@ -18,6 +19,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
 public class NettyClient {
+
+    private final String TAG = NettyClient.class.getSimpleName();
 
     private static NettyClient instance = new NettyClient();
     private EventLoopGroup group;
@@ -94,8 +97,10 @@ public class NettyClient {
      ------------------------------------------------------------------*/
     public boolean sendMsgToServer(MessageHolder holder, FutureListener listener) {
         boolean flag = channel != null && isConnect;
+
         if(flag) {
-            String body = Serializer.serialize(holder.getChatLog());
+            String body = holder.getBody();
+
             if(body == null)
                 throw new NullPointerException("Body is null");
 
@@ -129,6 +134,7 @@ public class NettyClient {
                     }
                 });
             }
+
         }
 
         return flag;
@@ -148,8 +154,5 @@ public class NettyClient {
     /** Getter */
     public boolean isConnect() {
         return isConnect;
-    }
-    public int getReconnectNum() {
-        return reconnectNum;
     }
 }

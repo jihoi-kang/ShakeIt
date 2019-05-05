@@ -1,7 +1,5 @@
 package com.example.kjh.shakeit.main.friend.presenter;
 
-import android.util.Log;
-
 import com.example.kjh.shakeit.callback.ResultCallback;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.friend.contract.AddFriendContract;
@@ -27,13 +25,17 @@ public class AddFriendPresenter implements AddFriendContract.Presenter {
      ------------------------------------------------------------------*/
     @Override
     public void onClickSearch() {
-        Log.e("add", "onClickSearch");
-
         String email = view.getInputEmail();
         User user = view.getUser();
 
         if(!Validator.isValidEmail(email)){
             view.showMessageForIncorrectEmail();
+            return;
+        }
+
+        /** 자기자신 검색 할 경우 */
+        if(email.equals(user.getEmail())) {
+            view.showMessageForFailureMySelf();
             return;
         }
 
@@ -84,7 +86,7 @@ public class AddFriendPresenter implements AddFriendContract.Presenter {
                 view.hideLoadingDialog();
                 view.showAfterFriend();
 
-                Events.refreshEvent event = new Events.refreshEvent("addFriend");
+                Events.noticeEvent event = new Events.noticeEvent("addFriend");
                 BusProvider.getInstance().post(event);
             }
 

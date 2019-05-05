@@ -2,7 +2,6 @@ package com.example.kjh.shakeit.main.more;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,10 +15,10 @@ import com.bumptech.glide.Glide;
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.fcm.FcmGenerator;
-import com.example.kjh.shakeit.main.MainActivity;
+import com.example.kjh.shakeit.login.MainActivity;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
-import com.example.kjh.shakeit.main.more.UpdateProfileActivity;
+import com.example.kjh.shakeit.utils.ShareUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.otto.Subscribe;
 
@@ -27,8 +26,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * 더보기 탭
@@ -48,9 +45,6 @@ public class TabMoreFragment extends Fragment {
     @BindView(R.id.email) TextView statusMessage;
     @BindView(R.id.profile_image) ImageView profileImage;
 
-    private SharedPreferences preferences;
-    private SharedPreferences.Editor editor;
-
     private User user;
 
     public static TabMoreFragment getInstance() {
@@ -66,7 +60,7 @@ public class TabMoreFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        user = ((MainActivity)getActivity()).getUser();
+        user = ((com.example.kjh.shakeit.main.MainActivity)getActivity()).getUser();
     }
 
     /**------------------------------------------------------------------
@@ -77,9 +71,6 @@ public class TabMoreFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         BusProvider.getInstance().register(this);
-
-        preferences = getActivity().getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
-        editor = preferences.edit();
     }
 
     /**------------------------------------------------------------------
@@ -129,14 +120,13 @@ public class TabMoreFragment extends Fragment {
     @OnClick(R.id.logout)
     void onClickLogout() {
         FirebaseAuth.getInstance().signOut();
-        editor.clear();
-        editor.commit();
+        ShareUtil.clear();
 
         FcmGenerator.updateUserToken(user.get_id(), "logout");
 
         Intent intent = new Intent(getActivity(), MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK );
         startActivity(intent);
+        getActivity().finish();
     }
 
     /**------------------------------------------------------------------

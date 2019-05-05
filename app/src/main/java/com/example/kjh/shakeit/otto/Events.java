@@ -17,11 +17,11 @@ public class Events {
         }
     }
 
-    /** 무엇인가 다시 업데이트 할때 알림 */
-    public static class refreshEvent {
+    /** 알림 */
+    public static class noticeEvent {
         private String message;
 
-        public refreshEvent(String message) {
+        public noticeEvent(String message) {
             this.message =message;
         }
 

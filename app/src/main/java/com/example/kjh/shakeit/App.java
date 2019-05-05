@@ -2,18 +2,21 @@ package com.example.kjh.shakeit;
 
 import android.app.Application;
 
-public class MyApp extends Application {
+import com.example.kjh.shakeit.utils.ShareUtil;
 
-    private static  MyApp application;
+public class App extends Application {
+
+    private static App application;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+        ShareUtil.init(this);
         application = this;
     }
 
-    public static MyApp getInstance() {
+    public static App getApplication() {
         return application;
     }
 }

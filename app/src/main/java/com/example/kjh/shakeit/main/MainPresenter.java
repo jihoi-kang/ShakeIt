@@ -1,6 +1,9 @@
 package com.example.kjh.shakeit.main;
 
-import com.example.kjh.shakeit.main.MainContract;
+import android.content.Intent;
+
+import com.example.kjh.shakeit.App;
+import com.example.kjh.shakeit.netty.NettyService;
 
 public class MainPresenter implements MainContract.Presenter {
 
@@ -12,5 +15,13 @@ public class MainPresenter implements MainContract.Presenter {
         this.model = model;
     }
 
+    @Override
+    public void onStart() {
+        App.getApplication().startService(new Intent(App.getApplication(), NettyService.class));
+    }
 
+    @Override
+    public void onDestroy() {
+        App.getApplication().stopService(new Intent(App.getApplication(), NettyService.class));
+    }
 }

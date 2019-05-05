@@ -18,7 +18,7 @@ public interface AddFriendContract {
         void hideLoadingDialog();
         int getFriendId();
         void showAfterFriend();
-
+        void showMessageForFailureMySelf();
     }
 
     interface Presenter {

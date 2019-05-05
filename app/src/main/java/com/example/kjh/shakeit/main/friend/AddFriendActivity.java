@@ -143,6 +143,11 @@ public class AddFriendActivity extends AppCompatActivity implements AddFriendCon
     }
 
     @Override
+    public void showMessageForFailureMySelf() {
+        ToastGenerator.show(R.string.msg_for_failure_becauseOfMyself);
+    }
+
+    @Override
     public void hideLoadingDialog() {
         dialog.dismiss();
     }

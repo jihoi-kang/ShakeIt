@@ -1,8 +1,6 @@
 package com.example.kjh.shakeit.netty.protocol;
 
-import com.example.kjh.shakeit.data.ChatLog;
 import com.example.kjh.shakeit.data.MessageHolder;
-import com.example.kjh.shakeit.utils.Serializer;
 
 import java.io.UnsupportedEncodingException;
 
@@ -20,8 +18,7 @@ public class ProtocolEncoder extends MessageToByteEncoder<MessageHolder> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, MessageHolder holder, ByteBuf out) throws UnsupportedEncodingException {
-        ChatLog chatLog = holder.getChatLog();
-        String body = Serializer.serialize(chatLog);
+        String body = holder.getBody();
 
         if(body == null)
             throw new NullPointerException("Body is null");

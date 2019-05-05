@@ -7,15 +7,16 @@ import android.support.v4.content.FileProvider;
 
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.callback.ResultCallback;
-import com.example.kjh.shakeit.data.ResponseHolder;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.more.contract.UpdateProfileContract;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
-import com.example.kjh.shakeit.utils.Serializer;
 import com.example.kjh.shakeit.utils.Validator;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -140,14 +141,22 @@ public class UpdateProfilePresenter implements UpdateProfileContract.Presenter {
             model.uploadImage(_id, path, new ResultCallback() {
                 @Override
                 public void onSuccess(String body) {
-                    ResponseHolder holder = Serializer.deserialize(body, ResponseHolder.class);
+                    JSONObject jsonObject = null;
+                    String resultMessage = "";
+                    try {
+                        jsonObject = new JSONObject(body);
+                        resultMessage = jsonObject.getString("message");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                     /** holder.getMessage() 는 업로드 된 이미지 URL */
 
-                    model.updateProfile(_id, holder.getMessage(), name, statusMessage, new ResultCallback() {
+                    String finalResultMessage = resultMessage;
+                    model.updateProfile(_id, resultMessage, name, statusMessage, new ResultCallback() {
                         @Override
                         public void onSuccess(String body) {
-                            user.setImage_url(holder.getMessage());
+                            user.setImage_url(finalResultMessage);
                             user.setName(name);
                             user.setStatus_message(statusMessage);
                             noticeUpdateProfile(user);

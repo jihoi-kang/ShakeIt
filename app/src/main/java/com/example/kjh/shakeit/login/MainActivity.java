@@ -3,7 +3,6 @@ package com.example.kjh.shakeit.login;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +15,7 @@ import com.example.kjh.shakeit.login.presenter.MainPresenter;
 import com.example.kjh.shakeit.utils.Injector;
 import com.example.kjh.shakeit.utils.ProgressDialogGenerator;
 import com.example.kjh.shakeit.utils.Serializer;
+import com.example.kjh.shakeit.utils.ShareUtil;
 import com.example.kjh.shakeit.utils.ToastGenerator;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.Auth;
@@ -53,9 +53,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     private ProgressDialog progressDialog;
 
-    private SharedPreferences preferences;
-    private SharedPreferences.Editor editor;
-
     private User user = null;
 
     /**------------------------------------------------------------------
@@ -69,9 +66,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         unbinder = ButterKnife.bind(this);
 
         presenter = new MainPresenter(this, Injector.provideBeforeLoginMainModel());
-
-        preferences = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
-        editor = preferences.edit();
 
         /** 소셜 로그인 초기화 */
         mAuth = FirebaseAuth.getInstance();
@@ -91,13 +85,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-//        reset();
+        reset();
 
     }
 
     private void reset(){
-        editor.clear();
-        editor.commit();
+        ShareUtil.clear();
         FirebaseAuth.getInstance().signOut();
     }
 
@@ -109,18 +102,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         super.onResume();
 
         /** 자동로그인 여부 확인 */
-        if(preferences.getInt("_id", 0) == 0)
+        if(ShareUtil.getPreferInt("_id") == -1)
             return;
 
-        presenter.autoLogin(preferences.getInt("_id", 0));
-    }
-
-    /**------------------------------------------------------------------
-     생명주기 ==> onStop()
-     ------------------------------------------------------------------*/
-    @Override
-    protected void onStop() {
-        super.onStop();
+        presenter.autoLogin(ShareUtil.getPreferInt("_id"));
     }
 
     /**------------------------------------------------------------------
@@ -130,12 +115,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
-
-        if(user != null) {
-            editor.putString("login_type", user.getLogin_type());
-            editor.putInt("_id", user.get_id());
-            editor.commit();
-        }
     }
 
     /**------------------------------------------------------------------
@@ -211,10 +190,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     public void moveActivityWithUserInfo(String userInfo) {
         user = Serializer.deserialize(userInfo, User.class);
 
+        ShareUtil.setPreferStr("login_type", user.getLogin_type());
+        ShareUtil.setPreferInt("_id", user.get_id());
+
         Intent intent = new Intent(MainActivity.this, com.example.kjh.shakeit.main.MainActivity.class);
         intent.putExtra("user", user);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK );
         startActivity(intent);
+        finish();
     }
 
     @Override

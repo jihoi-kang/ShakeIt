@@ -13,6 +13,14 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.example.kjh.shakeit.data.MessageHolder;
+import com.example.kjh.shakeit.data.User;
+import com.example.kjh.shakeit.netty.protocol.ProtocolHeader;
+import com.example.kjh.shakeit.utils.Serializer;
+import com.example.kjh.shakeit.utils.ShareUtil;
+
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.CALLBACK;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.CONN;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.RESPONSE;
 
 public class NettyService extends Service implements NettyListener {
 
@@ -26,9 +34,9 @@ public class NettyService extends Service implements NettyListener {
     @Override
     public void onCreate() {
         super.onCreate();
-        receiver = new NetworkReceiver();
 
         /** 로컬 브로드캐스트에 대한 수신 등록 */
+        receiver = new NetworkReceiver();
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
     }
@@ -85,12 +93,48 @@ public class NettyService extends Service implements NettyListener {
      ------------------------------------------------------------------*/
     @Override
     public void connectStatusChanged(int statusCode) {
-        if(statusCode == NettyListener.STATUS_CONNECT_SUCCESS) {
-            // TODO: 2019. 5. 3. 인증 데이터 요청
-            Log.d(TAG, "소켓서버와 연결 되었음");
-        } else {
-
+        switch (statusCode){
+            case NettyListener.STATUS_CONNECT_SUCCESS:
+                /** 셋팅할 시간 필요. 시간을 주지 않으면 셋팅이 되지 않은 상태에서 Socket을 사용할 수 있음 */
+                try {
+                    Thread.sleep(200);
+                    authenticData();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case NettyListener.STATUS_CONNECT_ERROR:
+                Log.e(TAG, "tcp connect error");
+                break;
+            case NettyListener.STATUS_CONNECT_CLOSED:
+                Log.d(TAG, "tcp connect closed");
+                break;
         }
+    }
+
+    /**------------------------------------------------------------------
+     메서드 ==> 인증 데이터 요청
+     ------------------------------------------------------------------*/
+    private void authenticData() {
+        MessageHolder messageHolder = new MessageHolder();
+        messageHolder.setSign(ProtocolHeader.REQUEST);
+        messageHolder.setType(CONN);
+
+        User u = new User();
+        u.set_id(ShareUtil.getPreferInt("_id"));
+
+        messageHolder.setBody(Serializer.serialize(u));
+        NettyClient.getInstance().sendMsgToServer(messageHolder, new FutureListener() {
+            @Override
+            public void success() {
+                Log.d(TAG, "success()");
+            }
+
+            @Override
+            public void error() {
+                Log.e(TAG, "error()");
+            }
+        });
     }
 
     /**------------------------------------------------------------------
@@ -99,7 +143,17 @@ public class NettyService extends Service implements NettyListener {
     @Override
     public void onMessageResponse(MessageHolder holder) {
         // TODO: 2019. 5. 3. 메시지 유형별 Bus Event 발생시키기
+        if(holder.getSign() == RESPONSE) {
+            switch (holder.getType()){
 
+            }
+        } else if(holder.getSign() == CALLBACK) {
+            switch (holder.getType()){
+                case CONN:
+                    Log.d(TAG, "Socket CONN Callback => success");
+                    break;
+            }
+        }
     }
 
     /**------------------------------------------------------------------
