@@ -1,5 +1,7 @@
 package com.example.kjh.shakeit.main.more.model;
 
+import android.util.Log;
+
 import com.example.kjh.shakeit.api.ApiClient;
 import com.example.kjh.shakeit.callback.ResultCallback;
 import com.example.kjh.shakeit.main.more.contract.UpdateProfileContract;
@@ -23,18 +25,21 @@ import static com.example.kjh.shakeit.Statics.SUCCESS_OK;
 
 public class UpdateProfileModel implements UpdateProfileContract.Model {
 
+    private final String TAG = UpdateProfileModel.class.getSimpleName();
+
     /**------------------------------------------------------------------
      메서드 ==> 프로필 업데이트 요청
      ------------------------------------------------------------------*/
     @Override
-    public void updateProfile(int _id, String image_url, String inputName, String inputStatusMessage, ResultCallback callback) {
-        Call<ResponseBody> updateResult = ApiClient.create().updateProfile(_id, image_url, inputName, inputStatusMessage);
+    public void updateProfile(int userId, String imageUrl, String inputName, String inputStatusMessage, ResultCallback callback) {
+        Call<ResponseBody> updateResult = ApiClient.create().updateProfile(userId, imageUrl, inputName, inputStatusMessage);
         updateResult.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 switch (response.code()){
                     case SUCCESS_OK:
                         try {
+                            Log.d(TAG, "" + response.body().string());
                             callback.onSuccess(response.body().string());
                         } catch (IOException e) {
                             e.printStackTrace();

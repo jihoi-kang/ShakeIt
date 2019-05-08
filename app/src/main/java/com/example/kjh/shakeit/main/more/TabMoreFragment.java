@@ -122,7 +122,7 @@ public class TabMoreFragment extends Fragment {
         FirebaseAuth.getInstance().signOut();
         ShareUtil.clear();
 
-        FcmGenerator.updateUserToken(user.get_id(), "logout");
+        FcmGenerator.updateUserToken(user.getUserId(), "logout");
 
         Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);
@@ -136,11 +136,11 @@ public class TabMoreFragment extends Fragment {
         name.setText(user.getName());
         statusMessage.setText(user.getEmail());
 
-        if(user.getImage_url() == null || user.getImage_url().equals(""))
+        if(user.getImageUrl() == null || user.getImageUrl().equals(""))
             profileImage.setImageResource(R.drawable.ic_basic_profile);
         else {
             Glide.with(this)
-                    .load(user.getImage_url())
+                    .load(user.getImageUrl())
                     .into(profileImage);
         }
     }

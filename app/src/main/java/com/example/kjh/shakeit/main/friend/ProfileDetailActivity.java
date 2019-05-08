@@ -49,12 +49,12 @@ public class ProfileDetailActivity extends AppCompatActivity {
         name.setText(user.getName());
         email.setText(user.getEmail());
 
-        if(user.getImage_url() == null || user.getImage_url().equals("")) {
+        if(user.getImageUrl() == null || user.getImageUrl().equals("")) {
             profileImage.setImageResource(R.drawable.ic_basic_profile);
             backgroundProfileImage.setImageResource(R.color.black);
         } else {
-            Glide.with(this).load(user.getImage_url()).into(profileImage);
-            Glide.with(this).load(user.getImage_url()).into(backgroundProfileImage);
+            Glide.with(this).load(user.getImageUrl()).into(profileImage);
+            Glide.with(this).load(user.getImageUrl()).into(backgroundProfileImage);
         }
 
         /** 위치가 0이면 자기 자신 */

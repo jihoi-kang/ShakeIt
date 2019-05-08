@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         user = (User) intent.getSerializableExtra("user");
 
         /** 로그인 후 Token 정보 업데이트 */
-        FcmGenerator.updateUserToken(user.get_id(), "login");
+        FcmGenerator.updateUserToken(user.getUserId(), "login");
 
         /** 뷰페이저 초기화 및 셋팅 */
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());

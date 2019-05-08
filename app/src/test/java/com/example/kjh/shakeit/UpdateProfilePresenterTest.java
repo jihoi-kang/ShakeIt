@@ -54,7 +54,7 @@ public class UpdateProfilePresenterTest {
         when(mockUserInfo.getName()).thenReturn("강지회");
 
         when(view.getInputStatusMessage()).thenReturn("abc");
-        when(mockUserInfo.getStatus_message()).thenReturn("abc");
+        when(mockUserInfo.getStatusMessage()).thenReturn("abc");
 
         presenter.onChangedInput();
 
@@ -82,7 +82,7 @@ public class UpdateProfilePresenterTest {
         when(view.getUser()).thenReturn(mockUserInfo);
 
         when(view.getInputStatusMessage()).thenReturn("aaa");
-        when(mockUserInfo.getStatus_message()).thenReturn("bbb");
+        when(mockUserInfo.getStatusMessage()).thenReturn("bbb");
 
         when(view.getInputName()).thenReturn("강지회");
         when(mockUserInfo.getName()).thenReturn("강지회");

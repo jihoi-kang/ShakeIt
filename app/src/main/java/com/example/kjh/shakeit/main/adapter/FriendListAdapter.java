@@ -60,9 +60,9 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String imageUrl = users.get(position).getImage_url();
+        String imageUrl = users.get(position).getImageUrl();
         String name = users.get(position).getName();
-        String statusMessage = users.get(position).getStatus_message();
+        String statusMessage = users.get(position).getStatusMessage();
 
         holder.inputName.setText(name);
 

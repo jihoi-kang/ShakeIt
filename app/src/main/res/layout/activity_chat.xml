@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:title="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.kjh.shakeit.main.chat.ChatActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+
+        <ImageButton
+            android:id="@+id/back"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/colorPrimary"
+            android:src="@drawable/ic_back_white_36dp" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/chat_list"
+        android:scrollbars="vertical"
+        android:layout_below="@+id/title_bar"
+        android:layout_above="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_above="@+id/ll_bottom"
+        android:background="@color/background_grey_primary" />
+
+    <LinearLayout
+        android:id="@+id/ll_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@mipmap/ic_launcher_round"
+            android:visibility="visible" />
+
+        <com.example.kjh.shakeit.utils.ClearEditText
+            android:id="@+id/inputContent"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:hint=""
+            android:inputType="text"
+            android:text="" />
+
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="전송"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+</RelativeLayout>

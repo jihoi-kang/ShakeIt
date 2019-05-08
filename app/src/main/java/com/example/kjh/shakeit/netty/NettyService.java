@@ -121,7 +121,7 @@ public class NettyService extends Service implements NettyListener {
         messageHolder.setType(CONN);
 
         User u = new User();
-        u.set_id(ShareUtil.getPreferInt("_id"));
+        u.setUserId(ShareUtil.getPreferInt("userId"));
 
         messageHolder.setBody(Serializer.serialize(u));
         NettyClient.getInstance().sendMsgToServer(messageHolder, new FutureListener() {

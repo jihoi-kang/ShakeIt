@@ -15,7 +15,7 @@ import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 /**
- * 실제 요청 클래스
+ * HTTP 요청 클래스
  * @author 강지회
  * @version 1.0.0
  * @since 2019. 4. 26. PM 5:32
@@ -28,7 +28,7 @@ public interface ApiInterface {
     Call<ResponseBody> login(
             @Field(value = "email", encoded = true) String email,
             @Field(value = "password", encoded = true) String password,
-            @Field(value = "login_type", encoded = true) String login_type
+            @Field(value = "loginType", encoded = true) String loginType
     );
 
     /** 이메일 회원가입 */
@@ -38,7 +38,7 @@ public interface ApiInterface {
             @Field(value = "email", encoded = true) String email,
             @Field(value = "password", encoded = true) String password,
             @Field(value = "name", encoded = true) String name,
-            @Field(value = "login_type", encoded = true) String login_type
+            @Field(value = "loginType", encoded = true) String loginType
     );
 
     /** 소셜 로그인 */
@@ -48,8 +48,8 @@ public interface ApiInterface {
             @Field(value = "email", encoded = true) String email,
             @Field(value = "password", encoded = true) String password,
             @Field(value = "name", encoded = true) String name,
-            @Field(value = "photo_url", encoded = true) String photo_url,
-            @Field(value = "login_type", encoded = true) String login_type
+            @Field(value = "imageUrl", encoded = true) String imageUrl,
+            @Field(value = "loginType", encoded = true) String loginType
 
     );
 
@@ -57,20 +57,20 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("/" + Statics.UPDATE_TOKEN)
     Call<ResponseBody> updateUserToken(
-            @Field(value = "_id") int _id,
-            @Field(value = "device_token") String device_token
+            @Field(value = "userId") int userId,
+            @Field(value = "deviceToken") String deviceToken
     );
 
     /** 아이디 값으로 사용자 한명의 정보 받아오기 */
-    @GET("/" + Statics.GET_USER + "?_id={_id}")
+    @GET("/" + Statics.GET_USER + "?userId={userId}")
     Call<ResponseBody> getUserById(
-            @Query("_id") Integer _id
+            @Query("userId") Integer userId
     );
 
     /** 검색한 한명의 정보 받아오기 */
     @GET("/" + Statics.GET_FRIEND_INFO)
     Call<ResponseBody> getUserByEmail(
-            @Query("_id") Integer _id,
+            @Query("userId") Integer userId,
             @Query("email") String email
     );
 
@@ -86,24 +86,31 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("/" + Statics.UPDATE_PROFILE)
     Call<ResponseBody> updateProfile(
-            @Field(value = "_id") int _id,
-            @Field(value = "image_url") String image_url,
+            @Field(value = "userId") int userId,
+            @Field(value = "imageUrl") String imageUrl,
             @Field(value = "name") String name,
-            @Field(value = "status_message") String status_message
+            @Field(value = "statusMessage") String statusMessage
     );
 
     /** 친구 목록 */
-    @GET("/" + Statics.GET_FRIEND_LIST + "?_id={_id}")
+    @GET("/" + Statics.GET_FRIEND_LIST)
     Call<ResponseBody> getFriendList(
-            @Query("_id") Integer _id
+            @Query("userId") Integer userId
     );
 
     /** 친구 추가 */
     @FormUrlEncoded
     @POST("/" + Statics.ADD_FRIEND)
     Call<ResponseBody> addFriend(
-            @Field(value = "_id") int _id,
-            @Field(value = "friend_id") int friend_id
+            @Field(value = "userId") int userId,
+            @Field(value = "friendId") int friendId
     );
+
+    /** 채팅방 목록 */
+    @GET("/" + Statics.GET_CHATROOM_LIST)
+    Call<ResponseBody> getChatRoomList(
+            @Query("userId") Integer userId
+    );
+
 }
 

@@ -15,5 +15,7 @@ public class ProtocolHeader {
 
     /** type 0x11 ~ */
     public static final byte CONN = 0x11;
+    public static final byte CHATROOM_ENTER = 0x12;
+    public static final byte CHATROOM_OUT = 0x13;
 
 }

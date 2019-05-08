@@ -1,5 +1,11 @@
 package com.example.kjh.shakeit.data;
 
+/**
+ * Netty 주고 받을 때 데이터를 담는 클래스
+ * @author 강지회
+ * @version 1.0.0
+ * @since 2019. 5. 8. PM 6:43
+ **/
 public class MessageHolder {
 
     private byte sign;

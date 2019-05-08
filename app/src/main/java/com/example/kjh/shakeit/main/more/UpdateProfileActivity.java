@@ -13,7 +13,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -81,20 +80,20 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
         Intent intent = getIntent();
         user = (User) intent.getSerializableExtra("user");
         /** 프로필 이미지 path */
-        path = user.getImage_url();
+        path = user.getImageUrl();
 
         /** 초기값 */
 //        이름
         inputName.setText(user.getName());
 //        상태메시지
-        if(user.getStatus_message() != null)
-            inputStatusMessage.setText(user.getStatus_message());
+        if(user.getStatusMessage() != null)
+            inputStatusMessage.setText(user.getStatusMessage());
 //        프로필 이미지
-        if(user.getImage_url() == null || user.getImage_url().equals(""))
+        if(user.getImageUrl() == null || user.getImageUrl().equals(""))
             profileImage.setImageResource(R.drawable.ic_basic_profile);
         else {
             Glide.with(this)
-                    .load(user.getImage_url())
+                    .load(user.getImageUrl())
                     .into(profileImage);
         }
 
@@ -210,29 +209,26 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
         dialog.canceledOnTouchOutside(true);
         dialog.cancelable(true);
         dialog.inflateMenu(R.menu.menu_main);
-        dialog.setOnItemSelectedListener(new BottomDialog.OnItemSelectedListener() {
-            @Override
-            public boolean onItemSelected(int id) {
-                switch (id) {
-                    /** 카메라 선택 */
-                    case R.id.action_camera:
-                        file = createFile();
-                        presenter.onClickCamera();
-                        return true;
-                    /** 갤러리 선택 */
-                    case R.id.action_gallery:
-                        presenter.onClickGallery();
-                        return true;
-                    /** 기본이미지 사용 */
-                    case R.id.action_basic:
-                        profileImage.setImageResource(R.drawable.ic_basic_profile);
-                        isChangedProfileImage = true;
-                        presenter.onChangedInput();
-                        path = null;
-                        return true;
-                    default:
-                        return false;
-                }
+        dialog.setOnItemSelectedListener(id -> {
+            switch (id) {
+                /** 카메라 선택 */
+                case R.id.action_camera:
+                    file = createFile();
+                    presenter.onClickCamera();
+                    return true;
+                /** 갤러리 선택 */
+                case R.id.action_gallery:
+                    presenter.onClickGallery();
+                    return true;
+                /** 기본이미지 사용 */
+                case R.id.action_basic:
+                    profileImage.setImageResource(R.drawable.ic_basic_profile);
+                    isChangedProfileImage = true;
+                    presenter.onChangedInput();
+                    path = null;
+                    return true;
+                default:
+                    return false;
             }
         });
         dialog.show();
@@ -283,6 +279,11 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
         return isChangedProfileImage;
     }
 
+    @Override
+    public void showMessageForFailure() {
+        ToastGenerator.show(R.string.msg_for_failure);
+    }
+
     /**------------------------------------------------------------------
      메서드 ==> EditText 변화 이벤트
      ------------------------------------------------------------------*/
@@ -306,8 +307,7 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
         }
 //        현재 시간 기준 파일명 생성
         String now = TimeManager.now();
-        String imageFileName = user.get_id() + now + ".jpg";
-        Log.d("UpdateProfile", "imageFileName: " + imageFileName);
+        String imageFileName = user.getUserId() + now + ".jpg";
 
 //        파일 생성
         File curFile = new File(sdPath, imageFileName);

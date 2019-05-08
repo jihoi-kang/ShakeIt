@@ -21,7 +21,7 @@ public class Statics {
     public static final String UPLOAD_IMAGE = "api/uploads.php";
     public static final String GET_FRIEND_LIST = "api/friend/read.php";
     public static final String ADD_FRIEND = "api/friend/create.php";
-
+    public static final String GET_CHATROOM_LIST = "api/chatroom/read.php";
 
     /** HTTP RESPONSE CODE */
     public static final int SUCCESS_OK = 200;
@@ -63,6 +63,5 @@ public class Statics {
             R.drawable.ic_add_person_white_18dp,
             R.drawable.ic_add_chat_room_white_24dp
     };
-
 
 }

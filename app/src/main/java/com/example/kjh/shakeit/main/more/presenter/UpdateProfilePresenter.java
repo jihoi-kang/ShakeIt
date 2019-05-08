@@ -47,11 +47,11 @@ public class UpdateProfilePresenter implements UpdateProfileContract.Presenter {
             return;
         }
 
-        if (user.getStatus_message() == null)
-            user.setStatus_message("");
+        if (user.getStatusMessage() == null)
+            user.setStatusMessage("");
 
         if (user.getName().equals(inputName)
-                && (user.getStatus_message()).equals(inputStatusMessage)
+                && (user.getStatusMessage()).equals(inputStatusMessage)
                 && !view.getIsChangedProfileImage()) {
             view.hideUpdateText();
             return;
@@ -127,7 +127,7 @@ public class UpdateProfilePresenter implements UpdateProfileContract.Presenter {
     public void onClickUpdate() {
         User user = view.getUser();
         String path = view.getPath();
-        int _id = view.getUser().get_id();
+        int _id = view.getUser().getUserId();
         String name = view.getInputName();
         String statusMessage = view.getInputStatusMessage();
         boolean isChangedProfileImage = view.getIsChangedProfileImage();
@@ -156,9 +156,9 @@ public class UpdateProfilePresenter implements UpdateProfileContract.Presenter {
                     model.updateProfile(_id, resultMessage, name, statusMessage, new ResultCallback() {
                         @Override
                         public void onSuccess(String body) {
-                            user.setImage_url(finalResultMessage);
+                            user.setImageUrl(finalResultMessage);
                             user.setName(name);
-                            user.setStatus_message(statusMessage);
+                            user.setStatusMessage(statusMessage);
                             noticeUpdateProfile(user);
 
                             view.hideLoadingDialog();
@@ -184,9 +184,9 @@ public class UpdateProfilePresenter implements UpdateProfileContract.Presenter {
             model.updateProfile(_id, view.getPath(), name, statusMessage, new ResultCallback() {
                 @Override
                 public void onSuccess(String body) {
-                    user.setImage_url(path);
+                    user.setImageUrl(path);
                     user.setName(name);
-                    user.setStatus_message(statusMessage);
+                    user.setStatusMessage(statusMessage);
                     noticeUpdateProfile(user);
 
                     view.hideLoadingDialog();
@@ -196,6 +196,7 @@ public class UpdateProfilePresenter implements UpdateProfileContract.Presenter {
                 @Override
                 public void onFailure(String errorMsg) {
                     view.hideLoadingDialog();
+                    view.showMessageForFailure();
                 }
             });
         }

@@ -53,6 +53,10 @@
             android:theme="@style/AppTheme_StatusBar_Black"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".main.chat.ChatActivity"
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait" />
+
         <!-- Crop Image -->
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
 

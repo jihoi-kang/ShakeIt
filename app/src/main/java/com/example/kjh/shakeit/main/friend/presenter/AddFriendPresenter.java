@@ -41,7 +41,7 @@ public class AddFriendPresenter implements AddFriendContract.Presenter {
 
         view.hideSoftKeyboard();
 
-        model.getUserByEmail(user.get_id(), email, new ResultCallback() {
+        model.getUserByEmail(user.getUserId(), email, new ResultCallback() {
             @Override
             public void onSuccess(String body) {
 
@@ -52,10 +52,10 @@ public class AddFriendPresenter implements AddFriendContract.Presenter {
                         JSONObject jsonObject = new JSONObject(body);
 
                         view.showFriendInfo(
-                                jsonObject.getInt("_id"),
+                                jsonObject.getInt("userId"),
                                 jsonObject.getString("name"),
-                                jsonObject.getString("image_url"),
-                                jsonObject.getInt("is_friend")
+                                jsonObject.getString("imageUrl"),
+                                jsonObject.getInt("isFriend")
                         );
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -80,7 +80,7 @@ public class AddFriendPresenter implements AddFriendContract.Presenter {
 
         view.showLoadingDialog();
 
-        model.addFriend(user.get_id(), view.getFriendId(), new ResultCallback() {
+        model.addFriend(user.getUserId(), view.getFriendId(), new ResultCallback() {
             @Override
             public void onSuccess(String body) {
                 view.hideLoadingDialog();

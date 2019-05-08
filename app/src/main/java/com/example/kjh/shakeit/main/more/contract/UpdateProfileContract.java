@@ -26,7 +26,7 @@ public interface UpdateProfileContract {
         boolean getIsChangedProfileImage();
         void finishActivity();
         void hideSoftKeyboard();
-
+        void showMessageForFailure();
     }
 
     interface Presenter {

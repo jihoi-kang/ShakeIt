@@ -23,7 +23,7 @@ public interface TabFriendListContract {
 
     interface Model {
 
-        void getFriendList(int id, ResultCallback callback);
+        void getFriendList(int userId, ResultCallback callback);
 
     }
 

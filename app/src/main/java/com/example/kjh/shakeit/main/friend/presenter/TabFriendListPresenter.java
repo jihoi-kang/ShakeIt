@@ -40,7 +40,7 @@ public class TabFriendListPresenter implements TabFriendListContract.Presenter {
 
         friendList.add(user);
 
-        model.getFriendList(user.get_id(), new ResultCallback() {
+        model.getFriendList(user.getUserId(), new ResultCallback() {
             @Override
             public void onSuccess(String body) {
                 try {
