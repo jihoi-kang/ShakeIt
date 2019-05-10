@@ -10,10 +10,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.friend.ProfileDetailActivity;
+import com.example.kjh.shakeit.utils.ImageLoaderUtil;
+import com.example.kjh.shakeit.utils.StrUtil;
 
 import java.util.ArrayList;
 
@@ -66,19 +67,18 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
         holder.inputName.setText(name);
 
+        /** 자기 자신 */
         if(position == 0) {
             holder.inputName.setText(name + " (me)");
         }
 
         holder.inputStatusMessage.setText(statusMessage);
 
-        if(imageUrl == null || imageUrl.equals("")) {
+        if(StrUtil.isBlank(imageUrl))
             holder.profileImage.setImageResource(R.drawable.ic_basic_profile);
-        } else {
-            Glide.with(context)
-                    .load(imageUrl)
-                    .into(holder.profileImage);
-        }
+        else
+            ImageLoaderUtil.display(context, holder.profileImage, imageUrl);
+
 
         holder.container.setOnClickListener(view -> {
             User user = users.get(position);

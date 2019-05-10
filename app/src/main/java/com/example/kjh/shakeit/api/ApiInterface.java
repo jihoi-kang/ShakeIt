@@ -1,6 +1,6 @@
 package com.example.kjh.shakeit.api;
 
-import com.example.kjh.shakeit.Statics;
+import com.example.kjh.shakeit.app.Constant;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -24,7 +24,7 @@ public interface ApiInterface {
 
     /** 이메일 로그인 */
     @FormUrlEncoded
-    @POST("/" + Statics.LOGIN)
+    @POST("/" + Constant.LOGIN)
     Call<ResponseBody> login(
             @Field(value = "email", encoded = true) String email,
             @Field(value = "password", encoded = true) String password,
@@ -33,7 +33,7 @@ public interface ApiInterface {
 
     /** 이메일 회원가입 */
     @FormUrlEncoded
-    @POST("/" + Statics.SINGUP)
+    @POST("/" + Constant.SINGUP)
     Call<ResponseBody> signUp(
             @Field(value = "email", encoded = true) String email,
             @Field(value = "password", encoded = true) String password,
@@ -43,7 +43,7 @@ public interface ApiInterface {
 
     /** 소셜 로그인 */
     @FormUrlEncoded
-    @POST("/" + Statics.SOCIAL_LOGIN)
+    @POST("/" + Constant.SOCIAL_LOGIN)
     Call<ResponseBody> socialLogin(
             @Field(value = "email", encoded = true) String email,
             @Field(value = "password", encoded = true) String password,
@@ -55,20 +55,20 @@ public interface ApiInterface {
 
     /** 사용자의 device_token 업데이트 */
     @FormUrlEncoded
-    @POST("/" + Statics.UPDATE_TOKEN)
+    @POST("/" + Constant.UPDATE_TOKEN)
     Call<ResponseBody> updateUserToken(
             @Field(value = "userId") int userId,
             @Field(value = "deviceToken") String deviceToken
     );
 
     /** 아이디 값으로 사용자 한명의 정보 받아오기 */
-    @GET("/" + Statics.GET_USER + "?userId={userId}")
+    @GET("/" + Constant.GET_USER + "?userId={userId}")
     Call<ResponseBody> getUserById(
             @Query("userId") Integer userId
     );
 
     /** 검색한 한명의 정보 받아오기 */
-    @GET("/" + Statics.GET_FRIEND_INFO)
+    @GET("/" + Constant.GET_FRIEND_INFO)
     Call<ResponseBody> getUserByEmail(
             @Query("userId") Integer userId,
             @Query("email") String email
@@ -76,7 +76,7 @@ public interface ApiInterface {
 
     /** 이미지 업로드 */
     @Multipart
-    @POST("/" + Statics.UPLOAD_IMAGE)
+    @POST("/" + Constant.UPLOAD_IMAGE)
     Call<ResponseBody> uploadImage(
             @Part MultipartBody.Part file,
             @Part("type") RequestBody type
@@ -84,7 +84,7 @@ public interface ApiInterface {
 
     /** 프로필 업데이트 */
     @FormUrlEncoded
-    @POST("/" + Statics.UPDATE_PROFILE)
+    @POST("/" + Constant.UPDATE_PROFILE)
     Call<ResponseBody> updateProfile(
             @Field(value = "userId") int userId,
             @Field(value = "imageUrl") String imageUrl,
@@ -93,21 +93,21 @@ public interface ApiInterface {
     );
 
     /** 친구 목록 */
-    @GET("/" + Statics.GET_FRIEND_LIST)
+    @GET("/" + Constant.GET_FRIEND_LIST)
     Call<ResponseBody> getFriendList(
             @Query("userId") Integer userId
     );
 
     /** 친구 추가 */
     @FormUrlEncoded
-    @POST("/" + Statics.ADD_FRIEND)
+    @POST("/" + Constant.ADD_FRIEND)
     Call<ResponseBody> addFriend(
             @Field(value = "userId") int userId,
             @Field(value = "friendId") int friendId
     );
 
     /** 채팅방 목록 */
-    @GET("/" + Statics.GET_CHATROOM_LIST)
+    @GET("/" + Constant.GET_CHATROOM_LIST)
     Call<ResponseBody> getChatRoomList(
             @Query("userId") Integer userId
     );

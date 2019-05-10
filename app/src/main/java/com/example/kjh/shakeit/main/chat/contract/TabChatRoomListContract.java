@@ -12,13 +12,14 @@ public interface TabChatRoomListContract {
 
         User getUser();
         void showChatRoomList(ArrayList<ChatRoom> roomList);
+        void notifyChatRoomList(String body);
 
     }
 
     interface Presenter {
 
-        void setChatRoomList();
-        void getChatRoomList();
+        void onCreate();
+        void onDestroy();
 
     }
 

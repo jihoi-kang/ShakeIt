@@ -24,10 +24,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-import static com.example.kjh.shakeit.Statics.nonTabIcon;
-import static com.example.kjh.shakeit.Statics.onTabIcon;
-import static com.example.kjh.shakeit.Statics.tabLayoutImage;
-import static com.example.kjh.shakeit.Statics.titles;
+import static com.example.kjh.shakeit.app.Constant.nonTabIcon;
+import static com.example.kjh.shakeit.app.Constant.onTabIcon;
+import static com.example.kjh.shakeit.app.Constant.tabLayoutImage;
+import static com.example.kjh.shakeit.app.Constant.titles;
 
 /**
  * 로그인 후 메인 화면 클래스

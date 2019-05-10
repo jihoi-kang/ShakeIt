@@ -2,7 +2,7 @@ package com.example.kjh.shakeit.utils;
 
 import android.widget.Toast;
 
-import com.example.kjh.shakeit.App;
+import com.example.kjh.shakeit.app.App;
 
 /**
  * Toast를 발생시키는 클래스

@@ -2,6 +2,8 @@ package com.example.kjh.shakeit.main.chat;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,14 +13,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.kjh.shakeit.R;
+import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ChatRoom;
+import com.example.kjh.shakeit.data.MessageHolder;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.MainActivity;
 import com.example.kjh.shakeit.main.adapter.ChatRoomListAdapter;
 import com.example.kjh.shakeit.main.chat.contract.TabChatRoomListContract;
 import com.example.kjh.shakeit.main.chat.presenter.TabChatRoomListPresenter;
 import com.example.kjh.shakeit.utils.Injector;
-import com.example.kjh.shakeit.utils.MyDividerItemDecoration;
+import com.example.kjh.shakeit.etc.MyDividerItemDecoration;
+import com.example.kjh.shakeit.utils.Serializer;
 
 import java.util.ArrayList;
 
@@ -27,12 +32,14 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 /**
- * 채팅룸 목록 탭
+ * 채팅방 목록 탭
  * @author 강지회
  * @version 1.0.0
  * @since 2019. 4. 27. PM 5:32
  **/
 public class TabChatRoomListFragment extends Fragment implements TabChatRoomListContract.View {
+
+    private final String TAG = TabChatRoomListFragment.class.getSimpleName();
 
     private static TabChatRoomListFragment instance = null;
 
@@ -46,6 +53,10 @@ public class TabChatRoomListFragment extends Fragment implements TabChatRoomList
 
     private ChatRoomListAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+
+    private ArrayList<ChatRoom> rooms = new ArrayList<>();
+
+    public static Handler chatRoomFragHandler;
 
     public static TabChatRoomListFragment getInstance() {
         if(instance == null)
@@ -71,8 +82,15 @@ public class TabChatRoomListFragment extends Fragment implements TabChatRoomList
         super.onCreate(savedInstanceState);
 
         presenter = new TabChatRoomListPresenter(this, Injector.provideChatRoomListModel());
+        presenter.onCreate();
 
-        presenter.getChatRoomList();
+        chatRoomFragHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                notifyChatRoomList(msg.getData().getString("result"));
+            }
+        };
+
     }
 
     /**------------------------------------------------------------------
@@ -88,10 +106,10 @@ public class TabChatRoomListFragment extends Fragment implements TabChatRoomList
 
         layoutManager = new LinearLayoutManager(getActivity());
         chatRoomListView.setLayoutManager(layoutManager);
-
         chatRoomListView.addItemDecoration(new MyDividerItemDecoration(getActivity()));
 
-        presenter.setChatRoomList();
+        adapter = new ChatRoomListAdapter(getActivity(), rooms, user);
+        chatRoomListView.setAdapter(adapter);
 
         return view;
     }
@@ -105,6 +123,36 @@ public class TabChatRoomListFragment extends Fragment implements TabChatRoomList
         unbinder.unbind();
     }
 
+    /**------------------------------------------------------------------
+     생명주기 ==> onDestroy()
+     ------------------------------------------------------------------*/
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
+    }
+
+    /**------------------------------------------------------------------
+     메서드 ==> 채팅방 목록 변경 알림
+     ------------------------------------------------------------------*/
+    @Override
+    public void notifyChatRoomList(String body) {
+        MessageHolder holder = Serializer.deserialize(body, MessageHolder.class);
+        ChatHolder chatHolder = Serializer.deserialize(holder.getBody(), ChatHolder.class);
+        for(int i = 0; i < rooms.size(); i++){
+            /** RoomId를 통해 변경된 방을 찾아 변경 */
+            if(rooms.get(i).getRoomId() == chatHolder.getRoomId()){
+                ChatRoom room = rooms.get(i);
+                room.setChatHolder(chatHolder);
+                rooms.remove(i);
+                rooms.add(0, room);
+            }
+        }
+
+        adapter.changeList(rooms);
+        adapter.notifyDataSetChanged();
+    }
+
     @Override
     public User getUser() {
         return user;
@@ -112,7 +160,9 @@ public class TabChatRoomListFragment extends Fragment implements TabChatRoomList
 
     @Override
     public void showChatRoomList(ArrayList<ChatRoom> roomList) {
-        adapter = new ChatRoomListAdapter(getActivity(), roomList, user);
-        chatRoomListView.setAdapter(adapter);
+        rooms = roomList;
+
+        adapter.changeList(rooms);
+        adapter.notifyDataSetChanged();
     }
 }

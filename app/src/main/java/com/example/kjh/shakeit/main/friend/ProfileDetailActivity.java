@@ -9,9 +9,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.data.User;
+import com.example.kjh.shakeit.utils.ImageLoaderUtil;
+import com.example.kjh.shakeit.utils.StrUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,12 +50,12 @@ public class ProfileDetailActivity extends AppCompatActivity {
         name.setText(user.getName());
         email.setText(user.getEmail());
 
-        if(user.getImageUrl() == null || user.getImageUrl().equals("")) {
+        if(StrUtil.isBlank(user.getImageUrl())) {
             profileImage.setImageResource(R.drawable.ic_basic_profile);
             backgroundProfileImage.setImageResource(R.color.black);
         } else {
-            Glide.with(this).load(user.getImageUrl()).into(profileImage);
-            Glide.with(this).load(user.getImageUrl()).into(backgroundProfileImage);
+            ImageLoaderUtil.display(this, profileImage, user.getImageUrl());
+            ImageLoaderUtil.display(this, backgroundProfileImage, user.getImageUrl());
         }
 
         /** 위치가 0이면 자기 자신 */

@@ -1,13 +1,22 @@
 package com.example.kjh.shakeit.main.chat.presenter;
 
+import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 
+import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.MessageHolder;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.chat.contract.ChatContract;
 import com.example.kjh.shakeit.netty.FutureListener;
-import com.example.kjh.shakeit.netty.protocol.ProtocolHeader;
+import com.example.kjh.shakeit.otto.BusProvider;
+import com.example.kjh.shakeit.otto.Events;
+import com.example.kjh.shakeit.utils.Serializer;
+import com.example.kjh.shakeit.utils.TimeManager;
+import com.squareup.otto.Subscribe;
+
+import static com.example.kjh.shakeit.main.chat.ChatActivity.chatActHandler;
 
 public class ChatPresenter implements ChatContract.Presenter {
 
@@ -21,69 +30,75 @@ public class ChatPresenter implements ChatContract.Presenter {
         this.model = model;
     }
 
+    /**------------------------------------------------------------------
+     메서드 ==> 메시지 전송 로직
+     ------------------------------------------------------------------*/
     @Override
     public void onClickSend() {
-//        String content = view.getInputContent();
+        String content = view.getInputContent();
+        User user = view.getUser();
+        ChatRoom room = view.getChatRoom();
+        String time = TimeManager.nowTime();
+
+        String body =
+                Serializer.serialize(new ChatHolder(0, room.getRoomId(), user.getUserId(), "text", content, time));
+
+        model.sendMessage(body, new FutureListener() {
+            @Override
+            public void success() {
+                view.clearInputContent();
+                Log.d(TAG, "success => send message");
+            }
+
+            @Override
+            public void error() {
+                view.showMessageForFailure();
+                Log.d(TAG, "error => send message");
+            }
+        });
+
     }
 
     /**------------------------------------------------------------------
-     메서드 ==> 채팅방 입장
+     생명주기 ==> onCreate()
      ------------------------------------------------------------------*/
     @Override
     public void onCreate() {
-        MessageHolder holder = makeMessageHolder("enter");
-
-        model.sendMessage(holder, new FutureListener() {
-                    @Override
-                    public void success() {
-                        Log.d(TAG, "suceess => enter chatroom");
-                    }
-
-                    @Override
-                    public void error() {
-                        Log.d(TAG, "error => enter chatroom");
-                    }
-                }
-        );
+        BusProvider.getInstance().register(this);
     }
 
     /**------------------------------------------------------------------
-     메서드 ==> 채팅방 나가기
+     생명주기 ==> onDestroy()
      ------------------------------------------------------------------*/
     @Override
     public void onDestroy() {
-        MessageHolder holder = makeMessageHolder("out");
+        BusProvider.getInstance().unregister(this);
+    }
 
-        model.sendMessage(holder, new FutureListener() {
-                    @Override
-                    public void success() {
-                        Log.d(TAG, "suceess => out chatroom");
-                    }
-
-                    @Override
-                    public void error() {
-                        Log.d(TAG, "error => out chatroom");
-                    }
-                }
-        );
+    @Override
+    public void onClickAttach() {
+        view.showSelectType();
     }
 
     /**------------------------------------------------------------------
-     메서드 ==> 채팅방 들어가거나 나갈 때의 메시지 홀더 생성
+     구독이벤트 ==> Netty에서 이벤트 왔을 때 ==> 메시지 받거나 콜백
      ------------------------------------------------------------------*/
-    private MessageHolder makeMessageHolder(String type) {
-        User user = view.getUser();
-        ChatRoom room = view.getChatRoom();
+    @Subscribe
+    public void nettyEvent (Events.nettyEvent event) {
+        MessageHolder holder = event.getMessageHolder();
+        ChatHolder chatHolder = Serializer.deserialize(holder.getBody(), ChatHolder.class);
 
-        MessageHolder holder = new MessageHolder();
-        holder.setSign(ProtocolHeader.REQUEST);
-        if(type.equals("enter"))
-            holder.setType(ProtocolHeader.CHATROOM_ENTER);
-        else if(type.equals("out"))
-            holder.setType(ProtocolHeader.CHATROOM_OUT);
-        String body = "{\"userId\":" + user.getUserId() + ",\"roomId\":" + room.getRoomId() + "}";
-        holder.setBody(body);
+        if(view.getChatRoom().getRoomId() != chatHolder.getRoomId()){
+            return;
+        }
 
-        return holder;
+        Message msg = chatActHandler.obtainMessage();
+
+        Bundle bundle = new Bundle();
+        bundle.putString("result", Serializer.serialize(holder));
+
+        msg.setData(bundle);
+
+        chatActHandler.sendMessage(msg);
     }
 }

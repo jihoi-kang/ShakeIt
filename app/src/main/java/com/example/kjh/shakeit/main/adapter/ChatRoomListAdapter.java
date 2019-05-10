@@ -10,19 +10,29 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.chat.ChatActivity;
+import com.example.kjh.shakeit.utils.ImageLoaderUtil;
+import com.example.kjh.shakeit.utils.StrUtil;
+import com.example.kjh.shakeit.utils.TimeManager;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * 채팅방 아답터
+ * @author 강지회
+ * @version 1.0.0
+ * @since 2019. 5. 10. PM 2:29
+ **/
 public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapter.ViewHolder> {
+
+    private final String TAG = ChatRoomListAdapter.class.getSimpleName();
 
     private ArrayList<ChatRoom> rooms;
     private Context context;
@@ -32,6 +42,10 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
         this.context = context;
         this.rooms = rooms;
         this.user = user;
+    }
+
+    public void changeList(ArrayList<ChatRoom> rooms) {
+        this.rooms = rooms;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -86,36 +100,38 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
 
         holder.lastMessageContentTxt.setText(lastMessageContent);
 
-        holder.lastMessageTimeTxt.setText(lastMessageTime);
+        if(TimeManager.nowdate().equals(lastMessageTime.substring(0, 10))){
+            holder.lastMessageTimeTxt.setText(lastMessageTime.substring(11, 16));
+        } else
+            holder.lastMessageTimeTxt.setText(lastMessageTime.substring(5, 10));
 
         if(memberCount > 2) {
             holder.memberCountTxt.setText("" + memberCount);
             holder.memberCountTxt.setVisibility(View.VISIBLE);
-        } else {
+        } else
             holder.memberCountTxt.setVisibility(View.GONE);
-        }
 
-        if(imageUrl == null || imageUrl.equals("")) {
+        if(StrUtil.isBlank(imageUrl))
             holder.profileImage.setImageResource(R.drawable.ic_basic_profile);
-        } else {
-            Glide.with(context)
-                    .load(imageUrl)
-                    .into(holder.profileImage);
-        }
+        else
+            ImageLoaderUtil.display(context, holder.profileImage, imageUrl);
+
 
         if(unreadCount > 0) {
             holder.unreadCountTxt.setText(unreadCount);
             holder.unreadCountTxt.setVisibility(View.VISIBLE);
-        } else {
+        } else
             holder.unreadCountTxt.setVisibility(View.GONE);
-        }
 
+        String finalTitle = title;
         holder.container.setOnClickListener(view -> {
             ChatRoom room = rooms.get(position);
 
             Intent intent = new Intent(context, ChatActivity.class);
             intent.putExtra("room", room);
             intent.putExtra("user", user);
+            intent.putExtra("title", finalTitle);
+            intent.putExtra("imageUrl", imageUrl);
             context.startActivity(intent);
         });
 

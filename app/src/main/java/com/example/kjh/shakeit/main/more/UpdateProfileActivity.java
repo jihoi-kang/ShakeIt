@@ -18,14 +18,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.more.contract.UpdateProfileContract;
 import com.example.kjh.shakeit.main.more.presenter.UpdateProfilePresenter;
+import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.Injector;
 import com.example.kjh.shakeit.utils.KeyboardManager;
 import com.example.kjh.shakeit.utils.ProgressDialogGenerator;
+import com.example.kjh.shakeit.utils.StrUtil;
 import com.example.kjh.shakeit.utils.TimeManager;
 import com.example.kjh.shakeit.utils.ToastGenerator;
 import com.soundcloud.android.crop.Crop;
@@ -38,8 +39,8 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import rebus.bottomdialog.BottomDialog;
 
-import static com.example.kjh.shakeit.Statics.REQUEST_CODE_CAMERA;
-import static com.example.kjh.shakeit.Statics.REQUEST_CODE_GALLERY;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_CAMERA;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_GALLERY;
 
 public class UpdateProfileActivity extends AppCompatActivity implements UpdateProfileContract.View, TextWatcher {
 
@@ -83,19 +84,16 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
         path = user.getImageUrl();
 
         /** 초기값 */
-//        이름
         inputName.setText(user.getName());
-//        상태메시지
-        if(user.getStatusMessage() != null)
+
+        if(StrUtil.isNotBlank(user.getStatusMessage()))
             inputStatusMessage.setText(user.getStatusMessage());
-//        프로필 이미지
-        if(user.getImageUrl() == null || user.getImageUrl().equals(""))
+
+        if(StrUtil.isBlank(user.getImageUrl()))
             profileImage.setImageResource(R.drawable.ic_basic_profile);
-        else {
-            Glide.with(this)
-                    .load(user.getImageUrl())
-                    .into(profileImage);
-        }
+        else
+            ImageLoaderUtil.display(this, profileImage, user.getImageUrl());
+
 
     }
 
@@ -145,26 +143,24 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
             case REQUEST_CODE_GALLERY:
                 path = uriToPath(data.getData());
 
-                Glide.with(this).load(path).into(profileImage);
+                ImageLoaderUtil.display(this, profileImage, path);
                 isChangedProfileImage = true;
 
                 presenter.onChangedInput();
                 break;
             /** 카메라에서 찍은 후 */
             case REQUEST_CODE_CAMERA:
-                /** 미디어스캔 */
                 Intent media_scan_intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
                 media_scan_intent.setData(Uri.fromFile(file));
                 sendBroadcast(media_scan_intent);
 
-                /** 크롭 */
                 Crop.of(Uri.fromFile(file), Uri.fromFile(file)).asSquare().start(getActivity());
                 break;
             /** 이미지를 크롭한 후 */
             case Crop.REQUEST_CROP:
                 path = file.getAbsolutePath();
 
-                Glide.with(this).load(path).into(profileImage);
+                ImageLoaderUtil.display(this, profileImage, path);
                 isChangedProfileImage = true;
 
                 presenter.onChangedInput();
@@ -305,11 +301,11 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
         if (!folder.exists()) {
             folder.mkdirs();
         }
-//        현재 시간 기준 파일명 생성
+        // 현재 시간 기준 파일명 생성
         String now = TimeManager.now();
         String imageFileName = user.getUserId() + now + ".jpg";
 
-//        파일 생성
+        // 파일 생성
         File curFile = new File(sdPath, imageFileName);
         return curFile;
     }

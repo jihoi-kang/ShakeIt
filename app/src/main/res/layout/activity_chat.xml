@@ -19,7 +19,28 @@
             android:layout_height="36dp"
             android:layout_gravity="center_vertical"
             android:background="@color/colorPrimary"
+            android:layout_marginEnd="16dp"
             android:src="@drawable/ic_back_white_36dp" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/profile_image"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            app:civ_border_width="1dp"
+            android:src="@drawable/ic_basic_profile"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/msg_profile_image"
+            app:civ_border_color="@color/background_grey_primary"/>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="21sp"
+            android:textColor="@color/white"
+            android:paddingStart="16dp"
+            android:fontFamily="@font/bmjua_otf" />
 
     </android.support.v7.widget.Toolbar>
 
@@ -34,7 +55,7 @@
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
-        android:layout_height="1px"
+        android:layout_height="1dp"
         android:layout_above="@+id/ll_bottom"
         android:background="@color/background_grey_primary" />
 
@@ -47,19 +68,23 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/attach"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="center_vertical"
-            android:src="@mipmap/ic_launcher_round"
+            android:src="@drawable/add"
+            android:layout_marginStart="16dp"
             android:visibility="visible" />
 
-        <com.example.kjh.shakeit.utils.ClearEditText
+        <com.example.kjh.shakeit.etc.ClearEditText
             android:id="@+id/inputContent"
-            android:layout_width="0px"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:hint=""
+            android:paddingStart="8dp"
+            android:background="@null"
             android:inputType="text"
             android:text="" />
 
@@ -69,6 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="전송"
+            android:layout_marginEnd="16dp"
             android:background="@color/colorPrimary"
             android:textColor="@color/white" />
 

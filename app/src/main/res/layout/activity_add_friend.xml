@@ -22,7 +22,7 @@
                 android:background="@color/colorPrimary"
                 android:src="@drawable/ic_close_white_36dp" />
 
-            <com.example.kjh.shakeit.utils.ClearEditText
+            <com.example.kjh.shakeit.etc.ClearEditText
                 android:id="@+id/inputEmail"
                 android:layout_weight="1"
                 android:layout_width="wrap_content"

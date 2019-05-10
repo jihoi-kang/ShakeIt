@@ -3,66 +3,38 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <LinearLayout
+        android:id="@+id/ll_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" >
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2017-9-3 14:20" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/message_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_centerVertical = "true"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_alignParentLeft="true"
+        android:padding="8dp"
+        android:background="@drawable/message_other_shape"
+        android:layout_below="@+id/ll_time"/>
+
+    <TextView
+        android:id="@+id/sendedTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_toRightOf="@+id/message_content"
+        android:layout_alignBottom="@id/message_content" />
+
 </RelativeLayout>
-
-    <!--<LinearLayout-->
-        <!--android:id="@+id/ll_time"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:paddingBottom="@dimen/x20">-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/tv_time"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@color/Gray_CCCCCC"-->
-            <!--android:padding="@dimen/x10"-->
-            <!--android:text="2017-9-3 14:20"-->
-            <!--android:textColor="@color/White_FFFFFF"-->
-            <!--android:textSize="@dimen/x23" />-->
-    <!--</LinearLayout>-->
-
-    <!--<RelativeLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/ll_time">-->
-
-        <!--<ImageView-->
-            <!--android:id="@+id/iv_mine_face"-->
-            <!--android:layout_width="@dimen/x60"-->
-            <!--android:layout_height="@dimen/y60"-->
-            <!--android:layout_alignParentLeft="true"-->
-            <!--android:scaleType="fitXY"-->
-            <!--android:src="@drawable/img_face" />-->
-
-        <!--<RelativeLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_toRightOf="@+id/iv_mine_face"-->
-            <!--android:paddingRight="@dimen/x200"-->
-            <!--android:paddingLeft="@dimen/x20">-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/tv_message_content"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_alignParentLeft="true"-->
-                <!--android:background="@drawable/selector_message_other"-->
-                <!--android:padding="@dimen/x20"-->
-                <!--android:text="你好啊"-->
-                <!--android:textSize="@dimen/x40" />-->
-
-            <!--<ImageView-->
-                <!--android:id="@+id/iv_mine_image"-->
-                <!--android:layout_width="@dimen/x300"-->
-                <!--android:layout_height="@dimen/y300"-->
-                <!--android:layout_alignParentLeft="true"-->
-                <!--android:visibility="gone" />-->
-
-        <!--</RelativeLayout>-->
-
-
-    <!--</RelativeLayout>-->
-<!--</RelativeLayout>-->

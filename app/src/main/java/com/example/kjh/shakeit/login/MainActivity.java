@@ -29,9 +29,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-import static com.example.kjh.shakeit.Statics.REQUEST_CODE_FACEBOOK_LOGIN;
-import static com.example.kjh.shakeit.Statics.REQUEST_CODE_GOOGLE_LOGIN;
-import static com.example.kjh.shakeit.Statics.REQUEST_CODE_MAIN_BEFORE_LOGIN_TO_EMAILLOGIN;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_FACEBOOK_LOGIN;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_GOOGLE_LOGIN;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_MAIN_BEFORE_LOGIN_TO_EMAILLOGIN;
 
 /**
  * 로그인 전 메인 액티비티 클래스

@@ -86,7 +86,7 @@ public class AddFriendPresenter implements AddFriendContract.Presenter {
                 view.hideLoadingDialog();
                 view.showAfterFriend();
 
-                Events.noticeEvent event = new Events.noticeEvent("addFriend");
+                Events.noticeEventStr event = new Events.noticeEventStr("addFriend");
                 BusProvider.getInstance().post(event);
             }
 

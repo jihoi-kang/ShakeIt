@@ -15,11 +15,14 @@ import android.util.Log;
 import com.example.kjh.shakeit.data.MessageHolder;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.netty.protocol.ProtocolHeader;
+import com.example.kjh.shakeit.otto.BusProvider;
+import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.Serializer;
 import com.example.kjh.shakeit.utils.ShareUtil;
 
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.CALLBACK;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.CONN;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.MESSAGE;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.RESPONSE;
 
 public class NettyService extends Service implements NettyListener {
@@ -142,15 +145,21 @@ public class NettyService extends Service implements NettyListener {
      ------------------------------------------------------------------*/
     @Override
     public void onMessageResponse(MessageHolder holder) {
-        // TODO: 2019. 5. 3. 메시지 유형별 Bus Event 발생시키기
         if(holder.getSign() == RESPONSE) {
             switch (holder.getType()){
-
+                case MESSAGE:
+                    Events.nettyEvent event = new Events.nettyEvent(holder);
+                    BusProvider.getInstance().post(event);
+                    break;
             }
         } else if(holder.getSign() == CALLBACK) {
             switch (holder.getType()){
                 case CONN:
                     Log.d(TAG, "Socket CONN Callback => success");
+                    break;
+                case MESSAGE:
+                    Events.nettyEvent event = new Events.nettyEvent(holder);
+                    BusProvider.getInstance().post(event);
                     break;
             }
         }

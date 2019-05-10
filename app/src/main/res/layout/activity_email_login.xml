@@ -27,7 +27,7 @@
         android:background="@drawable/shape_round_edge"
         android:orientation="vertical">
 
-        <com.example.kjh.shakeit.utils.ClearEditText
+        <com.example.kjh.shakeit.etc.ClearEditText
             android:id="@+id/inputEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
             android:background="@color/background_grey_primary" />
 
 
-        <com.example.kjh.shakeit.utils.ClearEditText
+        <com.example.kjh.shakeit.etc.ClearEditText
             android:id="@+id/inputPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -1,4 +1,6 @@
-package com.example.kjh.shakeit;
+package com.example.kjh.shakeit.app;
+
+import com.example.kjh.shakeit.R;
 
 /**
  * 앱에서 사용하는 변수들 집합
@@ -6,7 +8,7 @@ package com.example.kjh.shakeit;
  * @version 1.0.0
  * @since 2019. 4. 26. PM 5:58
  **/
-public class Statics {
+public class Constant {
 
     /** HTTP REQUEST URL */
     public static final String SERVER_URL = "http://115.71.239.176";

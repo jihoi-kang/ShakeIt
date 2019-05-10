@@ -17,6 +17,18 @@ public class ChatHolder implements Serializable {
     private String messageContent;
     private String sended_at;
 
+    public ChatHolder(int chatId, int roomId, int userId, String messageType, String messageContent, String sended_at) {
+        this.chatId = chatId;
+        this.roomId = roomId;
+        this.userId = userId;
+        this.messageType = messageType;
+        this.messageContent = messageContent;
+        this.sended_at = sended_at;
+    }
+
+    public ChatHolder() {
+    }
+
     public int getChatId() {
         return chatId;
     }

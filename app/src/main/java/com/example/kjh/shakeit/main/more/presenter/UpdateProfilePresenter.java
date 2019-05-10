@@ -20,8 +20,8 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import static com.example.kjh.shakeit.Statics.REQUEST_CODE_CAMERA;
-import static com.example.kjh.shakeit.Statics.REQUEST_CODE_GALLERY;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_CAMERA;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_GALLERY;
 
 public class UpdateProfilePresenter implements UpdateProfileContract.Presenter {
 

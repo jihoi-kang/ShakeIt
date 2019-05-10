@@ -13,14 +13,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.friend.contract.AddFriendContract;
 import com.example.kjh.shakeit.main.friend.presenter.AddFriendPresenter;
+import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.Injector;
 import com.example.kjh.shakeit.utils.KeyboardManager;
 import com.example.kjh.shakeit.utils.ProgressDialogGenerator;
+import com.example.kjh.shakeit.utils.StrUtil;
 import com.example.kjh.shakeit.utils.ToastGenerator;
 
 import butterknife.BindView;
@@ -159,10 +160,10 @@ public class AddFriendActivity extends AppCompatActivity implements AddFriendCon
 
         inputName.setText(name);
 
-        if(imageUrl == null || imageUrl.equals(""))
+        if(StrUtil.isBlank(imageUrl))
             profileImage.setImageResource(R.drawable.ic_basic_profile);
         else
-            Glide.with(this).load(imageUrl).into(profileImage);
+            ImageLoaderUtil.display(this, profileImage, imageUrl);
 
         /** 친구 추가가 안되어 있음 */
         if(isFriend == 0){

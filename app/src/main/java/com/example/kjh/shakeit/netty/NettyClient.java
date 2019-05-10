@@ -1,8 +1,6 @@
 package com.example.kjh.shakeit.netty;
 
-import android.util.Log;
-
-import com.example.kjh.shakeit.Statics;
+import com.example.kjh.shakeit.app.Constant;
 import com.example.kjh.shakeit.data.MessageHolder;
 import com.example.kjh.shakeit.netty.protocol.ProtocolHeader;
 
@@ -49,7 +47,7 @@ public class NettyClient {
                                         .handler(new NettyClientInitializer(listener));
 
             try {
-                ChannelFuture future = bootstrap.connect(Statics.SOCKET_HOST, Statics.SOCKET_PORT).sync();
+                ChannelFuture future = bootstrap.connect(Constant.SOCKET_HOST, Constant.SOCKET_PORT).sync();
                 if(future != null && future.isSuccess()){
                     channel = future.channel();
                     isConnect = true;

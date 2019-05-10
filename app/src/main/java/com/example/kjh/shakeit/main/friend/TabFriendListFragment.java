@@ -19,7 +19,7 @@ import com.example.kjh.shakeit.main.friend.presenter.TabFriendListPresenter;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.Injector;
-import com.example.kjh.shakeit.utils.MyDividerItemDecoration;
+import com.example.kjh.shakeit.etc.MyDividerItemDecoration;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -144,7 +144,7 @@ public class TabFriendListFragment extends Fragment implements TabFriendListCont
      구독이벤트 ==> 친구 추가시 발생
      ------------------------------------------------------------------*/
     @Subscribe
-    public void getMessage(Events.noticeEvent event){
+    public void getMessage(Events.noticeEventStr event){
         if(event.getMessage().equals("addFriend")) {
             presenter.getFriendList();
             presenter.setFriendList();

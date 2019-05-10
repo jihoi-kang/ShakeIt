@@ -20,4 +20,20 @@ public class TimeManager {
         return result;
     }
 
+    public static String nowTime() {
+        SimpleDateFormat format_for_save = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.KOREA);
+        long time_mil = System.currentTimeMillis();
+        Date date = new Date(time_mil);
+        String result = format_for_save.format(date);
+        return result;
+    }
+
+    public static String nowdate() {
+        SimpleDateFormat format_for_save = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
+        long time_mil = System.currentTimeMillis();
+        Date date = new Date(time_mil);
+        String result = format_for_save.format(date);
+        return result;
+    }
+
 }

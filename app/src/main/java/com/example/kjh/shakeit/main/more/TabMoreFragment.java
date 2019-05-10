@@ -11,14 +11,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.fcm.FcmGenerator;
 import com.example.kjh.shakeit.login.MainActivity;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
+import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.ShareUtil;
+import com.example.kjh.shakeit.utils.StrUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.otto.Subscribe;
 
@@ -136,13 +137,10 @@ public class TabMoreFragment extends Fragment {
         name.setText(user.getName());
         statusMessage.setText(user.getEmail());
 
-        if(user.getImageUrl() == null || user.getImageUrl().equals(""))
+        if(StrUtil.isBlank(user.getImageUrl()))
             profileImage.setImageResource(R.drawable.ic_basic_profile);
-        else {
-            Glide.with(this)
-                    .load(user.getImageUrl())
-                    .into(profileImage);
-        }
+        else
+            ImageLoaderUtil.display(getContext(), profileImage, user.getImageUrl());
     }
 
     /**------------------------------------------------------------------

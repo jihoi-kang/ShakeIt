@@ -1,5 +1,6 @@
 package com.example.kjh.shakeit.otto;
 
+import com.example.kjh.shakeit.data.MessageHolder;
 import com.example.kjh.shakeit.data.User;
 
 public class Events {
@@ -18,15 +19,28 @@ public class Events {
     }
 
     /** 알림 */
-    public static class noticeEvent {
+    public static class noticeEventStr {
         private String message;
 
-        public noticeEvent(String message) {
+        public noticeEventStr(String message) {
             this.message =message;
         }
 
         public String getMessage(){
             return message;
+        }
+    }
+
+    /** Netty Message */
+    public static class nettyEvent {
+        private MessageHolder holder;
+
+        public nettyEvent(MessageHolder holder) {
+            this.holder = holder;
+        }
+
+        public MessageHolder getMessageHolder(){
+            return holder;
         }
     }
 

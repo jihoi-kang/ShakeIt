@@ -18,10 +18,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.example.kjh.shakeit.Statics.ERROR_BAD_REQUEST;
-import static com.example.kjh.shakeit.Statics.ERROR_SERVICE_UNAVAILABLE;
-import static com.example.kjh.shakeit.Statics.SUCCESS_CREATED;
-import static com.example.kjh.shakeit.Statics.SUCCESS_OK;
+import static com.example.kjh.shakeit.app.Constant.ERROR_BAD_REQUEST;
+import static com.example.kjh.shakeit.app.Constant.ERROR_SERVICE_UNAVAILABLE;
+import static com.example.kjh.shakeit.app.Constant.SUCCESS_CREATED;
+import static com.example.kjh.shakeit.app.Constant.SUCCESS_OK;
 
 public class UpdateProfileModel implements UpdateProfileContract.Model {
 

@@ -1,4 +1,4 @@
-package com.example.kjh.shakeit.utils;
+package com.example.kjh.shakeit.etc;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;

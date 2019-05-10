@@ -2,7 +2,7 @@ package com.example.kjh.shakeit.main;
 
 import android.content.Intent;
 
-import com.example.kjh.shakeit.App;
+import com.example.kjh.shakeit.app.App;
 import com.example.kjh.shakeit.netty.NettyService;
 
 public class MainPresenter implements MainContract.Presenter {

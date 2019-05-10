@@ -1,4 +1,4 @@
-package com.example.kjh.shakeit;
+package com.example.kjh.shakeit.app;
 
 import android.app.Application;
 
