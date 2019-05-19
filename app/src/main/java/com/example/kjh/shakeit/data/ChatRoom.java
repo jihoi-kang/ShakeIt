@@ -56,4 +56,5 @@ public class ChatRoom implements Serializable {
     public void setUnreadCount(int unreadCount) {
         this.unreadCount = unreadCount;
     }
+
 }

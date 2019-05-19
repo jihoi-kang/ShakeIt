@@ -6,6 +6,7 @@
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="yellow">#FFFF00</color>
     <color name="google_background">#d62d20</color>
     
     <color name="background_grey_light">#EAEAEA</color>

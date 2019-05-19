@@ -2,7 +2,7 @@ package com.example.kjh.shakeit.main.more.contract;
 
 import android.app.Activity;
 
-import com.example.kjh.shakeit.callback.ResultCallback;
+import com.example.kjh.shakeit.api.ResultCallback;
 import com.example.kjh.shakeit.data.User;
 
 import java.io.File;

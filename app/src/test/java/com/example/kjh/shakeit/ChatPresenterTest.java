@@ -58,7 +58,7 @@ public class ChatPresenterTest {
         presenter.onClickSend();
 
         String body =
-                Serializer.serialize(new ChatHolder(0, room.getRoomId(), user.getUserId(), "text", view.getInputContent(), time));
+                Serializer.serialize(new ChatHolder(0, room.getRoomId(), user.getUserId(), "text", view.getInputContent(), time, "", true));
 
 
         verify(model).sendMessage(eq(body), listener.capture());
@@ -79,7 +79,7 @@ public class ChatPresenterTest {
         presenter.onClickSend();
 
         String body =
-                Serializer.serialize(new ChatHolder(0, room.getRoomId(), user.getUserId(), "text", view.getInputContent(), time));
+                Serializer.serialize(new ChatHolder(0, room.getRoomId(), user.getUserId(), "text", view.getInputContent(), time, "", true));
 
 
         verify(model).sendMessage(eq(body), listener.capture());

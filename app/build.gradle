@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+apply plugin: 'realm-android'
+
 android {
     compileSdkVersion 27
     defaultConfig {
@@ -85,6 +87,13 @@ dependencies {
 
     /** RecyclerView */
     implementation 'com.android.support:recyclerview-v7:27.1.1'
+
+    /** SoftKeyboard Listener */
+    implementation 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:2.3.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
+
+realm {
+    syncEnabled = true
+}

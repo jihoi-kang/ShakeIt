@@ -1,8 +1,13 @@
 package com.example.kjh.shakeit.main.adapter;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +20,14 @@ import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.chat.ChatActivity;
+import com.example.kjh.shakeit.utils.ImageCombiner;
 import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.StrUtil;
 import com.example.kjh.shakeit.utils.TimeManager;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,11 +43,11 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
     private final String TAG = ChatRoomListAdapter.class.getSimpleName();
 
     private ArrayList<ChatRoom> rooms;
-    private Context context;
     private User user;
+    private Activity activity;
 
-    public ChatRoomListAdapter(Context context, ArrayList<ChatRoom> rooms, User user) {
-        this.context = context;
+    public ChatRoomListAdapter(Activity activity, ArrayList<ChatRoom> rooms, User user) {
+        this.activity = activity;
         this.rooms = rooms;
         this.user = user;
     }
@@ -78,15 +86,38 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
         ArrayList<User> participants = rooms.get(position).getParticipants();
         /** 채팅방 제목 셋팅 */
         String title = "";
-        for(int i = 0; i < participants.size(); i++){
-            if(i == (participants.size() - 1))
-                title += participants.get(i).getName();
-            else
-                title += participants.get(i).getName() + ", ";
-        }
+        for(int index = 0; index < participants.size(); index++)
+            title += (index == (participants.size() - 1)) ? participants.get(index).getName() : participants.get(index).getName() + ", ";
 
-        // TODO: 2019. 5. 8. 단체 채팅방일시 이미지 처리해줘야함
-        String imageUrl = participants.get(0).getImageUrl();
+        /** 채팅방 사진 셋팅 */
+        new Thread(() -> {
+            Bitmap resultImage = null;
+            if(participants.size() == 1) {
+                resultImage = makeBitmap(participants.get(0).getImageUrl());
+                Log.d(TAG, "bitmap => " + resultImage);
+            } else if(participants.size() == 2) {
+                resultImage = ImageCombiner.combine(
+                        makeBitmap(participants.get(0).getImageUrl()),
+                        makeBitmap(participants.get(1).getImageUrl())
+                );
+            } else if(participants.size() == 3) {
+                resultImage = ImageCombiner.combine(
+                        makeBitmap(participants.get(0).getImageUrl()),
+                        makeBitmap(participants.get(1).getImageUrl()),
+                        makeBitmap(participants.get(2).getImageUrl())
+                );
+            } else {
+                resultImage = ImageCombiner.combine(
+                        makeBitmap(participants.get(0).getImageUrl()),
+                        makeBitmap(participants.get(1).getImageUrl()),
+                        makeBitmap(participants.get(2).getImageUrl()),
+                        makeBitmap(participants.get(3).getImageUrl())
+                );
+            }
+
+            Bitmap finalResultImage = resultImage;
+            activity.runOnUiThread(() -> holder.profileImage.setImageBitmap(finalResultImage));
+        }).start();
 
         ChatHolder lastMessage = rooms.get(position).getChatHolder();
 
@@ -111,14 +142,8 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
         } else
             holder.memberCountTxt.setVisibility(View.GONE);
 
-        if(StrUtil.isBlank(imageUrl))
-            holder.profileImage.setImageResource(R.drawable.ic_basic_profile);
-        else
-            ImageLoaderUtil.display(context, holder.profileImage, imageUrl);
-
-
         if(unreadCount > 0) {
-            holder.unreadCountTxt.setText(unreadCount);
+            holder.unreadCountTxt.setText("" + unreadCount);
             holder.unreadCountTxt.setVisibility(View.VISIBLE);
         } else
             holder.unreadCountTxt.setVisibility(View.GONE);
@@ -127,14 +152,42 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
         holder.container.setOnClickListener(view -> {
             ChatRoom room = rooms.get(position);
 
-            Intent intent = new Intent(context, ChatActivity.class);
-            intent.putExtra("room", room);
+            Intent intent = new Intent(activity, ChatActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("room", room);
+
+            intent.putExtras(bundle);
             intent.putExtra("user", user);
             intent.putExtra("title", finalTitle);
-            intent.putExtra("imageUrl", imageUrl);
-            context.startActivity(intent);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            ((BitmapDrawable)holder.profileImage.getDrawable()).getBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
+            byte[] imageByteArray = stream.toByteArray();
+            Log.d(TAG, "imageLength => " + imageByteArray.length);
+            Log.d(TAG, "imageArr => " + imageByteArray.toString());
+            intent.putExtra("imageArray", imageByteArray);
+            activity.startActivity(intent);
         });
 
+    }
+
+    /**------------------------------------------------------------------
+     메서드 ==> 프로필이미지 Bitmap 반환
+     ------------------------------------------------------------------*/
+    private Bitmap makeBitmap(String url) {
+        Bitmap bitmap = null;
+        if(StrUtil.isBlank(url)) {
+            bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.ic_basic_profile);
+        } else {
+            try {
+                bitmap = ImageLoaderUtil.getBitmap(activity, url);
+                bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() / 2, bitmap.getHeight() / 2, true);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return bitmap;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.example.kjh.shakeit.main.friend.model;
 
 import com.example.kjh.shakeit.api.ApiClient;
-import com.example.kjh.shakeit.callback.ResultCallback;
+import com.example.kjh.shakeit.api.ResultCallback;
 import com.example.kjh.shakeit.main.friend.contract.AddFriendContract;
 
 import java.io.IOException;
@@ -24,7 +24,6 @@ public class AddFriendModel implements AddFriendContract.Model {
      ------------------------------------------------------------------*/
     @Override
     public void getUserByEmail(int _id, String email, ResultCallback callback) {
-
         Call<ResponseBody> result = ApiClient.create().getUserByEmail(_id, email);
 
         result.enqueue(new Callback<ResponseBody>() {
@@ -38,15 +37,9 @@ public class AddFriendModel implements AddFriendContract.Model {
                             e.printStackTrace();
                         }
                         break;
-                    case ERROR_NOT_FOUND:
-                        callback.onSuccess(null);
-                        break;
-                    case ERROR_SERVICE_UNAVAILABLE:
-                        callback.onFailure("SERVICE_UNAVAILABLE");
-                        break;
-                    case ERROR_BAD_REQUEST:
-                        callback.onFailure("SERVER_ERROR");
-                        break;
+                    case ERROR_NOT_FOUND: callback.onSuccess(null); break;
+                    case ERROR_SERVICE_UNAVAILABLE: callback.onFailure("SERVICE_UNAVAILABLE"); break;
+                    case ERROR_BAD_REQUEST: callback.onFailure("SERVER_ERROR"); break;
                 }
             }
 
@@ -55,7 +48,6 @@ public class AddFriendModel implements AddFriendContract.Model {
                 callback.onFailure(t.getMessage());
             }
         });
-
     }
 
     /**------------------------------------------------------------------
@@ -69,15 +61,9 @@ public class AddFriendModel implements AddFriendContract.Model {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 switch (response.code()){
-                    case SUCCESS_CREATED:
-                        callback.onSuccess("");
-                        break;
-                    case ERROR_SERVICE_UNAVAILABLE:
-                        callback.onFailure("SERVICE_UNAVAILABLE");
-                        break;
-                    case ERROR_BAD_REQUEST:
-                        callback.onFailure("SERVER_ERROR");
-                        break;
+                    case SUCCESS_CREATED: callback.onSuccess(""); break;
+                    case ERROR_SERVICE_UNAVAILABLE: callback.onFailure("SERVICE_UNAVAILABLE"); break;
+                    case ERROR_BAD_REQUEST: callback.onFailure("SERVER_ERROR"); break;
                 }
             }
 

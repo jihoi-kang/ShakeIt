@@ -112,5 +112,10 @@ public interface ApiInterface {
             @Query("userId") Integer userId
     );
 
+    /** 채팅로그 목록 */
+    @GET("/" + Constant.GET_CHATLOG_LIST)
+    Call<ResponseBody> getChatLogList(
+            @Query("userId") Integer userId
+    );
 }
 

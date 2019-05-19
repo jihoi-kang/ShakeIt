@@ -1,13 +1,13 @@
 package com.example.kjh.shakeit.main.chat.presenter;
 
-import android.os.Bundle;
 import android.os.Message;
 import android.util.Log;
 
-import com.example.kjh.shakeit.callback.ResultCallback;
+import com.example.kjh.shakeit.api.ResultCallback;
 import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.MessageHolder;
+import com.example.kjh.shakeit.data.ReadHolder;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.chat.contract.TabChatRoomListContract;
 import com.example.kjh.shakeit.otto.BusProvider;
@@ -21,6 +21,10 @@ import org.json.JSONException;
 import java.util.ArrayList;
 
 import static com.example.kjh.shakeit.main.chat.TabChatRoomListFragment.chatRoomFragHandler;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.CALLBACK;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.DELIVERY;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.MESSAGE;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.UPDATE_UNREAD;
 
 public class TabChatRoomListPresenter implements TabChatRoomListContract.Presenter {
 
@@ -49,6 +53,14 @@ public class TabChatRoomListPresenter implements TabChatRoomListContract.Present
     }
 
     /**------------------------------------------------------------------
+     생명주기 ==> onDestroy()
+     ------------------------------------------------------------------*/
+    @Override
+    public void onDestroy() {
+        BusProvider.getInstance().unregister(this);
+    }
+
+    /**------------------------------------------------------------------
      메서드 ==> 채팅방 목록 가져오기
      ------------------------------------------------------------------*/
     private void getChatRoomList() {
@@ -61,10 +73,10 @@ public class TabChatRoomListPresenter implements TabChatRoomListContract.Present
             public void onSuccess(String body) {
                 try {
                     JSONArray jsonArray = new JSONArray(body);
-                    for(int i = 0; i < jsonArray.length(); i++){
-                        ChatRoom chatRoom = Serializer.deserialize(jsonArray.getJSONObject(i).toString(), ChatRoom.class);
-
-                        ChatHolder chatHolder = Serializer.deserialize(jsonArray.getJSONObject(i).getJSONObject("chatHolder").toString(), ChatHolder.class);
+                    for(int index = 0; index < jsonArray.length(); index++){
+                        ChatRoom chatRoom = Serializer.deserialize(jsonArray.getJSONObject(index).toString(), ChatRoom.class);
+                        ChatHolder chatHolder = Serializer.deserialize(jsonArray.getJSONObject(index).getJSONObject("chatHolder").toString(), ChatHolder.class);
+                        chatRoom.setUnreadCount(model.getUnreadCount(chatRoom.getRoomId()));
                         chatRoom.setChatHolder(chatHolder);
 
                         rooms.add(chatRoom);
@@ -72,7 +84,6 @@ public class TabChatRoomListPresenter implements TabChatRoomListContract.Present
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
                 view.showChatRoomList(rooms);
             }
 
@@ -84,28 +95,45 @@ public class TabChatRoomListPresenter implements TabChatRoomListContract.Present
     }
 
     /**------------------------------------------------------------------
-     생명주기 ==> onDestroy()
-     ------------------------------------------------------------------*/
-    @Override
-    public void onDestroy() {
-        BusProvider.getInstance().unregister(this);
-    }
-
-
-    /**------------------------------------------------------------------
      구독이벤트 ==> Netty에서 이벤트 왔을 때 ==> 메시지 받거나 콜백
      ------------------------------------------------------------------*/
     @Subscribe
     public void nettyEvent (Events.nettyEvent event) {
         MessageHolder holder = event.getMessageHolder();
 
+        if(holder.getType() == MESSAGE) {
+            ChatRoom chatRoom = Serializer.deserialize(holder.getBody(), ChatRoom.class);
+            /** RoomId를 통해 변경된 방을 찾아 변경 */
+            for(int index = 0; index < rooms.size(); index++){
+                if(rooms.get(index).getRoomId() == chatRoom.getRoomId()){
+                    ChatRoom room = rooms.get(index);
+                    room.setChatHolder(chatRoom.getChatHolder());
+                    room.setUnreadCount(model.getUnreadCount(chatRoom.getRoomId()));
+                    rooms.remove(index);
+                    rooms.add(0, room);
+                }
+            }
+        } else if (holder.getType() == UPDATE_UNREAD) {
+            ReadHolder readHolder = Serializer.deserialize(holder.getBody(), ReadHolder.class);
+            /** 채팅방 목록에서 UnreadCount 컨트롤 */
+            for(int index = 0; index < rooms.size(); index++) {
+                if(rooms.get(index).getRoomId() == readHolder.getRoomId()) {
+                    ChatRoom room = rooms.get(index);
+
+                    room.setUnreadCount(room.getUnreadCount() - readHolder.getChatIds().size());
+                    if(holder.getSign() == CALLBACK) {
+                        rooms.remove(index);
+                        rooms.add(0, room);
+                    } else if(holder.getSign() == DELIVERY) {
+                        rooms.set(index, room);
+                    }
+
+                }
+            }
+        }
+
         Message msg = chatRoomFragHandler.obtainMessage();
-
-        Bundle bundle = new Bundle();
-        bundle.putString("result", Serializer.serialize(holder));
-
-        msg.setData(bundle);
-
+        msg.obj = rooms;
         chatRoomFragHandler.sendMessage(msg);
     }
 }

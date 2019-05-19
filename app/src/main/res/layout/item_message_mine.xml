@@ -35,7 +35,13 @@
         android:layout_toLeftOf="@+id/message_content"
         android:layout_alignBottom="@id/message_content" />
 
-
-
+    <TextView
+        android:id="@+id/unreadCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:textColor="@color/yellow"
+        android:layout_toLeftOf="@+id/sendedTime"
+        android:layout_alignBottom="@id/sendedTime" />
 
 </RelativeLayout>

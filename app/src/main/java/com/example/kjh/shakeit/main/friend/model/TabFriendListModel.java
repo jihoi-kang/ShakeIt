@@ -1,7 +1,7 @@
 package com.example.kjh.shakeit.main.friend.model;
 
 import com.example.kjh.shakeit.api.ApiClient;
-import com.example.kjh.shakeit.callback.ResultCallback;
+import com.example.kjh.shakeit.api.ResultCallback;
 import com.example.kjh.shakeit.main.friend.contract.TabFriendListContract;
 
 import java.io.IOException;

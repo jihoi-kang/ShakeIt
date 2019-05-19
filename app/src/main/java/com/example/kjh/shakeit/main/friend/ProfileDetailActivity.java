@@ -41,6 +41,14 @@ public class ProfileDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile_detail);
 
         unbinder = ButterKnife.bind(this);
+    }
+
+    /**------------------------------------------------------------------
+     생명주기 ==> onResume()
+     ------------------------------------------------------------------*/
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         Intent intent = getIntent();
         user = (User) intent.getSerializableExtra("user");
@@ -61,7 +69,6 @@ public class ProfileDetailActivity extends AppCompatActivity {
         /** 위치가 0이면 자기 자신 */
         if(position == 0)
             directChat.setVisibility(View.GONE);
-
     }
 
     /**------------------------------------------------------------------

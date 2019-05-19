@@ -1,6 +1,6 @@
 package com.example.kjh.shakeit.login.contract;
 
-import com.example.kjh.shakeit.callback.ResultCallback;
+import com.example.kjh.shakeit.api.ResultCallback;
 
 public interface SignUpContract {
 

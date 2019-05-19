@@ -1,11 +1,14 @@
 package com.example.kjh.shakeit.main.chat.model;
 
 import com.example.kjh.shakeit.api.ApiClient;
-import com.example.kjh.shakeit.callback.ResultCallback;
+import com.example.kjh.shakeit.api.ResultCallback;
+import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.main.chat.contract.TabChatRoomListContract;
 
 import java.io.IOException;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,14 +38,9 @@ public class TabChatRoomListModel implements TabChatRoomListContract.Model {
                             e.printStackTrace();
                         }
                         break;
-                    case ERROR_SERVICE_UNAVAILABLE:
-                        callback.onFailure("SERVICE_UNAVAILABLE");
-                        break;
-                    case ERROR_BAD_REQUEST:
-                        callback.onFailure("SERVER_ERROR");
-                        break;
+                    case ERROR_SERVICE_UNAVAILABLE: callback.onFailure("SERVICE_UNAVAILABLE"); break;
+                    case ERROR_BAD_REQUEST: callback.onFailure("SERVER_ERROR"); break;
                 }
-
             }
 
             @Override
@@ -50,5 +48,14 @@ public class TabChatRoomListModel implements TabChatRoomListContract.Model {
                 callback.onFailure("" + t.getMessage());
             }
         });
+    }
+
+    @Override
+    public int getUnreadCount(int roomId) {
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<ChatHolder> result = realm.where(ChatHolder.class).equalTo("roomId", roomId).equalTo("isRead", false).findAll();
+        int count = result.size();
+        realm.close();
+        return count;
     }
 }

@@ -1,6 +1,6 @@
 package com.example.kjh.shakeit.main.friend.contract;
 
-import com.example.kjh.shakeit.callback.ResultCallback;
+import com.example.kjh.shakeit.api.ResultCallback;
 import com.example.kjh.shakeit.data.User;
 
 import java.util.ArrayList;

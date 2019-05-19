@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
+import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.fcm.FcmGenerator;
 import com.example.kjh.shakeit.login.MainActivity;
@@ -27,6 +28,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  * 더보기 탭
@@ -124,6 +127,15 @@ public class TabMoreFragment extends Fragment {
         ShareUtil.clear();
 
         FcmGenerator.updateUserToken(user.getUserId(), "logout");
+
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.executeTransaction(r -> {
+            RealmResults<ChatHolder> result = r.where(ChatHolder.class).findAll();
+            result.deleteAllFromRealm();
+        });
+
+        realm.close();
 
         Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);

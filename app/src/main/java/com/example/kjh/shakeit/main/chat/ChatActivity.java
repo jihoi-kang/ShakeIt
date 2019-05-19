@@ -1,6 +1,7 @@
 package com.example.kjh.shakeit.main.chat;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -17,16 +19,14 @@ import android.widget.TextView;
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ChatRoom;
-import com.example.kjh.shakeit.data.MessageHolder;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.adapter.ChatListAdapter;
 import com.example.kjh.shakeit.main.chat.contract.ChatContract;
 import com.example.kjh.shakeit.main.chat.presenter.ChatPresenter;
-import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.Injector;
-import com.example.kjh.shakeit.utils.Serializer;
-import com.example.kjh.shakeit.utils.StrUtil;
 import com.example.kjh.shakeit.utils.ToastGenerator;
+
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 
 import java.util.ArrayList;
 
@@ -52,11 +52,12 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
     @BindView(R.id.title) TextView title;
     @BindView(R.id.profile_image) ImageView profileImage;
     @BindView(R.id.btn_send) Button sendBtn;
+    @BindView(R.id.chatRootLayout) ViewGroup chatRootLayout;
 
     private ChatListAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
-    private ArrayList<ChatHolder> chatList = new ArrayList<>();
+    private ArrayList<ChatHolder> chats = new ArrayList<>();
 
     public static Handler chatActHandler;
 
@@ -70,19 +71,23 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
 
         unbinder = ButterKnife.bind(this);
 
-        presenter = new ChatPresenter(this, Injector.provideChatModel());
-        presenter.onCreate();
-
         intent = getIntent();
+        room = (ChatRoom) intent.getSerializableExtra("room");
+        user = (User) intent.getSerializableExtra("user");
+
+        presenter = new ChatPresenter(this, Injector.provideChatModel());
 
         /** 채팅목록 RecyclerView */
         chatListView.setHasFixedSize(true);
 
         layoutManager = new LinearLayoutManager(this);
         chatListView.setLayoutManager(layoutManager);
+        chatListView.setVerticalScrollBarEnabled(true);
 
-        adapter = new ChatListAdapter(this, chatList);
+        adapter = new ChatListAdapter(this, chats, room);
         chatListView.setAdapter(adapter);
+
+        presenter.onCreate();
     }
 
     /**------------------------------------------------------------------
@@ -91,22 +96,20 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
     @Override
     protected void onResume() {
         super.onResume();
-        room = (ChatRoom) intent.getSerializableExtra("room");
-        user = (User) intent.getSerializableExtra("user");
-        String imageUrl = intent.getStringExtra("imageUrl");
 
+        byte[] imageByteArray = intent.getByteArrayExtra("imageArray");
+        profileImage.setImageBitmap(BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length));
         /** 셋팅 */
         title.setText(intent.getStringExtra("title"));
 
-        if(StrUtil.isBlank(imageUrl))
-            profileImage.setImageResource(R.drawable.ic_basic_profile);
-        else
-            ImageLoaderUtil.display(this, profileImage, imageUrl);
+        /** 소프트 키보드 올라오면 발생하는 이벤트 등록 */
+        KeyboardVisibilityEvent.setEventListener(this, isOpen -> chatListView.scrollToPosition(chats.size() - 1));
 
         chatActHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                notifyChat(msg.getData().getString("result"));
+                ArrayList<ChatHolder> chats = (ArrayList<ChatHolder>) msg.obj;
+                showChatList(chats);
             }
         };
     }
@@ -117,6 +120,7 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         unbinder.unbind();
 
         presenter.onDestroy();
@@ -161,22 +165,9 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
         return inputContent.getText().toString();
     }
 
-    /**------------------------------------------------------------------
-     메서드 ==> 소켓 서버에서 채팅 데이터 받을 시 채팅 추가
-     ------------------------------------------------------------------*/
-    @Override
-    public void notifyChat(String body) {
-        MessageHolder holder = Serializer.deserialize(body, MessageHolder.class);
-        ChatHolder chatHolder = Serializer.deserialize(holder.getBody(), ChatHolder.class);
-
-        chatList.add(chatHolder);
-        adapter.notifyDataSetChanged();
-        chatListView.scrollToPosition(chatList.size() - 1);
-    }
-
     @Override
     public void clearInputContent() {
-        runOnUiThread(() -> inputContent.setText(""));
+        inputContent.setText("");
     }
 
     @Override
@@ -203,7 +194,17 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
     }
 
     @Override
+    public void showChatList(ArrayList<ChatHolder> holders) {
+        chats = holders;
+
+        adapter.changeList(chats);
+        adapter.notifyDataSetChanged();
+        chatListView.scrollToPosition(chats.size() - 1);
+    }
+
+    @Override
     public void showMessageForFailure() {
         ToastGenerator.show(R.string.msg_for_failure);
     }
+
 }

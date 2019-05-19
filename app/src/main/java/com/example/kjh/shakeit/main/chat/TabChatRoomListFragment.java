@@ -13,17 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.kjh.shakeit.R;
-import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ChatRoom;
-import com.example.kjh.shakeit.data.MessageHolder;
 import com.example.kjh.shakeit.data.User;
+import com.example.kjh.shakeit.etc.MyDividerItemDecoration;
 import com.example.kjh.shakeit.main.MainActivity;
 import com.example.kjh.shakeit.main.adapter.ChatRoomListAdapter;
 import com.example.kjh.shakeit.main.chat.contract.TabChatRoomListContract;
 import com.example.kjh.shakeit.main.chat.presenter.TabChatRoomListPresenter;
 import com.example.kjh.shakeit.utils.Injector;
-import com.example.kjh.shakeit.etc.MyDividerItemDecoration;
-import com.example.kjh.shakeit.utils.Serializer;
 
 import java.util.ArrayList;
 
@@ -87,7 +84,8 @@ public class TabChatRoomListFragment extends Fragment implements TabChatRoomList
         chatRoomFragHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                notifyChatRoomList(msg.getData().getString("result"));
+                ArrayList<ChatRoom> roomList = (ArrayList<ChatRoom>) msg.obj;
+                showChatRoomList(roomList);
             }
         };
 
@@ -130,27 +128,6 @@ public class TabChatRoomListFragment extends Fragment implements TabChatRoomList
     public void onDestroy() {
         super.onDestroy();
         presenter.onDestroy();
-    }
-
-    /**------------------------------------------------------------------
-     메서드 ==> 채팅방 목록 변경 알림
-     ------------------------------------------------------------------*/
-    @Override
-    public void notifyChatRoomList(String body) {
-        MessageHolder holder = Serializer.deserialize(body, MessageHolder.class);
-        ChatHolder chatHolder = Serializer.deserialize(holder.getBody(), ChatHolder.class);
-        for(int i = 0; i < rooms.size(); i++){
-            /** RoomId를 통해 변경된 방을 찾아 변경 */
-            if(rooms.get(i).getRoomId() == chatHolder.getRoomId()){
-                ChatRoom room = rooms.get(i);
-                room.setChatHolder(chatHolder);
-                rooms.remove(i);
-                rooms.add(0, room);
-            }
-        }
-
-        adapter.changeList(rooms);
-        adapter.notifyDataSetChanged();
     }
 
     @Override

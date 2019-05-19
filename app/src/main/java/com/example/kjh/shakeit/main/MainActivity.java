@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         Intent intent = getIntent();
         user = (User) intent.getSerializableExtra("user");
 
+        presenter.onCreate();
+
         /** 로그인 후 Token 정보 업데이트 */
         FcmGenerator.updateUserToken(user.getUserId(), "login");
 
@@ -78,19 +80,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
-        add.setImageResource(tabLayoutImage[0]);
-        title.setText(titles[0]);
-        tabLayout.getTabAt(0).setIcon(onTabIcon[0]);
-        tabLayout.getTabAt(1).setIcon(nonTabIcon[1]);
-        tabLayout.getTabAt(2).setIcon(nonTabIcon[2]);
-
-        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                setIconToViewpager(position);
-            }
-        });
-
+        setIconToViewpager(0);
     }
 
     /**------------------------------------------------------------------
@@ -100,6 +90,21 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     protected void onStart() {
         super.onStart();
         presenter.onStart();
+    }
+
+    /**------------------------------------------------------------------
+     생명주기 ==> onResume()
+     ------------------------------------------------------------------*/
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                setIconToViewpager(position);
+            }
+        });
     }
 
     /**------------------------------------------------------------------
@@ -128,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 break;
             case 1:
                 /** 채팅 추가 */
-                break;
+                return;
         }
         startActivity(intent);
     }
@@ -144,16 +149,16 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
      ------------------------------------------------------------------*/
     private void setIconToViewpager(int position) {
         this.position = position;
-        for(int i = 0; i < viewPagerAdapter.getCount(); i++) {
-            if(i == position) {
-                title.setText(titles[i]);
+        for(int index = 0; index < viewPagerAdapter.getCount(); index++) {
+            if(index == position) {
+                title.setText(titles[index]);
                 if(position == 2)
                     add.setImageDrawable(null);
                 else
-                    add.setImageResource(tabLayoutImage[i]);
-                tabLayout.getTabAt(i).setIcon(onTabIcon[i]);
+                    add.setImageResource(tabLayoutImage[index]);
+                tabLayout.getTabAt(index).setIcon(onTabIcon[index]);
             } else
-                tabLayout.getTabAt(i).setIcon(nonTabIcon[i]);
+                tabLayout.getTabAt(index).setIcon(nonTabIcon[index]);
         }
 
     }

@@ -2,7 +2,7 @@ package com.example.kjh.shakeit.login.presenter;
 
 import android.support.annotation.NonNull;
 
-import com.example.kjh.shakeit.callback.ResultCallback;
+import com.example.kjh.shakeit.api.ResultCallback;
 import com.example.kjh.shakeit.login.contract.MainContract;
 import com.facebook.AccessToken;
 import com.facebook.FacebookCallback;

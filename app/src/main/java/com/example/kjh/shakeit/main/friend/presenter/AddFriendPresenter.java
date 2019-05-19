@@ -1,6 +1,6 @@
 package com.example.kjh.shakeit.main.friend.presenter;
 
-import com.example.kjh.shakeit.callback.ResultCallback;
+import com.example.kjh.shakeit.api.ResultCallback;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.friend.contract.AddFriendContract;
 import com.example.kjh.shakeit.otto.BusProvider;
@@ -44,7 +44,6 @@ public class AddFriendPresenter implements AddFriendContract.Presenter {
         model.getUserByEmail(user.getUserId(), email, new ResultCallback() {
             @Override
             public void onSuccess(String body) {
-
                 if(body == null) {
                     view.showMessageForNoResult();
                 } else {
@@ -61,7 +60,6 @@ public class AddFriendPresenter implements AddFriendContract.Presenter {
                         e.printStackTrace();
                     }
                 }
-
             }
 
             @Override

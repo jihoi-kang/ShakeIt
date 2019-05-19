@@ -1,5 +1,7 @@
 package com.example.kjh.shakeit.netty;
 
+import android.util.Log;
+
 import com.example.kjh.shakeit.app.Constant;
 import com.example.kjh.shakeit.data.MessageHolder;
 import com.example.kjh.shakeit.netty.protocol.ProtocolHeader;
@@ -123,12 +125,12 @@ public class NettyClient {
                 channel.writeAndFlush(buf).addListener(new FutureListener() {
                     @Override
                     public void success() {
-
+                        Log.d(TAG, "Socket Write Success");
                     }
 
                     @Override
                     public void error() {
-
+                        Log.d(TAG, "Socket Write Error");
                     }
                 });
             }

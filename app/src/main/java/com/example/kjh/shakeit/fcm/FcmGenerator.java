@@ -1,13 +1,9 @@
 package com.example.kjh.shakeit.fcm;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.kjh.shakeit.api.ApiClient;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 import java.io.IOException;
 
@@ -65,7 +61,7 @@ public class FcmGenerator {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.e("TAG",response.body().string());
+                Log.e("TAG", response.body().string());
                 isSuccess = true;
             }
         });
@@ -83,14 +79,10 @@ public class FcmGenerator {
 
             result.enqueue(new retrofit2.Callback<ResponseBody>() {
                 @Override
-                public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-
-                }
+                public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) { }
 
                 @Override
-                public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
-
-                }
+                public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) { }
             });
 
             return;
@@ -98,36 +90,30 @@ public class FcmGenerator {
 
         /** 로그인시 */
         FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            return;
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful())
+                        return;
+
+                    String token = task.getResult().getToken();
+                    Log.d("FcmGenerator", "Token => " + token);
+
+                    retrofit2.Call<ResponseBody> result = ApiClient.create().updateUserToken(_id, token);
+
+                    result.enqueue(new retrofit2.Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                            try {
+                                Log.d("FcmGenerator", response.body().string());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
 
-                        String token = task.getResult().getToken();
-
-                        Log.d("TOKEN", token);
-
-                        retrofit2.Call<ResponseBody> result = ApiClient.create().updateUserToken(_id, token);
-
-                        result.enqueue(new retrofit2.Callback<ResponseBody>() {
-                            @Override
-                            public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                                try {
-                                    Log.d("FcmGenrator", response.body().string());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
-                                Log.d("FcmGenrator", t.getMessage()
-                                );
-                            }
-                        });
-                    }
+                        @Override
+                        public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
+                            Log.e("FcmGenerator", t.getMessage());
+                        }
+                    });
                 });
     }
 }

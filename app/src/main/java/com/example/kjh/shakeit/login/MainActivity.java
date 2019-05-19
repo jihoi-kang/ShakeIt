@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
         reset();
-
     }
 
     private void reset(){

@@ -24,6 +24,7 @@ public class Constant {
     public static final String GET_FRIEND_LIST = "api/friend/read.php";
     public static final String ADD_FRIEND = "api/friend/create.php";
     public static final String GET_CHATROOM_LIST = "api/chatroom/read.php";
+    public static final String GET_CHATLOG_LIST = "api/chatlog/read.php";
 
     /** HTTP RESPONSE CODE */
     public static final int SUCCESS_OK = 200;
@@ -65,5 +66,4 @@ public class Constant {
             R.drawable.ic_add_person_white_18dp,
             R.drawable.ic_add_chat_room_white_24dp
     };
-
 }

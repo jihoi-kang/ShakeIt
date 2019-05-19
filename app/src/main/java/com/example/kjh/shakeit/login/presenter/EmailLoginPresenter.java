@@ -1,6 +1,6 @@
 package com.example.kjh.shakeit.login.presenter;
 
-import com.example.kjh.shakeit.callback.ResultCallback;
+import com.example.kjh.shakeit.api.ResultCallback;
 import com.example.kjh.shakeit.login.contract.EmailLoginContract;
 import com.example.kjh.shakeit.utils.Validator;
 

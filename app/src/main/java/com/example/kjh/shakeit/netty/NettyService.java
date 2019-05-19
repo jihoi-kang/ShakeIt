@@ -12,7 +12,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.example.kjh.shakeit.data.ChatHolder;
+import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.MessageHolder;
+import com.example.kjh.shakeit.data.ReadHolder;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.netty.protocol.ProtocolHeader;
 import com.example.kjh.shakeit.otto.BusProvider;
@@ -20,10 +23,16 @@ import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.Serializer;
 import com.example.kjh.shakeit.utils.ShareUtil;
 
-import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.CALLBACK;
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import io.realm.Realm;
+import io.realm.internal.IOException;
+
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.CONN;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.MESSAGE;
-import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.RESPONSE;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.REQUEST;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.UPDATE_UNREAD;
 
 public class NettyService extends Service implements NettyListener {
 
@@ -106,12 +115,8 @@ public class NettyService extends Service implements NettyListener {
                     e.printStackTrace();
                 }
                 break;
-            case NettyListener.STATUS_CONNECT_ERROR:
-                Log.e(TAG, "tcp connect error");
-                break;
-            case NettyListener.STATUS_CONNECT_CLOSED:
-                Log.d(TAG, "tcp connect closed");
-                break;
+            case NettyListener.STATUS_CONNECT_ERROR: Log.e(TAG, "tcp connect error"); break;
+            case NettyListener.STATUS_CONNECT_CLOSED: Log.d(TAG, "tcp connect closed"); break;
         }
     }
 
@@ -123,21 +128,11 @@ public class NettyService extends Service implements NettyListener {
         messageHolder.setSign(ProtocolHeader.REQUEST);
         messageHolder.setType(CONN);
 
-        User u = new User();
-        u.setUserId(ShareUtil.getPreferInt("userId"));
+        User user = new User();
+        user.setUserId(ShareUtil.getPreferInt("userId"));
 
-        messageHolder.setBody(Serializer.serialize(u));
-        NettyClient.getInstance().sendMsgToServer(messageHolder, new FutureListener() {
-            @Override
-            public void success() {
-                Log.d(TAG, "success()");
-            }
-
-            @Override
-            public void error() {
-                Log.e(TAG, "error()");
-            }
-        });
+        messageHolder.setBody(Serializer.serialize(user));
+        NettyClient.getInstance().sendMsgToServer(messageHolder, null);
     }
 
     /**------------------------------------------------------------------
@@ -145,23 +140,65 @@ public class NettyService extends Service implements NettyListener {
      ------------------------------------------------------------------*/
     @Override
     public void onMessageResponse(MessageHolder holder) {
-        if(holder.getSign() == RESPONSE) {
-            switch (holder.getType()){
-                case MESSAGE:
-                    Events.nettyEvent event = new Events.nettyEvent(holder);
-                    BusProvider.getInstance().post(event);
-                    break;
+        Log.d(TAG, "MessageHolder Body => " + holder.getBody());
+
+        if(holder.getSign() == REQUEST)
+            return;
+
+        switch (holder.getType()) {
+            case MESSAGE: insertChatHolder(holder); break;
+            case UPDATE_UNREAD: updateUnreadStatus(holder); break;
+        }
+
+        Events.nettyEvent event = new Events.nettyEvent(holder);
+        BusProvider.getInstance().post(event);
+    }
+
+    /**------------------------------------------------------------------
+     메서드 ==> 읽지않은 상태 읽음으로 변경 Realm에 저장
+     ------------------------------------------------------------------*/
+    private void updateUnreadStatus(MessageHolder holder) {
+        ReadHolder readHolder = Serializer.deserialize(holder.getBody(), ReadHolder.class);
+        Realm realm = Realm.getDefaultInstance();
+
+        try {
+            realm.beginTransaction();
+            for(int index = 0; index < readHolder.getChatIds().size(); index++) {
+                ChatHolder chatHolder = realm.where(ChatHolder.class).equalTo("chatId", readHolder.getChatIds().get(index)).findFirst();
+
+                JSONArray unreadUsers = new JSONArray(chatHolder.getUnreadUsers());
+                for(int unreadIdx = 0; unreadIdx < unreadUsers.length(); unreadIdx++) {
+                    if(unreadUsers.getInt(unreadIdx) == readHolder.getUserId())
+                        unreadUsers.remove(unreadIdx);
+                }
+
+                chatHolder.setUnreadUsers(unreadUsers.toString());
+                if(readHolder.getUserId() == ShareUtil.getPreferInt("userId"))
+                    chatHolder.setRead(true);
             }
-        } else if(holder.getSign() == CALLBACK) {
-            switch (holder.getType()){
-                case CONN:
-                    Log.d(TAG, "Socket CONN Callback => success");
-                    break;
-                case MESSAGE:
-                    Events.nettyEvent event = new Events.nettyEvent(holder);
-                    BusProvider.getInstance().post(event);
-                    break;
-            }
+            realm.commitTransaction();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } finally {
+            realm.close();
+        }
+    }
+
+    /**------------------------------------------------------------------
+     메서드 ==> 채팅 받으면 Realm에 저장(DELIVERY, CALLBACK 둘다)
+     ------------------------------------------------------------------*/
+    private void insertChatHolder(MessageHolder holder) {
+        Realm realm = Realm.getDefaultInstance();
+        try {
+            realm.beginTransaction();
+            ChatRoom room = Serializer.deserialize(holder.getBody(), ChatRoom.class);
+            ChatHolder chatHolder = room.getChatHolder();
+            realm.copyToRealm(chatHolder);
+            realm.commitTransaction();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            realm.close();
         }
     }
 
@@ -173,7 +210,8 @@ public class NettyService extends Service implements NettyListener {
         public void onReceive(Context context, Intent intent) {
             ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-            if (activeNetwork != null) { // connected to the internet
+            // connected to the internet
+            if (activeNetwork != null) {
                 if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI
                         || activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
                     connect();

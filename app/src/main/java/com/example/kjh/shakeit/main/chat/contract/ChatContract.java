@@ -1,8 +1,11 @@
 package com.example.kjh.shakeit.main.chat.contract;
 
+import com.example.kjh.shakeit.api.ResultCallback;
+import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.User;
-import com.example.kjh.shakeit.netty.FutureListener;
+
+import java.util.ArrayList;
 
 public interface ChatContract {
 
@@ -11,10 +14,10 @@ public interface ChatContract {
         String getInputContent();
         User getUser();
         ChatRoom getChatRoom();
-        void notifyChat(String body);
         void clearInputContent();
         void showSelectType();
         void showMessageForFailure();
+        void showChatList(ArrayList<ChatHolder> holders);
 
     }
 
@@ -29,7 +32,9 @@ public interface ChatContract {
 
     interface Model {
 
-        void sendMessage(String body, FutureListener listener);
+        void sendMessage(String body);
+        void getChatList(int roomId, ResultCallback callback);
+        void updateUnreadChat(int userId, ChatRoom room);
 
     }
 

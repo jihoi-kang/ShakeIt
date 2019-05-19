@@ -6,7 +6,7 @@ import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 
 import com.example.kjh.shakeit.R;
-import com.example.kjh.shakeit.callback.ResultCallback;
+import com.example.kjh.shakeit.api.ResultCallback;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.more.contract.UpdateProfileContract;
 import com.example.kjh.shakeit.otto.BusProvider;

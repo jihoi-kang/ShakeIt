@@ -2,7 +2,7 @@ package com.example.kjh.shakeit.main.friend.presenter;
 
 import android.util.Log;
 
-import com.example.kjh.shakeit.callback.ResultCallback;
+import com.example.kjh.shakeit.api.ResultCallback;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.friend.contract.TabFriendListContract;
 import com.example.kjh.shakeit.utils.Serializer;
@@ -37,19 +37,16 @@ public class TabFriendListPresenter implements TabFriendListContract.Presenter {
         friendList.clear();
 
         User user = view.getUser();
-
         friendList.add(user);
-
         model.getFriendList(user.getUserId(), new ResultCallback() {
             @Override
             public void onSuccess(String body) {
                 try {
                     JSONObject jsonObject = new JSONObject(body);
-
                     JSONArray jsonArray = jsonObject.getJSONArray("message");
 
-                    for(int i = 0; i < jsonArray.length(); i++) {
-                        String jsonString = jsonArray.getJSONObject(i).toString();
+                    for(int index = 0; index < jsonArray.length(); index++) {
+                        String jsonString = jsonArray.getJSONObject(index).toString();
 
                         User friend = Serializer.deserialize(jsonString, User.class);
                         friendList.add(friend);

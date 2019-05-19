@@ -1,4 +1,4 @@
-package com.example.kjh.shakeit.callback;
+package com.example.kjh.shakeit.api;
 
 /**
  * HTTP 요청시 Presenter --> Model로 데이터를 요청하는데

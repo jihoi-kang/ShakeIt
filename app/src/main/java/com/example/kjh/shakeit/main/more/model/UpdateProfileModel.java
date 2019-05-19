@@ -1,9 +1,7 @@
 package com.example.kjh.shakeit.main.more.model;
 
-import android.util.Log;
-
 import com.example.kjh.shakeit.api.ApiClient;
-import com.example.kjh.shakeit.callback.ResultCallback;
+import com.example.kjh.shakeit.api.ResultCallback;
 import com.example.kjh.shakeit.main.more.contract.UpdateProfileContract;
 import com.example.kjh.shakeit.utils.TimeManager;
 
@@ -39,18 +37,13 @@ public class UpdateProfileModel implements UpdateProfileContract.Model {
                 switch (response.code()){
                     case SUCCESS_OK:
                         try {
-                            Log.d(TAG, "" + response.body().string());
                             callback.onSuccess(response.body().string());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                         break;
-                    case ERROR_SERVICE_UNAVAILABLE:
-                        callback.onFailure("SERVICE_UNAVAILABLE");
-                        break;
-                    case ERROR_BAD_REQUEST:
-                        callback.onFailure("SERVER_ERROR");
-                        break;
+                    case ERROR_SERVICE_UNAVAILABLE: callback.onFailure("SERVICE_UNAVAILABLE"); break;
+                    case ERROR_BAD_REQUEST: callback.onFailure("SERVER_ERROR"); break;
                 }
             }
 
@@ -90,12 +83,8 @@ public class UpdateProfileModel implements UpdateProfileContract.Model {
                             /** 업로드한 이미지 URL 반환 */
                             callback.onSuccess(response.body().string());
                             break;
-                        case ERROR_SERVICE_UNAVAILABLE:
-                            callback.onFailure("SERVICE_UNAVAILABLE");
-                            break;
-                        case ERROR_BAD_REQUEST:
-                            callback.onFailure("SERVER_ERROR");
-                            break;
+                        case ERROR_SERVICE_UNAVAILABLE: callback.onFailure("SERVICE_UNAVAILABLE"); break;
+                        case ERROR_BAD_REQUEST: callback.onFailure("SERVER_ERROR"); break;
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
