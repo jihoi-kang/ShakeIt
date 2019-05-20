@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +40,7 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
 
     private final String TAG = ChatRoomListAdapter.class.getSimpleName();
 
-    private ArrayList<ChatRoom> rooms;
+    private static ArrayList<ChatRoom> rooms = new ArrayList<>();
     private User user;
     private Activity activity;
 
@@ -91,10 +89,9 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
 
         /** 채팅방 사진 셋팅 */
         new Thread(() -> {
-            Bitmap resultImage = null;
+            Bitmap resultImage;
             if(participants.size() == 1) {
                 resultImage = makeBitmap(participants.get(0).getImageUrl());
-                Log.d(TAG, "bitmap => " + resultImage);
             } else if(participants.size() == 2) {
                 resultImage = ImageCombiner.combine(
                         makeBitmap(participants.get(0).getImageUrl()),
@@ -148,22 +145,15 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
         } else
             holder.unreadCountTxt.setVisibility(View.GONE);
 
-        String finalTitle = title;
         holder.container.setOnClickListener(view -> {
             ChatRoom room = rooms.get(position);
 
             Intent intent = new Intent(activity, ChatActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("room", room);
-
-            intent.putExtras(bundle);
+            intent.putExtra("room", room);
             intent.putExtra("user", user);
-            intent.putExtra("title", finalTitle);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             ((BitmapDrawable)holder.profileImage.getDrawable()).getBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] imageByteArray = stream.toByteArray();
-            Log.d(TAG, "imageLength => " + imageByteArray.length);
-            Log.d(TAG, "imageArr => " + imageByteArray.toString());
             intent.putExtra("imageArray", imageByteArray);
             activity.startActivity(intent);
         });
@@ -195,4 +185,7 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
         return rooms.size();
     }
 
+    public static ArrayList<ChatRoom> getChatRooms() {
+        return rooms;
+    }
 }

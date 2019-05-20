@@ -123,7 +123,7 @@ public class TabFriendListFragment extends Fragment implements TabFriendListCont
 
     @Override
     public void showFriendList(ArrayList<User> friendList) {
-        adapter = new FriendListAdapter(getActivity(), friendList);
+        adapter = new FriendListAdapter(getActivity(), friendList, TabFriendListFragment.class.getSimpleName(), null);
         friendListView.setAdapter(adapter);
     }
 
@@ -150,5 +150,6 @@ public class TabFriendListFragment extends Fragment implements TabFriendListCont
             presenter.setFriendList();
         }
     }
+
 }
 

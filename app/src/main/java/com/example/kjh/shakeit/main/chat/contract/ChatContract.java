@@ -18,6 +18,7 @@ public interface ChatContract {
         void showSelectType();
         void showMessageForFailure();
         void showChatList(ArrayList<ChatHolder> holders);
+        void setChatRoomId(int roomId);
 
     }
 

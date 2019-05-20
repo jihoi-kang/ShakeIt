@@ -5,6 +5,8 @@ import android.util.Log;
 import com.example.kjh.shakeit.api.ResultCallback;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.friend.contract.TabFriendListContract;
+import com.example.kjh.shakeit.otto.BusProvider;
+import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.Serializer;
 
 import org.json.JSONArray;
@@ -73,5 +75,9 @@ public class TabFriendListPresenter implements TabFriendListContract.Presenter {
         friendList.add(0, view.getUser());
 
         view.showFriendList(friendList);
+
+        /** 셋팅될 친구목록을 메인에 전달 */
+        Events.friendEvent friendEvent = new Events.friendEvent(friendList);
+        BusProvider.getInstance().post(friendEvent);
     }
 }

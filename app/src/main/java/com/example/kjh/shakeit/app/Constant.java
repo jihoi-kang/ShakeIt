@@ -47,6 +47,8 @@ public class Constant {
     public static final int REQUEST_CODE_CAMERA = 10003;
     public static final int REQUEST_CODE_GALLERY = 10004;
 
+    public static final int REQUEST_CODE_MAIN_AFTER_LOGIN_TO_ADD_CHAT = 10005;
+
 
     /** 뷰페이저 */
     public final static int[] nonTabIcon = {

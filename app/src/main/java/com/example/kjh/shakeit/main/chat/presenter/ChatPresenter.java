@@ -59,6 +59,14 @@ public class ChatPresenter implements ChatContract.Presenter {
     }
 
     /**------------------------------------------------------------------
+     생명주기 ==> onDestroy()
+     ------------------------------------------------------------------*/
+    @Override
+    public void onDestroy() {
+        BusProvider.getInstance().unregister(this);
+    }
+
+    /**------------------------------------------------------------------
      메서드 ==> 텍스트 메시지 전송 로직
      ------------------------------------------------------------------*/
     @Override
@@ -68,6 +76,7 @@ public class ChatPresenter implements ChatContract.Presenter {
         ChatRoom room = view.getChatRoom();
         String time = TimeManager.nowTime();
 
+        /** 참가자들의 아이디들 => JSONArray */
         JSONArray unreadUsers = new JSONArray();
         for(int index = 0; index < room.getParticipants().size(); index++)
             unreadUsers.put(room.getParticipants().get(index).getUserId());
@@ -109,14 +118,6 @@ public class ChatPresenter implements ChatContract.Presenter {
     }
 
     /**------------------------------------------------------------------
-     생명주기 ==> onDestroy()
-     ------------------------------------------------------------------*/
-    @Override
-    public void onDestroy() {
-        BusProvider.getInstance().unregister(this);
-    }
-
-    /**------------------------------------------------------------------
      메서드 ==> 텍스트 외 메시지를 보내려고 add 눌렀을 때
      ------------------------------------------------------------------*/
     @Override
@@ -134,6 +135,10 @@ public class ChatPresenter implements ChatContract.Presenter {
         if(holder.getType() == MESSAGE) {
             ChatRoom room = Serializer.deserialize(holder.getBody(), ChatRoom.class);
 
+            /** 채팅방 처음 생성되고 채팅 메시지 보냈을 때 */
+            if(view.getChatRoom().getRoomId() == 0)
+                view.setChatRoomId(room.getRoomId());
+
             if(view.getChatRoom().getRoomId() != room.getRoomId())
                 return;
 
@@ -144,6 +149,7 @@ public class ChatPresenter implements ChatContract.Presenter {
         } else if(holder.getType() == UPDATE_UNREAD) {
             ReadHolder readHolder = Serializer.deserialize(holder.getBody(), ReadHolder.class);
 
+            /** 읽은 사용자들을 UnreadArray에서 제거 */
             for(int index = 0; index < readHolder.getChatIds().size(); index++) {
                 for(int chatsIdx = 0; chatsIdx < chats.size(); chatsIdx++) {
                     if(chats.get(chatsIdx).getChatId() == readHolder.getChatIds().get(index)) {

@@ -6,8 +6,10 @@ import com.example.kjh.shakeit.login.contract.SignUpContract;
 import com.example.kjh.shakeit.login.model.EmailLoginModel;
 import com.example.kjh.shakeit.login.model.MainModel;
 import com.example.kjh.shakeit.login.model.SignUpModel;
+import com.example.kjh.shakeit.main.chat.contract.AddChatContract;
 import com.example.kjh.shakeit.main.chat.contract.ChatContract;
 import com.example.kjh.shakeit.main.chat.contract.TabChatRoomListContract;
+import com.example.kjh.shakeit.main.chat.model.AddChatModel;
 import com.example.kjh.shakeit.main.chat.model.ChatModel;
 import com.example.kjh.shakeit.main.chat.model.TabChatRoomListModel;
 import com.example.kjh.shakeit.main.friend.contract.AddFriendContract;
@@ -58,5 +60,9 @@ public class Injector {
 
     public static ChatContract.Model provideChatModel() {
         return new ChatModel();
+    }
+
+    public static AddChatContract.Model provideAddChatModel() {
+        return new AddChatModel();
     }
 }

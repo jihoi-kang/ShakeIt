@@ -1,6 +1,7 @@
 package com.example.kjh.shakeit.main.chat;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,12 +24,16 @@ import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.adapter.ChatListAdapter;
 import com.example.kjh.shakeit.main.chat.contract.ChatContract;
 import com.example.kjh.shakeit.main.chat.presenter.ChatPresenter;
+import com.example.kjh.shakeit.utils.ImageCombiner;
+import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.Injector;
+import com.example.kjh.shakeit.utils.StrUtil;
 import com.example.kjh.shakeit.utils.ToastGenerator;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,7 +54,7 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
     private Unbinder unbinder;
     @BindView(R.id.inputContent) EditText inputContent;
     @BindView(R.id.chat_list) RecyclerView chatListView;
-    @BindView(R.id.title) TextView title;
+    @BindView(R.id.title) TextView titleTxt;
     @BindView(R.id.profile_image) ImageView profileImage;
     @BindView(R.id.btn_send) Button sendBtn;
     @BindView(R.id.chatRootLayout) ViewGroup chatRootLayout;
@@ -82,7 +87,6 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
 
         layoutManager = new LinearLayoutManager(this);
         chatListView.setLayoutManager(layoutManager);
-        chatListView.setVerticalScrollBarEnabled(true);
 
         adapter = new ChatListAdapter(this, chats, room);
         chatListView.setAdapter(adapter);
@@ -97,12 +101,48 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
     protected void onResume() {
         super.onResume();
 
-        byte[] imageByteArray = intent.getByteArrayExtra("imageArray");
-        profileImage.setImageBitmap(BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length));
-        /** 셋팅 */
-        title.setText(intent.getStringExtra("title"));
+        /** 대표사진 셋팅 */
+        if(intent.getByteArrayExtra("imageArray") != null) {
+            byte[] imageByteArray = intent.getByteArrayExtra("imageArray");
+            profileImage.setImageBitmap(BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.length));
+        } else {
+            new Thread(() -> {
+                Bitmap resultImage;
+                if(room.getParticipants().size() == 1) {
+                    resultImage = makeBitmap(room.getParticipants().get(0).getImageUrl());
+                } else if(room.getParticipants().size() == 2) {
+                    resultImage = ImageCombiner.combine(
+                            makeBitmap(room.getParticipants().get(0).getImageUrl()),
+                            makeBitmap(room.getParticipants().get(1).getImageUrl())
+                    );
+                } else if(room.getParticipants().size() == 3) {
+                    resultImage = ImageCombiner.combine(
+                            makeBitmap(room.getParticipants().get(0).getImageUrl()),
+                            makeBitmap(room.getParticipants().get(1).getImageUrl()),
+                            makeBitmap(room.getParticipants().get(2).getImageUrl())
+                    );
+                } else {
+                    resultImage = ImageCombiner.combine(
+                            makeBitmap(room.getParticipants().get(0).getImageUrl()),
+                            makeBitmap(room.getParticipants().get(1).getImageUrl()),
+                            makeBitmap(room.getParticipants().get(2).getImageUrl()),
+                            makeBitmap(room.getParticipants().get(3).getImageUrl())
+                    );
+                }
 
-        /** 소프트 키보드 올라오면 발생하는 이벤트 등록 */
+                Bitmap finalResultImage = resultImage;
+                runOnUiThread(() -> profileImage.setImageBitmap(finalResultImage));
+            }).start();
+        }
+
+        /** 채팅 제목 셋팅 */
+        String title = "";
+        for(int index = 0; index < room.getParticipants().size(); index++)
+            title += (index == (room.getParticipants().size() - 1)) ? room.getParticipants().get(index).getName() : room.getParticipants().get(index).getName() + ", ";
+
+        titleTxt.setText(title);
+
+        /** 소프트 키보드 올라오면 채팅목록 마지막에 포커스 */
         KeyboardVisibilityEvent.setEventListener(this, isOpen -> chatListView.scrollToPosition(chats.size() - 1));
 
         chatActHandler = new Handler() {
@@ -150,6 +190,26 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
         finish();
     }
 
+    /**------------------------------------------------------------------
+     메서드 ==> 프로필이미지 Bitmap 반환
+     ------------------------------------------------------------------*/
+    private Bitmap makeBitmap(String url) {
+        Bitmap bitmap = null;
+        if(StrUtil.isBlank(url)) {
+            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_basic_profile);
+        } else {
+            try {
+                bitmap = ImageLoaderUtil.getBitmap(this, url);
+                bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() / 2, bitmap.getHeight() / 2, true);
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return bitmap;
+    }
+
     @Override
     public User getUser() {
         return user;
@@ -168,6 +228,11 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
     @Override
     public void clearInputContent() {
         inputContent.setText("");
+    }
+
+    @Override
+    public void setChatRoomId(int roomId) {
+        room.setRoomId(roomId);
     }
 
     @Override

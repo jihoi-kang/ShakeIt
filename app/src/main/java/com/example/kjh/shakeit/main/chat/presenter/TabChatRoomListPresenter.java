@@ -102,17 +102,26 @@ public class TabChatRoomListPresenter implements TabChatRoomListContract.Present
         MessageHolder holder = event.getMessageHolder();
 
         if(holder.getType() == MESSAGE) {
+            int cnt = 0;
             ChatRoom chatRoom = Serializer.deserialize(holder.getBody(), ChatRoom.class);
             /** RoomId를 통해 변경된 방을 찾아 변경 */
-            for(int index = 0; index < rooms.size(); index++){
-                if(rooms.get(index).getRoomId() == chatRoom.getRoomId()){
+            for (int index = 0; index < rooms.size(); index++) {
+                if (rooms.get(index).getRoomId() == chatRoom.getRoomId()) {
                     ChatRoom room = rooms.get(index);
                     room.setChatHolder(chatRoom.getChatHolder());
                     room.setUnreadCount(model.getUnreadCount(chatRoom.getRoomId()));
                     rooms.remove(index);
                     rooms.add(0, room);
-                }
+                } else
+                    cnt++;
             }
+
+            /** 채팅방 처음 만들어서 첫 메시지를 보냈을 때 */
+            if(cnt == rooms.size()) {
+                /** refresh */
+                getChatRoomList();
+            }
+
         } else if (holder.getType() == UPDATE_UNREAD) {
             ReadHolder readHolder = Serializer.deserialize(holder.getBody(), ReadHolder.class);
             /** 채팅방 목록에서 UnreadCount 컨트롤 */

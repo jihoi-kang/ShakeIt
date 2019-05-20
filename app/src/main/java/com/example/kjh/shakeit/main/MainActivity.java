@@ -10,20 +10,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
+import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.fcm.FcmGenerator;
+import com.example.kjh.shakeit.main.adapter.ChatRoomListAdapter;
 import com.example.kjh.shakeit.main.adapter.ViewPagerAdapter;
+import com.example.kjh.shakeit.main.chat.AddChatActivity;
+import com.example.kjh.shakeit.main.chat.ChatActivity;
 import com.example.kjh.shakeit.main.friend.AddFriendActivity;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.Injector;
 import com.squareup.otto.Subscribe;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_MAIN_AFTER_LOGIN_TO_ADD_CHAT;
 import static com.example.kjh.shakeit.app.Constant.nonTabIcon;
 import static com.example.kjh.shakeit.app.Constant.onTabIcon;
 import static com.example.kjh.shakeit.app.Constant.tabLayoutImage;
@@ -53,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     private ViewPagerAdapter viewPagerAdapter;
     private int position = 0;
 
+    private ArrayList<User> friends = new ArrayList<>();
+
     /**------------------------------------------------------------------
      생명주기 ==> onCreate()
      ------------------------------------------------------------------*/
@@ -79,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
-
         setIconToViewpager(0);
     }
 
@@ -124,18 +132,82 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
      ------------------------------------------------------------------*/
     @OnClick(R.id.add)
     void onClickAdd() {
-        Intent intent = null;
+        Intent intent;
         switch (position){
             case 0:
                 /** 친구추가 */
                 intent = new Intent(MainActivity.this, AddFriendActivity.class);
                 intent.putExtra("user", user);
+                startActivity(intent);
                 break;
             case 1:
                 /** 채팅 추가 */
-                return;
+                intent = new Intent(MainActivity.this, AddChatActivity.class);
+                intent.putExtra("user", user);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("friends",friends);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, REQUEST_CODE_MAIN_AFTER_LOGIN_TO_ADD_CHAT);
+                break;
         }
-        startActivity(intent);
+
+    }
+
+    /**------------------------------------------------------------------
+     콜백이벤트 ==> onActivityResult()
+     ------------------------------------------------------------------*/
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode != RESULT_OK)
+            return;
+
+        /** 채팅방 만든후 */
+        if(requestCode == REQUEST_CODE_MAIN_AFTER_LOGIN_TO_ADD_CHAT) {
+            ArrayList<ChatRoom> chatRooms = ChatRoomListAdapter.getChatRooms();
+            ArrayList<User> participants = (ArrayList<User>) data.getSerializableExtra("invitedFriends");
+
+            Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+            intent.putExtra("user", user);
+
+            /** 중복되는 방이 존재하는지 확인 */
+            ChatRoom room = new ChatRoom();
+            room.setParticipants(participants);
+            room.setMemberCount(participants.size() + 1);
+            intent.putExtra("room", room);
+
+            for(int index = 0; index < chatRooms.size(); index++){
+                if(isEqual(participants, chatRooms.get(index).getParticipants()))
+                    intent.putExtra("room", chatRooms.get(index));
+            }
+
+            startActivity(intent);
+        }
+    }
+
+    /**------------------------------------------------------------------
+     메서드 ==> 두 ArrayList가 중복되는지 확인(순서 상관 X)
+     ------------------------------------------------------------------*/
+    private boolean isEqual(ArrayList<User> participants, ArrayList<User> comparison) {
+        int participantsLength = participants.size();
+        int comparisonLength = comparison.size();
+        int cnt = 0;
+
+        if(participantsLength != comparisonLength)
+            return false;
+
+        for(int participantsIdx = 0; participantsIdx < participantsLength; participantsIdx++) {
+            for(int comparisonIdx = 0; comparisonIdx < comparisonLength; comparisonIdx++) {
+                if(participants.get(participantsIdx).getUserId() == comparison.get(comparisonIdx).getUserId()) {
+                    cnt++;
+                    break;
+                }
+            }
+        }
+
+        if(cnt == participantsLength && cnt == comparisonLength)
+            return true;
+
+        return false;
     }
 
     @Override
@@ -169,5 +241,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Subscribe
     public void getUpdateProfileInfo(Events.updateProfileEvent event) {
         user = event.getUser();
+    }
+
+    /**------------------------------------------------------------------
+     구독이벤트 ==> 친구목록 변경시 발생
+     ------------------------------------------------------------------*/
+    @Subscribe
+    public void getFriendList(Events.friendEvent event) {
+        friends = event.getFriends();
     }
 }

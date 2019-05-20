@@ -198,6 +198,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         finish();
     }
 
+    /**------------------------------------------------------------------
+     콜백이벤트 ==> onActivityResult()
+     ------------------------------------------------------------------*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode != RESULT_OK)

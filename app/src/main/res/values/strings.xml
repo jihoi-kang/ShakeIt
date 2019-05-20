@@ -45,5 +45,7 @@
     <string name="msg_for_failure_becauseOfMyself">자기 자신을 친구추가 하실 수 없습니다</string>
     <string name="msg_for_failure">문제가 발생하였습니다</string>
     <string name="msg_read">여기까지 읽으셨습니다</string>
+    <string name="msg_select_target">대상 선택</string>
+    <string name="msg_invite">초대</string>
 
 </resources>

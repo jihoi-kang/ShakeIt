@@ -6,13 +6,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.data.User;
+import com.example.kjh.shakeit.etc.OnItemClickListener;
+import com.example.kjh.shakeit.main.chat.AddChatActivity;
 import com.example.kjh.shakeit.main.friend.ProfileDetailActivity;
+import com.example.kjh.shakeit.main.friend.TabFriendListFragment;
 import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.StrUtil;
 
@@ -31,10 +35,14 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
     private ArrayList<User> users;
     private Context context;
+    private String fromType;
+    private OnItemClickListener listener;
 
-    public FriendListAdapter(Context context, ArrayList<User> users) {
+    public FriendListAdapter(Context context, ArrayList<User> users, String fromType, OnItemClickListener listener) {
         this.context = context;
         this.users = users;
+        this.fromType = fromType;
+        this.listener = listener;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -43,6 +51,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
         @BindView(R.id.name) TextView inputName;
         @BindView(R.id.status_message) TextView inputStatusMessage;
         @BindView(R.id.container) LinearLayout container;
+        @BindView(R.id.select) CheckBox selectBox;
 
         public ViewHolder(View view) {
             super(view);
@@ -61,33 +70,51 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        User user = users.get(position);
+
         String imageUrl = users.get(position).getImageUrl();
         String name = users.get(position).getName();
         String statusMessage = users.get(position).getStatusMessage();
 
         holder.inputName.setText(name);
 
-        /** 자기 자신 */
-        if(position == 0) {
-            holder.inputName.setText(name + " (me)");
-        }
-
-        holder.inputStatusMessage.setText(statusMessage);
-
         if(StrUtil.isBlank(imageUrl))
             holder.profileImage.setImageResource(R.drawable.ic_basic_profile);
         else
             ImageLoaderUtil.display(context, holder.profileImage, imageUrl);
 
+        /** TabFriendListFragment에서 사용할 경우 ==> 친구목록 */
+        if(fromType.equals(TabFriendListFragment.class.getSimpleName())) {
+            /** 자기 자신 */
+            if(position == 0)
+                holder.inputName.setText(name + " (me)");
 
-        holder.container.setOnClickListener(view -> {
-            User user = users.get(position);
+            holder.inputStatusMessage.setText(statusMessage);
 
-            Intent intent = new Intent(context, ProfileDetailActivity.class);
-            intent.putExtra("user", user);
-            intent.putExtra("position", position);
-            context.startActivity(intent);
-        });
+            holder.container.setOnClickListener(view -> {
+                Intent intent = new Intent(context, ProfileDetailActivity.class);
+                intent.putExtra("user", user);
+                intent.putExtra("position", position);
+                context.startActivity(intent);
+            });
+
+            holder.selectBox.setVisibility(View.GONE);
+        }
+        /** AddChatActivity에서 사용할 경우 ==> 채팅방 만들때 대상 선택 목록 */
+        else if(fromType.equals(AddChatActivity.class.getSimpleName())) {
+            holder.inputStatusMessage.setVisibility(View.GONE);
+
+            holder.container.setOnClickListener(view -> {
+                if(holder.selectBox.isChecked())
+                    holder.selectBox.setChecked(false);
+                else
+                    holder.selectBox.setChecked(true);
+
+                listener.onItemClick(user, holder.selectBox.isChecked());
+            });
+
+        }
+
 
     }
 
