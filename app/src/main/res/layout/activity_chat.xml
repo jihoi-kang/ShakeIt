@@ -14,34 +14,53 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary">
 
-        <ImageButton
-            android:id="@+id/back"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_gravity="center_vertical"
-            android:background="@color/colorPrimary"
-            android:layout_marginEnd="16dp"
-            android:src="@drawable/ic_back_white_36dp" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/profile_image"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            app:civ_border_width="1dp"
-            android:src="@drawable/ic_basic_profile"
-            android:layout_alignParentRight="true"
-            android:contentDescription="@string/msg_profile_image"
-            app:civ_border_color="@color/background_grey_primary"/>
+            <ImageButton
+                android:id="@+id/back"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center_vertical"
+                android:background="@color/colorPrimary"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_back_white_36dp" />
 
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="21sp"
-            android:textColor="@color/white"
-            android:paddingStart="16dp"
-            android:fontFamily="@font/bmjua_otf" />
+            <de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/profile_image"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                app:civ_border_width="1dp"
+                android:src="@drawable/ic_basic_profile"
+                android:layout_alignParentRight="true"
+                android:contentDescription="@string/msg_profile_image"
+                app:civ_border_color="@color/background_grey_primary"/>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="21sp"
+                android:textColor="@color/white"
+                android:paddingStart="16dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/bmjua_otf" />
+
+            <ImageView
+                android:id="@+id/video_call"
+                android:layout_marginEnd="8dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_outline_videocam_white_36dp"/>
+
+        </LinearLayout>
+
 
     </android.support.v7.widget.Toolbar>
 

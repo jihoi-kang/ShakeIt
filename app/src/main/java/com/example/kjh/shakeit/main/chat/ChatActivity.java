@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,7 +34,6 @@ import com.example.kjh.shakeit.utils.ToastGenerator;
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,6 +58,7 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
     @BindView(R.id.profile_image) ImageView profileImage;
     @BindView(R.id.btn_send) Button sendBtn;
     @BindView(R.id.chatRootLayout) ViewGroup chatRootLayout;
+    @BindView(R.id.video_call) ImageView videoCall;
 
     private ChatListAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -142,6 +143,10 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
 
         titleTxt.setText(title);
 
+        /** 영상통화 버튼 셋팅 */
+        if(room.getParticipants().size() > 1)
+            videoCall.setVisibility(View.GONE);
+
         /** 소프트 키보드 올라오면 채팅목록 마지막에 포커스 */
         KeyboardVisibilityEvent.setEventListener(this, isOpen -> chatListView.scrollToPosition(chats.size() - 1));
 
@@ -190,23 +195,21 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
         finish();
     }
 
+    @OnClick(R.id.video_call)
+    void onClickVideoCall() {
+
+    }
+
     /**------------------------------------------------------------------
      메서드 ==> 프로필이미지 Bitmap 반환
      ------------------------------------------------------------------*/
     private Bitmap makeBitmap(String url) {
-        Bitmap bitmap = null;
-        if(StrUtil.isBlank(url)) {
+        Bitmap bitmap;
+        if(StrUtil.isBlank(url))
             bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_basic_profile);
-        } else {
-            try {
-                bitmap = ImageLoaderUtil.getBitmap(this, url);
-                bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() / 2, bitmap.getHeight() / 2, true);
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        else
+            bitmap = ImageLoaderUtil.getBitmap(url);
+
         return bitmap;
     }
 

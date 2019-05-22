@@ -25,7 +25,6 @@ import com.example.kjh.shakeit.utils.TimeManager;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,13 +81,9 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
     @Override
     public void onBindViewHolder(ChatRoomListAdapter.ViewHolder holder, int position) {
         ArrayList<User> participants = rooms.get(position).getParticipants();
-        /** 채팅방 제목 셋팅 */
-        String title = "";
-        for(int index = 0; index < participants.size(); index++)
-            title += (index == (participants.size() - 1)) ? participants.get(index).getName() : participants.get(index).getName() + ", ";
 
         /** 채팅방 사진 셋팅 */
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             Bitmap resultImage;
             if(participants.size() == 1) {
                 resultImage = makeBitmap(participants.get(0).getImageUrl());
@@ -114,7 +109,18 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
 
             Bitmap finalResultImage = resultImage;
             activity.runOnUiThread(() -> holder.profileImage.setImageBitmap(finalResultImage));
-        }).start();
+        });
+        thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        /** 채팅방 제목 셋팅 */
+        String title = "";
+        for(int index = 0; index < participants.size(); index++)
+            title += (index == (participants.size() - 1)) ? participants.get(index).getName() : participants.get(index).getName() + ", ";
 
         ChatHolder lastMessage = rooms.get(position).getChatHolder();
 
@@ -157,26 +163,18 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
             intent.putExtra("imageArray", imageByteArray);
             activity.startActivity(intent);
         });
-
     }
 
     /**------------------------------------------------------------------
      메서드 ==> 프로필이미지 Bitmap 반환
      ------------------------------------------------------------------*/
     private Bitmap makeBitmap(String url) {
-        Bitmap bitmap = null;
-        if(StrUtil.isBlank(url)) {
+        Bitmap bitmap;
+        if(StrUtil.isBlank(url))
             bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.ic_basic_profile);
-        } else {
-            try {
-                bitmap = ImageLoaderUtil.getBitmap(activity, url);
-                bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() / 2, bitmap.getHeight() / 2, true);
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        else
+            bitmap = ImageLoaderUtil.getBitmap(url);
+
         return bitmap;
     }
 

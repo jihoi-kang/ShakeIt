@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.etc.MyDividerItemDecoration;
-import com.example.kjh.shakeit.etc.OnItemClickListener;
 import com.example.kjh.shakeit.main.adapter.FriendListAdapter;
 import com.example.kjh.shakeit.main.chat.contract.AddChatContract;
 import com.example.kjh.shakeit.main.chat.presenter.AddChatPresenter;
@@ -25,7 +24,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class AddChatActivity extends AppCompatActivity implements AddChatContract.View, OnItemClickListener {
+public class AddChatActivity extends AppCompatActivity implements AddChatContract.View {
 
     private final String TAG = AddChatActivity.class.getSimpleName();
 
@@ -39,6 +38,15 @@ public class AddChatActivity extends AppCompatActivity implements AddChatContrac
 
     ArrayList<User> friends = new ArrayList<>();
     ArrayList<User> invitedFriends = new ArrayList<>();
+
+    /**------------------------------------------------------------------
+     인터페이스 ==>
+     ------------------------------------------------------------------*/
+    public interface OnItemClickListener {
+
+        void onItemClick(User user, boolean isChecked);
+
+    }
 
     /**------------------------------------------------------------------
      생명주기 ==> onCreate()
@@ -64,7 +72,12 @@ public class AddChatActivity extends AppCompatActivity implements AddChatContrac
 
         friendListView.addItemDecoration(new MyDividerItemDecoration(this));
 
-        adapter = new FriendListAdapter(this, friends, AddChatActivity.class.getSimpleName(), this);
+        adapter = new FriendListAdapter(
+                this,
+                friends, AddChatActivity.class.getSimpleName(),
+                /** 대상 선택 이벤트 */
+                (user, isChecked) -> presenter.onItemClick(user, isChecked)
+        );
         friendListView.setAdapter(adapter);
     }
 
@@ -96,14 +109,6 @@ public class AddChatActivity extends AppCompatActivity implements AddChatContrac
         finish();
     }
 
-    /**------------------------------------------------------------------
-     클릭이벤트 ==> 대상 선택 및 해제
-     ------------------------------------------------------------------*/
-    @Override
-    public void onItemClick(User user, boolean isChecked) {
-        presenter.onItemClick(user, isChecked);
-    }
-
     @Override
     public ArrayList<User> getInvitedFriends() {
         return invitedFriends;
@@ -124,5 +129,7 @@ public class AddChatActivity extends AppCompatActivity implements AddChatContrac
         }
 
     }
+
+
 
 }

@@ -3,11 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.kjh.shakeit">
 
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:glEsVersion="0x00020000" android:required="true" />
+
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAPTURE_VIDEO_OUTPUT" />
 
     <application
         android:allowBackup="true"
@@ -24,6 +32,13 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="https" android:host="appr.tc"/>
+                <data android:scheme="http" android:host="appr.tc"/>
             </intent-filter>
         </activity>
 
@@ -60,6 +75,11 @@
         <activity android:name=".main.chat.AddChatActivity"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait" />
+
+        <activity android:name=".main.chat.CallActivity"
+            android:screenOrientation="fullUser"
+            android:configChanges="orientation|smallestScreenSize"
+            android:theme="@style/CallTheme" />
 
         <!-- Crop Image -->
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />

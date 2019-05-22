@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.data.User;
-import com.example.kjh.shakeit.etc.OnItemClickListener;
 import com.example.kjh.shakeit.main.chat.AddChatActivity;
 import com.example.kjh.shakeit.main.friend.ProfileDetailActivity;
 import com.example.kjh.shakeit.main.friend.TabFriendListFragment;
@@ -36,9 +35,9 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
     private ArrayList<User> users;
     private Context context;
     private String fromType;
-    private OnItemClickListener listener;
+    private AddChatActivity.OnItemClickListener listener;
 
-    public FriendListAdapter(Context context, ArrayList<User> users, String fromType, OnItemClickListener listener) {
+    public FriendListAdapter(Context context, ArrayList<User> users, String fromType, AddChatActivity.OnItemClickListener listener) {
         this.context = context;
         this.users = users;
         this.fromType = fromType;
