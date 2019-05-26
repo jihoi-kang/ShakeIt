@@ -141,7 +141,7 @@ public class UpdateProfilePresenter implements UpdateProfileContract.Presenter {
             model.uploadImage(_id, path, new ResultCallback() {
                 @Override
                 public void onSuccess(String body) {
-                    JSONObject jsonObject = null;
+                    JSONObject jsonObject;
                     String resultMessage = "";
                     try {
                         jsonObject = new JSONObject(body);

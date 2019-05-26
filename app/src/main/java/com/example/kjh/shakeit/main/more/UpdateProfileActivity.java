@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,6 +33,7 @@ import com.example.kjh.shakeit.utils.ToastGenerator;
 import com.soundcloud.android.crop.Crop;
 
 import java.io.File;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,6 +43,7 @@ import rebus.bottomdialog.BottomDialog;
 
 import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_CAMERA;
 import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_GALLERY;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_UPDATE_PROFILE_TO_IMAGE_FILTER;
 
 public class UpdateProfileActivity extends AppCompatActivity implements UpdateProfileContract.View, TextWatcher {
 
@@ -55,6 +58,7 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
     private File file;
     private boolean isChangedProfileImage = false;
     private String path;
+    private int tempOrientation = 0;
 
     private Unbinder unbinder;
     @BindView(R.id.update) TextView update;
@@ -104,6 +108,11 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+
+        /** 파일 삭제 */
+        File file = new File(path);
+        if(file.exists())
+            file.delete();
     }
 
     /**------------------------------------------------------------------
@@ -143,10 +152,10 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
             case REQUEST_CODE_GALLERY:
                 path = uriToPath(data.getData());
 
-                ImageLoaderUtil.display(this, profileImage, path);
-                isChangedProfileImage = true;
+                Intent toImageFilterGallery = new Intent(UpdateProfileActivity.this, ImageFilterActivity.class);
+                toImageFilterGallery.putExtra("path", path);
+                startActivityForResult(toImageFilterGallery, REQUEST_CODE_UPDATE_PROFILE_TO_IMAGE_FILTER);
 
-                presenter.onChangedInput();
                 break;
             /** 카메라에서 찍은 후 */
             case REQUEST_CODE_CAMERA:
@@ -154,11 +163,28 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
                 media_scan_intent.setData(Uri.fromFile(file));
                 sendBroadcast(media_scan_intent);
 
+                try {
+                    ExifInterface ei = new ExifInterface(file.getAbsolutePath());
+                    tempOrientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                            ExifInterface.ORIENTATION_NORMAL);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 Crop.of(Uri.fromFile(file), Uri.fromFile(file)).asSquare().start(getActivity());
                 break;
             /** 이미지를 크롭한 후 */
             case Crop.REQUEST_CROP:
                 path = file.getAbsolutePath();
+
+                Intent toImageFilterCamera = new Intent(UpdateProfileActivity.this, ImageFilterActivity.class);
+                toImageFilterCamera.putExtra("path", path);
+                toImageFilterCamera.putExtra("orientation", tempOrientation);
+                startActivityForResult(toImageFilterCamera, REQUEST_CODE_UPDATE_PROFILE_TO_IMAGE_FILTER);
+                break;
+            /** 필터작업 까지 다 마친 후 */
+            case REQUEST_CODE_UPDATE_PROFILE_TO_IMAGE_FILTER:
+                path = uriToPath(data.getParcelableExtra("uri"));
 
                 ImageLoaderUtil.display(this, profileImage, path);
                 isChangedProfileImage = true;
@@ -304,7 +330,6 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
         // 현재 시간 기준 파일명 생성
         String now = TimeManager.now();
         String imageFileName = user.getUserId() + now + ".jpg";
-
         // 파일 생성
         File curFile = new File(sdPath, imageFileName);
         return curFile;

@@ -54,5 +54,11 @@
     <string name="toggle_debug">Toggle debug view</string>
     <string name="pref_speakerphone_key">speakerphone_preference</string>
     <string name="pref_speakerphone_default">auto</string>
+    <string name="msg_apply">적용</string>
+    <string name="msg_gray">흑백</string>
+    <string name="msg_original">원본</string>
+    <string name="msg_brightness">밝기</string>
+    <string name="msg_contrast">대비</string>
+    <string name="msg_blur">흐림</string>
 
 </resources>

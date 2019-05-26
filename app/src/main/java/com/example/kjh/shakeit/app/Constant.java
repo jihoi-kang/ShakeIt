@@ -49,6 +49,8 @@ public class Constant {
 
     public static final int REQUEST_CODE_MAIN_AFTER_LOGIN_TO_ADD_CHAT = 10005;
 
+    public static final int REQUEST_CODE_UPDATE_PROFILE_TO_IMAGE_FILTER = 10006;
+
 
     /** 뷰페이저 */
     public final static int[] nonTabIcon = {

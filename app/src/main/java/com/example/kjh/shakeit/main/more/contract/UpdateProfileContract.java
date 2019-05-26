@@ -27,6 +27,7 @@ public interface UpdateProfileContract {
         void finishActivity();
         void hideSoftKeyboard();
         void showMessageForFailure();
+
     }
 
     interface Presenter {

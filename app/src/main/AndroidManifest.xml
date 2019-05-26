@@ -76,6 +76,10 @@
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".main.more.ImageFilterActivity"
+            android:theme="@style/AppTheme_StatusBar_Black"
+            android:screenOrientation="portrait" />
+
         <activity android:name=".main.chat.CallActivity"
             android:screenOrientation="fullUser"
             android:configChanges="orientation|smallestScreenSize"
