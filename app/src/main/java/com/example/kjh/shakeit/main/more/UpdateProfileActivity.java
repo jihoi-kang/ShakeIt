@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
+import com.example.kjh.shakeit.app.AppManager;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.more.contract.UpdateProfileContract;
 import com.example.kjh.shakeit.main.more.presenter.UpdateProfilePresenter;
@@ -71,6 +72,8 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
      ------------------------------------------------------------------*/
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        AppManager.getAppManager().addActivity(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_profile);
 
@@ -106,6 +109,7 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
      ------------------------------------------------------------------*/
     @Override
     protected void onDestroy() {
+        AppManager.getAppManager().removeActivity(this);
         super.onDestroy();
         unbinder.unbind();
 

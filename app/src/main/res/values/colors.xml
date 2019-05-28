@@ -13,5 +13,6 @@
     <color name="background_grey_primary">#AAAAAA</color>
     <color name="background_grey_dark1">#888888</color>
     <color name="background_grey_dark2">#666666</color>
+    <color name="background_grey_dark3">#333333</color>
 
 </resources>

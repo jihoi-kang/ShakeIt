@@ -19,6 +19,7 @@ public interface ChatContract {
         void showMessageForFailure();
         void showChatList(ArrayList<ChatHolder> holders);
         void setChatRoomId(int roomId);
+        void goCallWaitActivity(String roomID);
 
     }
 

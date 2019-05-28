@@ -11,6 +11,9 @@ public class App extends Application {
 
     private static App application;
 
+    /**------------------------------------------------------------------
+     생명주기 ==> onCreate()
+     ------------------------------------------------------------------*/
     @Override
     public void onCreate() {
         super.onCreate();
@@ -30,4 +33,5 @@ public class App extends Application {
     public static App getApplication() {
         return application;
     }
+
 }

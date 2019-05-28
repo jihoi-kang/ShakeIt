@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
+import com.example.kjh.shakeit.app.AppManager;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.etc.MyDividerItemDecoration;
 import com.example.kjh.shakeit.main.adapter.FriendListAdapter;
@@ -40,7 +41,7 @@ public class AddChatActivity extends AppCompatActivity implements AddChatContrac
     ArrayList<User> invitedFriends = new ArrayList<>();
 
     /**------------------------------------------------------------------
-     인터페이스 ==>
+     인터페이스 ==> 친구 목록 클릭시 발생하는 이벤트
      ------------------------------------------------------------------*/
     public interface OnItemClickListener {
 
@@ -53,6 +54,8 @@ public class AddChatActivity extends AppCompatActivity implements AddChatContrac
      ------------------------------------------------------------------*/
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        AppManager.getAppManager().addActivity(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_chat);
 
@@ -86,6 +89,8 @@ public class AddChatActivity extends AppCompatActivity implements AddChatContrac
      ------------------------------------------------------------------*/
     @Override
     protected void onDestroy() {
+        AppManager.getAppManager().removeActivity(this);
+
         super.onDestroy();
         unbinder.unbind();
     }

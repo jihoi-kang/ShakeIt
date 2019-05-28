@@ -128,7 +128,7 @@ public class AppRTCAudioManager {
         }
     }
 
-    static AppRTCAudioManager create(Context context) {
+    public static AppRTCAudioManager create(Context context) {
         return new AppRTCAudioManager(context);
     }
 

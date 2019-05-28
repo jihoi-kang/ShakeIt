@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
+import com.example.kjh.shakeit.app.AppManager;
 import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.fcm.FcmGenerator;
@@ -67,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
      ------------------------------------------------------------------*/
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        AppManager.getAppManager().addActivity(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_after_login);
 
@@ -120,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
      ------------------------------------------------------------------*/
     @Override
     protected void onDestroy() {
+        AppManager.getAppManager().removeActivity(this);
         super.onDestroy();
         unbinder.unbind();
         BusProvider.getInstance().unregister(this);
@@ -185,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     /**------------------------------------------------------------------
-     메서드 ==> 두 ArrayList가 중복되는지 확인(순서 상관 X)
+     메서드 ==> 순서 상관 없이 두 ArrayList가 중복되는지 확인
      ------------------------------------------------------------------*/
     private boolean isEqual(ArrayList<User> participants, ArrayList<User> comparison) {
         int participantsLength = participants.size();

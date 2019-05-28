@@ -17,10 +17,12 @@ import com.squareup.otto.Subscribe;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import static com.example.kjh.shakeit.main.chat.ChatActivity.chatActHandler;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.CONN_WEBRTC;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.DELIVERY;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.MESSAGE;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.UPDATE_UNREAD;
@@ -171,6 +173,17 @@ public class ChatPresenter implements ChatContract.Presenter {
                     }
                 }
             }
+        } else if(holder.getType() == CONN_WEBRTC) {
+            String roomID = null;
+            try {
+                JSONObject jsonObject = new JSONObject(holder.getBody());
+                roomID = jsonObject.getString("roomID");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            view.goCallWaitActivity(roomID);
+            return;
         }
 
         Message msg = chatActHandler.obtainMessage();

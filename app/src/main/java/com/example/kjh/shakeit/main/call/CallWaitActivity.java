@@ -1,17 +1,17 @@
-package com.example.kjh.shakeit.main.friend;
+package com.example.kjh.shakeit.main.call;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.app.AppManager;
+import com.example.kjh.shakeit.data.MessageHolder;
 import com.example.kjh.shakeit.data.User;
+import com.example.kjh.shakeit.netty.NettyClient;
 import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.StrUtil;
 
@@ -20,18 +20,23 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-public class ProfileDetailActivity extends AppCompatActivity {
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.DISCONN_WEBRTC;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.REQUEST;
 
-    private final String TAG = ProfileDetailActivity.class.getSimpleName();
-
-    private User user;
+/**
+ * 영상 통화 하기전 거절 및 승락 하는 클래스
+ * @author 강지회
+ * @version 1.0.0
+ * @since 2019. 5. 27. PM 8:53
+ **/
+public class CallWaitActivity extends AppCompatActivity {
 
     private Unbinder unbinder;
-    @BindView(R.id.name) TextView name;
+    @BindView(R.id.name) TextView nameView;
     @BindView(R.id.profile_image) ImageView profileImage;
-    @BindView(R.id.profile_background_img) ImageView backgroundProfileImage;
-    @BindView(R.id.email) TextView email;
-    @BindView(R.id.direct_chat) LinearLayout directChat;
+
+    private String roomID;
+    private User otherUser;
 
     /**------------------------------------------------------------------
      생명주기 ==> onCreate()
@@ -41,37 +46,19 @@ public class ProfileDetailActivity extends AppCompatActivity {
         AppManager.getAppManager().addActivity(this);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile_detail);
+        setContentView(R.layout.activity_call_wait);
 
         unbinder = ButterKnife.bind(this);
-    }
-
-    /**------------------------------------------------------------------
-     생명주기 ==> onResume()
-     ------------------------------------------------------------------*/
-    @Override
-    protected void onResume() {
-        super.onResume();
 
         Intent intent = getIntent();
-        user = (User) intent.getSerializableExtra("user");
-        /** 친구목록의 위치 */
-        int position = intent.getIntExtra("position", -1);
+        roomID = intent.getStringExtra("roomID");
+        otherUser = (User) intent.getSerializableExtra("otherUser");
 
-        name.setText(user.getName());
-        email.setText(user.getEmail());
-
-        if(StrUtil.isBlank(user.getImageUrl())) {
+        nameView.setText(otherUser.getName());
+        if(StrUtil.isBlank(otherUser.getImageUrl()))
             profileImage.setImageResource(R.drawable.ic_basic_profile);
-            backgroundProfileImage.setImageResource(R.color.black);
-        } else {
-            ImageLoaderUtil.display(this, profileImage, user.getImageUrl());
-            ImageLoaderUtil.display(this, backgroundProfileImage, user.getImageUrl());
-        }
-
-        /** 위치가 0이면 자기 자신 */
-        if(position == 0)
-            directChat.setVisibility(View.GONE);
+        else
+            ImageLoaderUtil.display(this, profileImage, otherUser.getImageUrl());
     }
 
     /**------------------------------------------------------------------
@@ -80,23 +67,35 @@ public class ProfileDetailActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         AppManager.getAppManager().removeActivity(this);
+
         super.onDestroy();
         unbinder.unbind();
     }
 
     /**------------------------------------------------------------------
-     클릭이벤트 ==> 1:1 채팅
+     클릭이벤트 ==> 거절
      ------------------------------------------------------------------*/
-    @OnClick(R.id.direct_chat)
-    public void onClickDirectChat() {
-        // TODO: 2019. 5. 3. 클릭시 채팅 할 수 있도록
+    @OnClick(R.id.decline)
+    void onClickDecline() {
+        MessageHolder holder = new MessageHolder();
+        holder.setSign(REQUEST);
+        holder.setType(DISCONN_WEBRTC);
+        holder.setBody("" + otherUser.getUserId());
+        NettyClient.getInstance().sendMsgToServer(holder, null);
+
+        setResult(RESULT_CANCELED);
+        finish();
     }
 
     /**------------------------------------------------------------------
-     클릭이벤트 ==> 닫기
+     클릭이벤트 ==> 승락
      ------------------------------------------------------------------*/
-    @OnClick(R.id.close)
-    public void onClose() {
+    @OnClick(R.id.accept)
+    void onClickAccept() {
+        Intent intent = new Intent();
+        intent.putExtra("roomID", roomID);
+        setResult(RESULT_OK, intent);
         finish();
     }
+
 }

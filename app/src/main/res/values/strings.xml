@@ -60,5 +60,11 @@
     <string name="msg_brightness">밝기</string>
     <string name="msg_contrast">대비</string>
     <string name="msg_blur">흐림</string>
+    <string name="missing_url">FATAL ERROR: Missing URL to connect to.</string>
+    <string name="channel_error_title">Connection error</string>
+    <string name="ok">OK</string>
+    <string name="camera2_texture_only_error">Camera2 only supports capturing to texture. Either disable Camera2 or enable capturing to texture in the options.</string>
+    <string name="msg_decline">거절</string>
+    <string name="msg_accept">승인</string>
 
 </resources>

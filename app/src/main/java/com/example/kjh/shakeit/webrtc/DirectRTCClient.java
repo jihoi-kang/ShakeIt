@@ -27,7 +27,7 @@ public class DirectRTCClient implements AppRTCClient, TCPChannelClient.TCPChanne
     private static final int DEFAULT_PORT = 8888;
 
     /** 방의 ID가 IP처럼 보이는지 확인하는 정규식 */
-    static final Pattern IP_PATTERN = Pattern.compile("("
+    public static final Pattern IP_PATTERN = Pattern.compile("("
             // IPv4
             + "((\\d+\\.){3}\\d+)|"
             // IPv6

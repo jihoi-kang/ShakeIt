@@ -1,8 +1,10 @@
 package com.example.kjh.shakeit.main.chat;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,10 +21,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
+import com.example.kjh.shakeit.app.AppManager;
 import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.adapter.ChatListAdapter;
+import com.example.kjh.shakeit.main.call.CallActivity;
+import com.example.kjh.shakeit.main.call.CallWaitActivity;
 import com.example.kjh.shakeit.main.chat.contract.ChatContract;
 import com.example.kjh.shakeit.main.chat.presenter.ChatPresenter;
 import com.example.kjh.shakeit.utils.ImageCombiner;
@@ -30,16 +35,94 @@ import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.Injector;
 import com.example.kjh.shakeit.utils.StrUtil;
 import com.example.kjh.shakeit.utils.ToastGenerator;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import rebus.bottomdialog.BottomDialog;
+
+import static com.example.kjh.shakeit.app.Constant.AEC_DUMP;
+import static com.example.kjh.shakeit.app.Constant.AUDIO_CODEC;
+import static com.example.kjh.shakeit.app.Constant.AUDIO_START_BITRATE;
+import static com.example.kjh.shakeit.app.Constant.CAPTURE_QUALITY_SLIDER;
+import static com.example.kjh.shakeit.app.Constant.CAPTURE_TO_TEXTURE;
+import static com.example.kjh.shakeit.app.Constant.DATA_CHANNEL_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.DEFAULT_CAMERA_FPS;
+import static com.example.kjh.shakeit.app.Constant.DISABLE_BUILT_IN_AEC;
+import static com.example.kjh.shakeit.app.Constant.DISABLE_BUILT_IN_AGC;
+import static com.example.kjh.shakeit.app.Constant.DISABLE_BUILT_IN_NS;
+import static com.example.kjh.shakeit.app.Constant.DISABLE_WEBRTC_AGC_AND_HPE;
+import static com.example.kjh.shakeit.app.Constant.DISPLAY_HUD;
+import static com.example.kjh.shakeit.app.Constant.ENABLE_LEVEL_CONTROL;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_AECDUMP_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_AUDIOCODEC;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_AUDIO_BITRATE;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_CAMERA2;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_CAPTURETOTEXTURE_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_CMDLINE;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_DATA_CHANNEL_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_DISABLE_BUILT_IN_AEC;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_DISABLE_BUILT_IN_AGC;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_DISABLE_BUILT_IN_NS;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_DISABLE_WEBRTC_AGC_AND_HPF;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_DISPLAY_HUD;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_ENABLE_LEVEL_CONTROL;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_FLEXFEC_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_HWCODEC_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_ID;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_LOOPBACK;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_MAX_RETRANSMITS;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_MAX_RETRANSMITS_MS;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_NEGOTIATED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_NOAUDIOPROCESSING_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_OPENSLES_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_ORDERED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_PROTOCOL;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_ROOMID;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_RUNTIME;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_SAVE_REMOTE_VIDEO_TO_FILE;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_HEIGHT;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_WIDTH;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_SCREENCAPTURE;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_TRACING;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEOCODEC;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_BITRATE;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_CALL;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_CAPTUREQUALITYSLIDER_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_FILE_AS_CAMERA;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_FPS;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_HEIGHT;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_WIDTH;
+import static com.example.kjh.shakeit.app.Constant.FLEXFEC_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.HD_VIDEO_HEIGHT;
+import static com.example.kjh.shakeit.app.Constant.HD_VIDEO_WIDTH;
+import static com.example.kjh.shakeit.app.Constant.HW_CODEC;
+import static com.example.kjh.shakeit.app.Constant.ID;
+import static com.example.kjh.shakeit.app.Constant.MAX_RETR;
+import static com.example.kjh.shakeit.app.Constant.MAX_RETR_MS;
+import static com.example.kjh.shakeit.app.Constant.NEGOTIATED;
+import static com.example.kjh.shakeit.app.Constant.NO_AUDIO_PROCESSING;
+import static com.example.kjh.shakeit.app.Constant.ORDERED;
+import static com.example.kjh.shakeit.app.Constant.PROTOCOL;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_CHAT_TO_CALL_WAIT;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CONNECTION;
+import static com.example.kjh.shakeit.app.Constant.ROOM_URL;
+import static com.example.kjh.shakeit.app.Constant.TRACING;
+import static com.example.kjh.shakeit.app.Constant.USE_CAMERA_2;
+import static com.example.kjh.shakeit.app.Constant.USE_OPENSLES;
+import static com.example.kjh.shakeit.app.Constant.USE_SCREEN_CAPTURE;
+import static com.example.kjh.shakeit.app.Constant.VIDEO_CALL_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.VIDEO_CODEC;
+import static com.example.kjh.shakeit.app.Constant.VIDEO_START_BITRATE;
 
 public class ChatActivity extends AppCompatActivity implements ChatContract.View {
 
@@ -67,11 +150,16 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
 
     public static Handler chatActHandler;
 
+    /** WebRTC 관련 변수 */
+    private static boolean commandLineRun = false;
+
     /**------------------------------------------------------------------
      생명주기 ==> onCreate()
      ------------------------------------------------------------------*/
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        AppManager.getAppManager().addActivity(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
@@ -164,6 +252,7 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
      ------------------------------------------------------------------*/
     @Override
     protected void onDestroy() {
+        AppManager.getAppManager().removeActivity(this);
         super.onDestroy();
 
         unbinder.unbind();
@@ -195,9 +284,55 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
         finish();
     }
 
+    /**------------------------------------------------------------------
+     클릭이벤트 ==> 영상통화
+     ------------------------------------------------------------------*/
     @OnClick(R.id.video_call)
     void onClickVideoCall() {
+        TedPermission.with(this)
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        int random = new Random().nextInt(99999999);
+                        connectToRoom("shake" + random, false, false, false, 0, "sender");
+                    }
 
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+                    }
+                })
+                .setDeniedTitle(R.string.permission_denied_title)
+                .setDeniedMessage(R.string.permission_denied_message)
+                .setGotoSettingButtonText(R.string.tedpermission_setting)
+                .setPermissions(Manifest.permission.INTERNET, Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
+                .check();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode != RESULT_OK)
+            return;
+
+        /** CallWaitActivity 에서 돌아 왔을 때 */
+        if(requestCode == REQUEST_CODE_CHAT_TO_CALL_WAIT) {
+            TedPermission.with(this)
+                    .setPermissionListener(new PermissionListener() {
+                        @Override
+                        public void onPermissionGranted() {
+                            connectToRoom(data.getStringExtra("roomID"), false, false, false, 0, "receiver");
+                        }
+
+                        @Override
+                        public void onPermissionDenied(List<String> deniedPermissions) {
+                        }
+                    })
+                    .setDeniedTitle(R.string.permission_denied_title)
+                    .setDeniedMessage(R.string.permission_denied_message)
+                    .setGotoSettingButtonText(R.string.tedpermission_setting)
+                    .setPermissions(Manifest.permission.INTERNET, Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
+                    .check();
+        }
     }
 
     /**------------------------------------------------------------------
@@ -275,4 +410,95 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
         ToastGenerator.show(R.string.msg_for_failure);
     }
 
+    @Override
+    public void goCallWaitActivity(String roomID) {
+        Intent intent = new Intent(ChatActivity.this, CallWaitActivity.class);
+        intent.putExtra("roomID", roomID);
+        intent.putExtra("otherUser", room.getParticipants().get(0));
+        startActivityForResult(intent, REQUEST_CODE_CHAT_TO_CALL_WAIT);
+    }
+
+    private void connectToRoom(String roomId, boolean commandLineRun, boolean loopback,
+                               boolean useValuesFromIntent, int runTimeMs, String type) {
+        this.commandLineRun = commandLineRun;
+
+        if (loopback)
+            roomId = Integer.toString((new Random()).nextInt(100000000));
+
+        // Start AppRTCMobile activity.
+        Log.d(TAG, "Connecting to room " + roomId + " at URL " + ROOM_URL);
+        Uri uri = Uri.parse(ROOM_URL);
+        Intent intent = new Intent(ChatActivity.this, CallActivity.class);
+        intent.putExtra("user", user);
+        intent.putExtra("otherUser", room.getParticipants().get(0));
+        intent.putExtra("type", type);
+        intent.setData(uri);
+        intent.putExtra(EXTRA_ROOMID, roomId);
+        intent.putExtra(EXTRA_LOOPBACK, loopback);
+        intent.putExtra(EXTRA_VIDEO_CALL, VIDEO_CALL_ENABLED);
+        intent.putExtra(EXTRA_SCREENCAPTURE, USE_SCREEN_CAPTURE);
+        intent.putExtra(EXTRA_CAMERA2, USE_CAMERA_2);
+        intent.putExtra(EXTRA_VIDEO_WIDTH, HD_VIDEO_WIDTH);
+        intent.putExtra(EXTRA_VIDEO_HEIGHT, HD_VIDEO_HEIGHT);
+        intent.putExtra(EXTRA_VIDEO_FPS, DEFAULT_CAMERA_FPS);
+        intent.putExtra(EXTRA_VIDEO_CAPTUREQUALITYSLIDER_ENABLED, CAPTURE_QUALITY_SLIDER);
+        intent.putExtra(EXTRA_VIDEO_BITRATE, VIDEO_START_BITRATE);
+        intent.putExtra(EXTRA_VIDEOCODEC, VIDEO_CODEC);
+        intent.putExtra(EXTRA_HWCODEC_ENABLED, HW_CODEC);
+        intent.putExtra(EXTRA_CAPTURETOTEXTURE_ENABLED, CAPTURE_TO_TEXTURE);
+        intent.putExtra(EXTRA_FLEXFEC_ENABLED, FLEXFEC_ENABLED);
+        intent.putExtra(EXTRA_NOAUDIOPROCESSING_ENABLED, NO_AUDIO_PROCESSING);
+        intent.putExtra(EXTRA_AECDUMP_ENABLED, AEC_DUMP);
+        intent.putExtra(EXTRA_OPENSLES_ENABLED, USE_OPENSLES);
+        intent.putExtra(EXTRA_DISABLE_BUILT_IN_AEC, DISABLE_BUILT_IN_AEC);
+        intent.putExtra(EXTRA_DISABLE_BUILT_IN_AGC, DISABLE_BUILT_IN_AGC);
+        intent.putExtra(EXTRA_DISABLE_BUILT_IN_NS, DISABLE_BUILT_IN_NS);
+        intent.putExtra(EXTRA_ENABLE_LEVEL_CONTROL, ENABLE_LEVEL_CONTROL);
+        intent.putExtra(EXTRA_DISABLE_WEBRTC_AGC_AND_HPF, DISABLE_WEBRTC_AGC_AND_HPE);
+        intent.putExtra(EXTRA_AUDIO_BITRATE, AUDIO_START_BITRATE);
+        intent.putExtra(EXTRA_AUDIOCODEC, AUDIO_CODEC);
+        intent.putExtra(EXTRA_DISPLAY_HUD, DISPLAY_HUD);
+        intent.putExtra(EXTRA_TRACING, TRACING);
+        intent.putExtra(EXTRA_CMDLINE, commandLineRun);
+        intent.putExtra(EXTRA_RUNTIME, runTimeMs);
+
+        intent.putExtra(EXTRA_DATA_CHANNEL_ENABLED, DATA_CHANNEL_ENABLED);
+
+        if (DATA_CHANNEL_ENABLED) {
+            intent.putExtra(EXTRA_ORDERED, ORDERED);
+            intent.putExtra(EXTRA_MAX_RETRANSMITS_MS, MAX_RETR_MS);
+            intent.putExtra(EXTRA_MAX_RETRANSMITS, MAX_RETR);
+            intent.putExtra(EXTRA_PROTOCOL, PROTOCOL);
+            intent.putExtra(EXTRA_NEGOTIATED, NEGOTIATED);
+            intent.putExtra(EXTRA_ID, ID);
+        }
+
+        if (useValuesFromIntent) {
+            if (getIntent().hasExtra(EXTRA_VIDEO_FILE_AS_CAMERA)) {
+                String videoFileAsCamera =
+                        getIntent().getStringExtra(EXTRA_VIDEO_FILE_AS_CAMERA);
+                intent.putExtra(EXTRA_VIDEO_FILE_AS_CAMERA, videoFileAsCamera);
+            }
+
+            if (getIntent().hasExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE)) {
+                String saveRemoteVideoToFile =
+                        getIntent().getStringExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE);
+                intent.putExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE, saveRemoteVideoToFile);
+            }
+
+            if (getIntent().hasExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_WIDTH)) {
+                int videoOutWidth =
+                        getIntent().getIntExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_WIDTH, 0);
+                intent.putExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_WIDTH, videoOutWidth);
+            }
+
+            if (getIntent().hasExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_HEIGHT)) {
+                int videoOutHeight =
+                        getIntent().getIntExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_HEIGHT, 0);
+                intent.putExtra(EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_HEIGHT, videoOutHeight);
+            }
+        }
+
+        startActivityForResult(intent, REQUEST_CONNECTION);
+    }
 }
