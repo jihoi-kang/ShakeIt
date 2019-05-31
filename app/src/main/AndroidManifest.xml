@@ -46,24 +46,24 @@
 
         <activity
             android:name=".login.EmailLoginActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme_StatusBar_Black"
             android:screenOrientation="portrait"/>
 
         <activity
             android:name=".login.SignUpActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme_StatusBar_Black"
             android:screenOrientation="portrait"/>
 
         <activity android:name=".main.MainActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme_StatusBar_Black"
             android:screenOrientation="portrait" />
 
         <activity android:name=".main.more.UpdateProfileActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme_StatusBar_Black"
             android:screenOrientation="portrait" />
 
         <activity android:name=".main.friend.AddFriendActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme_StatusBar_Black"
             android:screenOrientation="portrait" />
 
         <activity android:name=".main.friend.ProfileDetailActivity"
@@ -71,11 +71,11 @@
             android:screenOrientation="portrait" />
 
         <activity android:name=".main.chat.ChatActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme_StatusBar_Black"
             android:screenOrientation="portrait" />
 
         <activity android:name=".main.chat.AddChatActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme_StatusBar_Black"
             android:screenOrientation="portrait" />
 
         <activity android:name=".main.more.ImageFilterActivity"

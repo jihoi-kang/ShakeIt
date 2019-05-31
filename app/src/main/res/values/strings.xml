@@ -66,5 +66,6 @@
     <string name="camera2_texture_only_error">Camera2 only supports capturing to texture. Either disable Camera2 or enable capturing to texture in the options.</string>
     <string name="msg_decline">거절</string>
     <string name="msg_accept">승인</string>
+    <string name="msg_participants">참여자들</string>
 
 </resources>

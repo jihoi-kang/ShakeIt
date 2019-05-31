@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.User;
-import com.example.kjh.shakeit.etc.MyDividerItemDecoration;
 import com.example.kjh.shakeit.main.MainActivity;
 import com.example.kjh.shakeit.main.adapter.ChatRoomListAdapter;
 import com.example.kjh.shakeit.main.chat.contract.TabChatRoomListContract;
@@ -104,7 +103,6 @@ public class TabChatRoomListFragment extends Fragment implements TabChatRoomList
 
         layoutManager = new LinearLayoutManager(getActivity());
         chatRoomListView.setLayoutManager(layoutManager);
-        chatRoomListView.addItemDecoration(new MyDividerItemDecoration(getActivity()));
 
         adapter = new ChatRoomListAdapter(getActivity(), rooms, user);
         chatRoomListView.setAdapter(adapter);

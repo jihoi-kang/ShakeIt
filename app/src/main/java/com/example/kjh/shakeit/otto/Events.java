@@ -59,4 +59,17 @@ public class Events {
         }
     }
 
+    /** WebRTC Message */
+    public static class webRTCEvent {
+        private String message;
+
+        public webRTCEvent(String message) {
+            this.message = message;
+        }
+
+        public String getMessage(){
+            return message;
+        }
+    }
+
 }

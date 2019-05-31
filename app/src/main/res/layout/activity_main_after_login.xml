@@ -5,12 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" >
@@ -21,25 +20,24 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|start"
             android:paddingStart="16dp"
-            android:textColor="@color/white"
-            android:fontFamily="@font/bmjua_otf"
-            android:textSize="21sp" />
+            android:textColor="@color/black"
+            android:fontFamily="@font/nanum_barun_gothic"
+            android:textSize="18sp" />
 
         <ImageView
             android:id="@+id/add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginEnd="16dp"
             android:layout_gravity="center_vertical|end" />
 
     </android.support.v7.widget.Toolbar>
 
-
     <android.support.design.widget.TabLayout
         android:id="@+id/layout_tab"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/background_grey_light"
+        android:background="@color/background_grey_dark3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,15 +49,15 @@
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/background_grey_primary"
+        android:layout_height="0.7dp"
+        android:background="@color/background_grey_dark2"
         app:layout_constraintBottom_toTopOf="@+id/layout_tab"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
+        android:background="@color/white"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/view"

@@ -19,7 +19,6 @@ import com.example.kjh.shakeit.main.friend.presenter.TabFriendListPresenter;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.Injector;
-import com.example.kjh.shakeit.etc.MyDividerItemDecoration;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -94,8 +93,6 @@ public class TabFriendListFragment extends Fragment implements TabFriendListCont
 
         layoutManager = new LinearLayoutManager(getActivity());
         friendListView.setLayoutManager(layoutManager);
-
-        friendListView.addItemDecoration(new MyDividerItemDecoration(getActivity()));
 
         presenter.setFriendList();
 

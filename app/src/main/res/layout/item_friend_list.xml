@@ -2,52 +2,69 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:paddingEnd="16dp"
     android:paddingStart="16dp"
+    android:background="@color/white"
     android:id="@+id/container"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/profile_image"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:contentDescription="@string/msg_profile_image"
-        app:civ_border_color="@color/background_grey_primary"
-        app:civ_border_width="1dp" />
-
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginStart="16dp"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/bmjua_otf"
-            android:textSize="16dp" />
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/profile_image"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/msg_profile_image"
+            app:civ_border_color="@color/background_grey_primary"
+            app:civ_border_width="0.7dp" />
 
-        <TextView
-            android:id="@+id/status_message"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/bmjua_otf"
-            android:textColor="@color/background_grey_primary"
-            android:textSize="12dp" />
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:fontFamily="@font/nanum_barun_gothic"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/status_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/nanum_barun_gothic"
+                android:textColor="@color/background_grey_primary"
+                android:textSize="12dp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/select"
+            android:src="@drawable/ic_outline_radio_button_unchecked_black_48dp"
+            android:padding="8dp"
+            android:layout_gravity="center"
+            android:layout_width="36dp"
+            android:layout_height="36dp" />
 
     </LinearLayout>
 
-    <CheckBox
-        android:id="@+id/select"
-        android:layout_gravity="center"
-        android:padding="8dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <View
+        android:id="@+id/line"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/background_grey_light2" />
 
 </LinearLayout>

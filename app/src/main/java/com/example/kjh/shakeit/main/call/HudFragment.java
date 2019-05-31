@@ -2,17 +2,22 @@ package com.example.kjh.shakeit.main.call;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
+import com.example.kjh.shakeit.otto.BusProvider;
+import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.webrtc.CpuMonitor;
 import com.example.kjh.shakeit.webrtc.PeerConnectionClient;
+import com.squareup.otto.Subscribe;
 
 import org.webrtc.StatsReport;
 
@@ -42,11 +47,21 @@ public class HudFragment extends Fragment {
     @BindView(R.id.hud_stat_video_send) TextView hudViewVideoSend;
     @BindView(R.id.hud_stat_video_recv) TextView hudViewVideoRecv;
     @BindView(R.id.button_toggle_debug) ImageButton toggleDebugButton;
+    @BindView(R.id.chronometer) Chronometer chronometerView;
 
     private boolean videoCallEnabled;
     private boolean displayHud;
     private volatile boolean isRunning;
     private CpuMonitor cpuMonitor;
+
+    /**------------------------------------------------------------------
+     생명주기 ==> onCreate()
+     ------------------------------------------------------------------*/
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        BusProvider.getInstance().register(this);
+    }
 
     /**------------------------------------------------------------------
      생명주기 ==> onCreateView()
@@ -96,7 +111,12 @@ public class HudFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        chronometerView.stop();
+
         unbinder.unbind();
+
+        BusProvider.getInstance().unregister(this);
     }
 
     /**------------------------------------------------------------------
@@ -224,4 +244,42 @@ public class HudFragment extends Fragment {
         }
         encoderStatView.setText(encoderStat.toString());
     }
+
+    /**------------------------------------------------------------------
+     메서드 ==> 통화 시간 기록
+     ------------------------------------------------------------------*/
+    private void countTime() {
+
+        getActivity().runOnUiThread(() -> {
+            chronometerView.setBase(SystemClock.elapsedRealtime());
+            chronometerView.start();
+            chronometerView.setVisibility(View.VISIBLE);
+
+            chronometerView.setOnChronometerTickListener(cArg -> {
+                long time = SystemClock.elapsedRealtime() - cArg.getBase();
+
+                int h = (int) (time / 3600000);
+                int m = (int) (time - h * 3600000) / 60000;
+                int s = (int) (time - h * 3600000 - m * 60000) / 1000;
+                String hh = h < 10 ? "0" + h : h + "";
+                String mm = m < 10 ? "0" + m : m + "";
+                String ss = s < 10 ? "0" + s : s + "";
+                cArg.setText(hh + ":" + mm + ":" + ss);
+            });
+        });
+
+    }
+
+    /**------------------------------------------------------------------
+     구독이벤트 ==> 통화 시작 되었음을 알림
+     ------------------------------------------------------------------*/
+    @Subscribe
+    public void getCallStartEvent(Events.webRTCEvent event) {
+        String message = event.getMessage();
+
+        if(message.equals("start")) {
+            countTime();
+        }
+    }
+
 }

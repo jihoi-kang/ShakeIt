@@ -215,7 +215,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
         View.OnClickListener listener = view -> toggleCallControlFragmentVisibility();
 
         /** pipRender 클릭시 뷰 스왑 */
-        pipRenderer.setOnClickListener(view -> setSwappedFeeds(!isSwappedFeeds));
+//        pipRenderer.setOnClickListener(view -> setSwappedFeeds(!isSwappedFeeds));
 
         fullscreenRenderer.setOnClickListener(listener);
         remoteRenderers.add(remoteProxyRenderer);
@@ -838,6 +838,10 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
             iceConnected = true;
             callConnected();
         });
+
+        /** 연결되었음을 Fragment에게 알림 */
+        Events.webRTCEvent event = new Events.webRTCEvent("start");
+        BusProvider.getInstance().post(event);
     }
 
     @Override

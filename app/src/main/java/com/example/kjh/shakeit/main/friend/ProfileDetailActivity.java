@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.app.AppManager;
 import com.example.kjh.shakeit.data.User;
+import com.example.kjh.shakeit.main.chat.ChatActivity;
 import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.StrUtil;
 
@@ -71,6 +72,10 @@ public class ProfileDetailActivity extends AppCompatActivity {
 
         /** 위치가 0이면 자기 자신 */
         if(position == 0)
+            directChat.setVisibility(View.GONE);
+
+        /** ChatActivity로 부터 온 Intent면 1:1 채팅 막기 */
+        if(intent.getStringExtra("from").equals(ChatActivity.class.getSimpleName()))
             directChat.setVisibility(View.GONE);
     }
 

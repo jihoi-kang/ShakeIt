@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -32,10 +33,10 @@ public class CallFragment extends Fragment {
 
     private Unbinder unbinder;
     @BindView(R.id.contact_name_call) TextView contactView;
-    @BindView(R.id.button_call_disconnect) ImageButton disconnectButton;
-    @BindView(R.id.button_call_switch_camera) ImageButton cameraSwitchButton;
+    @BindView(R.id.button_call_disconnect) ImageView disconnectButton;
+    @BindView(R.id.button_call_switch_camera) ImageView cameraSwitchButton;
     @BindView(R.id.button_call_scaling_mode) ImageButton videoScalingButton;
-    @BindView(R.id.button_call_toggle_mic) ImageButton toggleMuteButton;
+    @BindView(R.id.button_call_toggle_mic) ImageView toggleMuteButton;
     @BindView(R.id.capture_format_text_call) TextView captureFormatText;
     @BindView(R.id.capture_format_slider_call) SeekBar captureFormatSlider;
 
@@ -151,7 +152,10 @@ public class CallFragment extends Fragment {
     @OnClick(R.id.button_call_toggle_mic)
     void onClickToggleMic() {
         boolean enabled = callEvents.onToggleMic();
-        toggleMuteButton.setAlpha(enabled ? 1.0f : 0.3f);
+        if(enabled)
+            toggleMuteButton.setImageResource(R.drawable.ic_mic_on);
+        else
+            toggleMuteButton.setImageResource(R.drawable.ic_mic_off);
     }
 
 }

@@ -122,6 +122,11 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
         for(int index = 0; index < participants.size(); index++)
             title += (index == (participants.size() - 1)) ? participants.get(index).getName() : participants.get(index).getName() + ", ";
 
+        if(title.length() > 13) {
+            title = title.substring(0, 13);
+            title += "...";
+        }
+
         ChatHolder lastMessage = rooms.get(position).getChatHolder();
 
         String lastMessageContent = lastMessage.getMessageContent();

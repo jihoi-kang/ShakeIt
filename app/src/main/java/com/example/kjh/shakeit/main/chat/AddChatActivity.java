@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.app.AppManager;
 import com.example.kjh.shakeit.data.User;
-import com.example.kjh.shakeit.etc.MyDividerItemDecoration;
 import com.example.kjh.shakeit.main.adapter.FriendListAdapter;
 import com.example.kjh.shakeit.main.chat.contract.AddChatContract;
 import com.example.kjh.shakeit.main.chat.presenter.AddChatPresenter;
@@ -72,8 +71,6 @@ public class AddChatActivity extends AppCompatActivity implements AddChatContrac
 
         layoutManager = new LinearLayoutManager(this);
         friendListView.setLayoutManager(layoutManager);
-
-        friendListView.addItemDecoration(new MyDividerItemDecoration(this));
 
         adapter = new FriendListAdapter(
                 this,

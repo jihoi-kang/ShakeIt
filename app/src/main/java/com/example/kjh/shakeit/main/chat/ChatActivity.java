@@ -1,6 +1,6 @@
 package com.example.kjh.shakeit.main.chat;
 
-import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,14 +9,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,6 +25,7 @@ import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.adapter.ChatListAdapter;
+import com.example.kjh.shakeit.main.adapter.FriendListAdapter;
 import com.example.kjh.shakeit.main.call.CallActivity;
 import com.example.kjh.shakeit.main.call.CallWaitActivity;
 import com.example.kjh.shakeit.main.chat.contract.ChatContract;
@@ -35,13 +35,10 @@ import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.Injector;
 import com.example.kjh.shakeit.utils.StrUtil;
 import com.example.kjh.shakeit.utils.ToastGenerator;
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import butterknife.BindView;
@@ -139,12 +136,16 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
     @BindView(R.id.chat_list) RecyclerView chatListView;
     @BindView(R.id.title) TextView titleTxt;
     @BindView(R.id.profile_image) ImageView profileImage;
-    @BindView(R.id.btn_send) Button sendBtn;
-    @BindView(R.id.chatRootLayout) ViewGroup chatRootLayout;
-    @BindView(R.id.video_call) ImageView videoCall;
+    @BindView(R.id.send) ImageView sendImage;
+    @BindView(R.id.dl_root) DrawerLayout dlRoot;
+    @BindView(R.id.fl_right_side) FrameLayout rightSideLayout;
+    @BindView(R.id.participants) RecyclerView participantListView;
 
     private ChatListAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
+
+    private FriendListAdapter participantListAdapter;
+    private RecyclerView.LayoutManager participantListLayoutManager;
 
     private ArrayList<ChatHolder> chats = new ArrayList<>();
 
@@ -179,6 +180,18 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
 
         adapter = new ChatListAdapter(this, chats, room);
         chatListView.setAdapter(adapter);
+
+        /** 참여자목록 RecyclerView */
+        participantListView.setHasFixedSize(true);
+
+        participantListLayoutManager = new LinearLayoutManager(this);
+        participantListView.setLayoutManager(participantListLayoutManager);
+
+        ArrayList<User> participants = (ArrayList<User>) room.getParticipants().clone();
+        participants.add(0, user);
+
+        participantListAdapter = new FriendListAdapter(this, participants, ChatActivity.class.getSimpleName(), null);
+        participantListView.setAdapter(participantListAdapter);
 
         presenter.onCreate();
     }
@@ -229,11 +242,12 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
         for(int index = 0; index < room.getParticipants().size(); index++)
             title += (index == (room.getParticipants().size() - 1)) ? room.getParticipants().get(index).getName() : room.getParticipants().get(index).getName() + ", ";
 
-        titleTxt.setText(title);
+        if(title.length() > 13) {
+            title = title.substring(0, 13);
+            title += "...";
+        }
 
-        /** 영상통화 버튼 셋팅 */
-        if(room.getParticipants().size() > 1)
-            videoCall.setVisibility(View.GONE);
+        titleTxt.setText(title);
 
         /** 소프트 키보드 올라오면 채팅목록 마지막에 포커스 */
         KeyboardVisibilityEvent.setEventListener(this, isOpen -> chatListView.scrollToPosition(chats.size() - 1));
@@ -261,9 +275,20 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
     }
 
     /**------------------------------------------------------------------
+     클릭이벤트 ==> 소프트키 뒤로가기
+     ------------------------------------------------------------------*/
+    @Override
+    public void onBackPressed() {
+        if(dlRoot.isDrawerOpen(rightSideLayout))
+            dlRoot.closeDrawer(rightSideLayout);
+        else
+            super.onBackPressed();
+    }
+
+    /**------------------------------------------------------------------
      클릭이벤트 ==> 전송
      ------------------------------------------------------------------*/
-    @OnClick(R.id.btn_send)
+    @OnClick(R.id.send)
     void onClickSend() {
         presenter.onClickSend();
     }
@@ -285,29 +310,16 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
     }
 
     /**------------------------------------------------------------------
-     클릭이벤트 ==> 영상통화
+     클릭이벤트 ==> 메뉴
      ------------------------------------------------------------------*/
-    @OnClick(R.id.video_call)
-    void onClickVideoCall() {
-        TedPermission.with(this)
-                .setPermissionListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted() {
-                        int random = new Random().nextInt(99999999);
-                        connectToRoom("shake" + random, false, false, false, 0, "sender");
-                    }
-
-                    @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
-                    }
-                })
-                .setDeniedTitle(R.string.permission_denied_title)
-                .setDeniedMessage(R.string.permission_denied_message)
-                .setGotoSettingButtonText(R.string.tedpermission_setting)
-                .setPermissions(Manifest.permission.INTERNET, Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
-                .check();
+    @OnClick(R.id.menu)
+    void onClickMenu() {
+        dlRoot.openDrawer(rightSideLayout);
     }
 
+    /**------------------------------------------------------------------
+     콜백이벤트 ==> onActivityResult()
+     ------------------------------------------------------------------*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -315,24 +327,9 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
             return;
 
         /** CallWaitActivity 에서 돌아 왔을 때 */
-        if(requestCode == REQUEST_CODE_CHAT_TO_CALL_WAIT) {
-            TedPermission.with(this)
-                    .setPermissionListener(new PermissionListener() {
-                        @Override
-                        public void onPermissionGranted() {
-                            connectToRoom(data.getStringExtra("roomID"), false, false, false, 0, "receiver");
-                        }
+        if(requestCode == REQUEST_CODE_CHAT_TO_CALL_WAIT)
+            presenter.toCall(data.getStringExtra("roomID"));
 
-                        @Override
-                        public void onPermissionDenied(List<String> deniedPermissions) {
-                        }
-                    })
-                    .setDeniedTitle(R.string.permission_denied_title)
-                    .setDeniedMessage(R.string.permission_denied_message)
-                    .setGotoSettingButtonText(R.string.tedpermission_setting)
-                    .setPermissions(Manifest.permission.INTERNET, Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
-                    .check();
-        }
     }
 
     /**------------------------------------------------------------------
@@ -378,7 +375,12 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
         BottomDialog dialog = new BottomDialog(this);
         dialog.canceledOnTouchOutside(true);
         dialog.cancelable(true);
-        dialog.inflateMenu(R.menu.menu_attach);
+        /** 개인채팅인지 다중채팅인지에 따라 메뉴 아이템 다르게 셋팅 */
+        if(room.getParticipants().size() == 1)
+            dialog.inflateMenu(R.menu.menu_attach_direct);
+        else
+            dialog.inflateMenu(R.menu.menu_attach_multi);
+
         dialog.setOnItemSelectedListener(id -> {
             switch (id) {
                 /** 카메라 선택 */
@@ -388,6 +390,10 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
                 /** 갤러리 선택 */
                 case R.id.action_gallery:
                     Log.d(TAG, "갤러리 선택");
+                    return true;
+                case R.id.action_call:
+                    presenter.toCall(null);
+                    Log.d(TAG, "영상통화 선택");
                     return true;
                 default:
                     return false;
@@ -418,7 +424,16 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
         startActivityForResult(intent, REQUEST_CODE_CHAT_TO_CALL_WAIT);
     }
 
-    private void connectToRoom(String roomId, boolean commandLineRun, boolean loopback,
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
+    /**------------------------------------------------------------------
+     메서드 ==> 영상통화 방과 연결
+     ------------------------------------------------------------------*/
+    @Override
+    public void connectToRoom(String roomId, boolean commandLineRun, boolean loopback,
                                boolean useValuesFromIntent, int runTimeMs, String type) {
         this.commandLineRun = commandLineRun;
 

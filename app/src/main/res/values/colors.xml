@@ -7,9 +7,17 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="yellow">#FFFF00</color>
+    <color name="green">#7DCD00</color>
+    <color name="red">#FF0000</color>
+    <color name="orange">#FCCC00</color>
+    <color name="chacol">#36454f</color>
+    <color name="transparent_chacol">#8836454f</color>
     <color name="google_background">#d62d20</color>
-    
-    <color name="background_grey_light">#EAEAEA</color>
+
+    <color name="background_grey_transparent">#88EAEAEA</color>
+    <color name="background_grey_light3">#F7F7F7</color>
+    <color name="background_grey_light2">#EAEAEA</color>
+    <color name="background_grey_light1">#CECECE</color>
     <color name="background_grey_primary">#AAAAAA</color>
     <color name="background_grey_dark1">#888888</color>
     <color name="background_grey_dark2">#666666</color>

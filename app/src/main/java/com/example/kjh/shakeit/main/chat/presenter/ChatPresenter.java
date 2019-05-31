@@ -1,7 +1,9 @@
 package com.example.kjh.shakeit.main.chat.presenter;
 
+import android.Manifest;
 import android.os.Message;
 
+import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.api.ResultCallback;
 import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ChatRoom;
@@ -12,7 +14,10 @@ import com.example.kjh.shakeit.main.chat.contract.ChatContract;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.Serializer;
+import com.example.kjh.shakeit.utils.StrUtil;
 import com.example.kjh.shakeit.utils.TimeManager;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 import com.squareup.otto.Subscribe;
 
 import org.json.JSONArray;
@@ -20,6 +25,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import static com.example.kjh.shakeit.main.chat.ChatActivity.chatActHandler;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.CONN_WEBRTC;
@@ -78,6 +85,9 @@ public class ChatPresenter implements ChatContract.Presenter {
         ChatRoom room = view.getChatRoom();
         String time = TimeManager.nowTime();
 
+        if(StrUtil.isBlank(content))
+            return;
+
         /** 참가자들의 아이디들 => JSONArray */
         JSONArray unreadUsers = new JSONArray();
         for(int index = 0; index < room.getParticipants().size(); index++)
@@ -125,6 +135,43 @@ public class ChatPresenter implements ChatContract.Presenter {
     @Override
     public void onClickAttach() {
         view.showSelectType();
+    }
+
+    /**------------------------------------------------------------------
+     메서드 ==> 영상통화 연결
+     ------------------------------------------------------------------*/
+    @Override
+    public void toCall(String roomID) {
+        TedPermission.with(view.getContext())
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        String type = "receiver";
+                        String finalRoomID = roomID;
+                        if(StrUtil.isBlank(finalRoomID)) {
+                            int random = new Random().nextInt(99999999);
+                            finalRoomID = "shake" + random;
+                            type = "sender";
+                        }
+                        view.connectToRoom(
+                                finalRoomID,
+                                false,
+                                false,
+                                false,
+                                0,
+                                type
+                        );
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+                    }
+                })
+                .setDeniedTitle(R.string.permission_denied_title)
+                .setDeniedMessage(R.string.permission_denied_message)
+                .setGotoSettingButtonText(R.string.tedpermission_setting)
+                .setPermissions(Manifest.permission.INTERNET, Manifest.permission.MODIFY_AUDIO_SETTINGS, Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
+                .check();
     }
 
     /**------------------------------------------------------------------

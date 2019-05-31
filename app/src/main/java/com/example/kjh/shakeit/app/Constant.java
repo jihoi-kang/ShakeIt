@@ -148,7 +148,7 @@ public class Constant {
             "친구목록", "채팅목록", "더보기"
     };
     public final static int[] tabLayoutImage = {
-            R.drawable.ic_add_person_white_18dp,
-            R.drawable.ic_add_chat_room_white_24dp
+            R.drawable.ic_add_person_black_48dp,
+            R.drawable.ic_add_chat_room_black_48dp
     };
 }

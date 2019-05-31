@@ -10,15 +10,15 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
+        android:background="@color/white">
 
-        <ImageButton
+        <ImageView
             android:id="@+id/back"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_gravity="center_vertical"
-            android:background="@color/colorPrimary"
-            android:src="@drawable/ic_back_white_36dp" />
+            android:background="@color/white"
+            android:src="@drawable/ic_back_black_48dp" />
 
         <TextView
             android:id="@+id/update"
@@ -28,15 +28,14 @@
             android:paddingStart="8dp"
             android:paddingEnd="16dp"
             android:layout_gravity="end"
-            android:fontFamily="@font/bmjua_otf"
-            android:textSize="21sp"
-            android:textColor="@color/white"
+            android:fontFamily="@font/nanum_barun_gothic"
+            android:textSize="16sp"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/msg_update"/>
 
     </android.support.v7.widget.Toolbar>
-
 
     <RelativeLayout
         android:id="@+id/update_profile_image"
@@ -53,7 +52,7 @@
             android:src="@drawable/ic_basic_profile"
             android:contentDescription="@string/msg_profile_image"
             app:civ_border_color="@color/background_grey_primary"
-            app:civ_border_width="1dp" />
+            app:civ_border_width="0.7dp" />
 
         <ImageView
             android:layout_width="32dp"
@@ -61,23 +60,20 @@
             android:layout_alignEnd="@+id/profile_image"
             android:layout_alignBottom="@+id/profile_image"
             android:src="@drawable/ic_edit_camera"/>
-    </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/background_grey_primary" />
+    </RelativeLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:fontFamily="@font/bmjua_otf"
+        android:textColor="@color/black"
+        android:fontFamily="@font/nanum_barun_gothic_bold"
         android:text="@string/input_name_hint"
-        android:textSize="21sp" />
+        android:textSize="18sp" />
 
-    <com.example.kjh.shakeit.etc.ClearEditText
+    <com.example.kjh.shakeit.view.ClearEditText
         android:id="@+id/inputName"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
@@ -85,48 +81,41 @@
         android:layout_marginEnd="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape_round_edge"
-        android:fontFamily="sans-serif"
+        android:background="@drawable/shape_round_edge_back_white"
+        android:fontFamily="@font/nanum_barun_gothic"
+        android:textCursorDrawable="@drawable/color_cursor"
         android:hint="@string/input_name_hint"
         android:inputType="text"
         android:padding="16dp"
         android:singleLine="true"
         android:textColor="@color/background_grey_dark2"
-        android:textSize="21sp" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/background_grey_primary" />
+        android:textSize="18sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
-        android:fontFamily="@font/bmjua_otf"
+        android:fontFamily="@font/nanum_barun_gothic_bold"
         android:text="@string/input_status_message_hint"
-        android:textSize="21sp" />
+        android:textColor="@color/black"
+        android:textSize="18sp" />
 
-    <com.example.kjh.shakeit.etc.ClearEditText
+    <com.example.kjh.shakeit.view.ClearEditText
         android:id="@+id/inputStatusMessage"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:textCursorDrawable="@drawable/color_cursor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape_round_edge"
-        android:fontFamily="sans-serif"
+        android:background="@drawable/shape_round_edge_back_white"
+        android:fontFamily="@font/nanum_barun_gothic"
         android:hint="@string/input_status_message_hint"
         android:inputType="text"
         android:padding="16dp"
         android:textColor="@color/background_grey_dark2"
-        android:textSize="21sp" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/background_grey_primary" />
+        android:textSize="18sp" />
 
 </LinearLayout>

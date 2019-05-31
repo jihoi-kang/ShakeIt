@@ -1,5 +1,7 @@
 package com.example.kjh.shakeit.main.chat.contract;
 
+import android.content.Context;
+
 import com.example.kjh.shakeit.api.ResultCallback;
 import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ChatRoom;
@@ -20,6 +22,9 @@ public interface ChatContract {
         void showChatList(ArrayList<ChatHolder> holders);
         void setChatRoomId(int roomId);
         void goCallWaitActivity(String roomID);
+        Context getContext();
+        void connectToRoom(String roomId, boolean commandLineRun, boolean loopback,
+                           boolean useValuesFromIntent, int runTimeMs, String type);
 
     }
 
@@ -29,6 +34,7 @@ public interface ChatContract {
         void onCreate();
         void onDestroy();
         void onClickAttach();
+        void toCall(String roomID);
 
     }
 

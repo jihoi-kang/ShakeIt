@@ -15,12 +15,12 @@
         android:layout_marginBottom="8dp"
         android:contentDescription="@string/msg_profile_image"
         app:civ_border_color="@color/background_grey_primary"
-        app:civ_border_width="1dp" />
+        app:civ_border_width="0.7dp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:orientation="vertical"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:gravity="center_vertical"
         android:layout_height="match_parent">
 
@@ -34,16 +34,18 @@
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/bmjua_otf"
-                android:textSize="16dp" />
+                android:textColor="@color/black"
+                android:fontFamily="@font/nanum_barun_gothic"
+                android:textSize="15dp" />
 
             <TextView
                 android:id="@+id/member_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:fontFamily="@font/bmjua_otf"
-                android:textSize="16dp" />
+                android:layout_marginStart="8dp"
+                android:textColor="@color/background_grey_light1"
+                android:fontFamily="@font/nanum_barun_gothic"
+                android:textSize="14dp" />
 
         </LinearLayout>
 
@@ -51,7 +53,7 @@
             android:id="@+id/last_message_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/bmjua_otf"
+            android:fontFamily="@font/nanum_barun_gothic"
             android:textColor="@color/background_grey_primary"
             android:textSize="12dp" />
 
@@ -71,17 +73,26 @@
 
         <TextView
             android:id="@+id/last_message_time"
+            android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/bmjua_otf"
-            android:textSize="16dp" />
+            android:textColor="@color/background_grey_primary"
+            android:fontFamily="@font/nanum_barun_gothic"
+            android:textSize="12dp" />
 
         <TextView
             android:id="@+id/unread_count"
+            android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/bmjua_otf"
-            android:textColor="@color/background_grey_primary"
+            android:layout_marginTop="4dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:background="@drawable/shape_round_edge_back_red"
+            android:fontFamily="@font/nanum_barun_gothic_bold"
+            android:textColor="@color/white"
             android:textSize="12dp" />
 
     </LinearLayout>

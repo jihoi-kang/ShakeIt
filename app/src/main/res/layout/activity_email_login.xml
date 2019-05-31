@@ -2,21 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
+        android:background="@color/white">
 
-        <ImageButton
+        <ImageView
             android:id="@+id/back"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_gravity="center_vertical"
-            android:background="@color/colorPrimary"
-            android:src="@drawable/ic_back_white_36dp" />
+            android:background="@color/white"
+            android:src="@drawable/ic_back_black_48dp" />
 
     </android.support.v7.widget.Toolbar>
 
@@ -27,18 +27,19 @@
         android:background="@drawable/shape_round_edge"
         android:orientation="vertical">
 
-        <com.example.kjh.shakeit.etc.ClearEditText
+        <com.example.kjh.shakeit.view.ClearEditText
             android:id="@+id/inputEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:fontFamily="sans-serif"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:fontFamily="@font/nanum_barun_gothic"
             android:hint="@string/input_email_hint"
             android:inputType="textEmailAddress"
             android:singleLine="true"
             android:padding="16dp"
             android:textColor="@color/background_grey_dark2"
-            android:textSize="21sp" />
+            android:textSize="18dp" />
 
         <View
             android:layout_width="match_parent"
@@ -46,18 +47,19 @@
             android:background="@color/background_grey_primary" />
 
 
-        <com.example.kjh.shakeit.etc.ClearEditText
+        <com.example.kjh.shakeit.view.ClearEditText
             android:id="@+id/inputPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
+            android:textCursorDrawable="@drawable/color_cursor"
             android:padding="16dp"
             android:hint="@string/input_password_hint"
             android:singleLine="true"
             android:inputType="textPassword"
-            android:fontFamily="sans-serif"
+            android:fontFamily="@font/nanum_barun_gothic"
             android:textColor="@color/background_grey_dark2"
-            android:textSize="21sp" />
+            android:textSize="18dp" />
 
     </LinearLayout>
 
@@ -66,10 +68,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:background="@color/background_grey_light"
-        android:fontFamily="@font/bmjua_otf"
+        android:background="@color/black"
+        android:fontFamily="@font/nanum_barun_gothic_bold"
         android:text="@string/msg_login"
-        android:textColor="@color/colorPrimary"
-        android:textSize="21sp" />
+        android:textColor="@color/white"
+        android:textSize="18sp" />
 
 </LinearLayout>
