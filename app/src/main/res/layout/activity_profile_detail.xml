@@ -76,25 +76,30 @@
                 android:background="@drawable/shape_round_edge_back_white"
                 android:fontFamily="@font/nanum_barun_gothic"
                 android:textColor="@color/background_grey_light1" />
-            <LinearLayout
+
+            <RelativeLayout
                 android:layout_width="200dp"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:orientation="horizontal" >
 
+                <!-- 1:1 채팅하기 -->
                 <LinearLayout
                     android:id="@+id/direct_chat"
-                    android:layout_width="0dp"
+                    android:visibility="gone"
+                    android:padding="16dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="vertical">
 
-                    <ImageView
+                    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                         android:src="@drawable/ic_direct_chat"
                         android:layout_width="44dp"
-                        android:layout_height="44dp" />
+                        android:layout_height="44dp"
+                        app:civ_border_color="@color/background_grey_light1"
+                        app:civ_border_width="0.7dp"/>
 
                     <TextView
                         android:layout_marginTop="12dp"
@@ -105,7 +110,35 @@
                         android:textColor="@color/black"
                         android:textSize="11sp" />
                 </LinearLayout>
-            </LinearLayout>
+
+                <!-- 친구 추가하기 -->
+                <LinearLayout
+                    android:id="@+id/add_friend"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:orientation="vertical">
+
+                    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:src="@drawable/add_friend"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        app:civ_border_color="@color/background_grey_light1"
+                        app:civ_border_width="0.7dp"/>
+
+                    <TextView
+                        android:layout_marginTop="12dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/nanum_barun_gothic"
+                        android:text="@string/msg_add_friend"
+                        android:textColor="@color/black"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+            </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 

@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_MAIN_TO_CHAT;
+
 /**
  * 채팅방 아답터
  * @author 강지회
@@ -166,7 +168,14 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
             ((BitmapDrawable)holder.profileImage.getDrawable()).getBitmap().compress(Bitmap.CompressFormat.PNG, 100, stream);
             byte[] imageByteArray = stream.toByteArray();
             intent.putExtra("imageArray", imageByteArray);
-            activity.startActivity(intent);
+
+            /** 채팅방목록 화면에서 채팅방 화면으로 넘어 갈때 단체 채팅시 참여자 중 한명과 1:1 채팅을 할 수 있음 */
+            if(memberCount > 2)
+                activity.startActivityForResult(intent, REQUEST_CODE_MAIN_TO_CHAT);
+            else
+                activity.startActivity(intent);
+
+
         });
     }
 

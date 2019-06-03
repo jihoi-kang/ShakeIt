@@ -14,3 +14,5 @@ LOCAL_SRC_FILES := main.cpp
 LOCAL_LDLIBS += -llog
 
 include $(BUILD_SHARED_LIBRARY)
+
+APP_STL := c++_shared

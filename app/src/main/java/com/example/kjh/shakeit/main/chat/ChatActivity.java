@@ -47,79 +47,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import rebus.bottomdialog.BottomDialog;
 
-import static com.example.kjh.shakeit.app.Constant.AEC_DUMP;
-import static com.example.kjh.shakeit.app.Constant.AUDIO_CODEC;
-import static com.example.kjh.shakeit.app.Constant.AUDIO_START_BITRATE;
-import static com.example.kjh.shakeit.app.Constant.CAPTURE_QUALITY_SLIDER;
-import static com.example.kjh.shakeit.app.Constant.CAPTURE_TO_TEXTURE;
-import static com.example.kjh.shakeit.app.Constant.DATA_CHANNEL_ENABLED;
-import static com.example.kjh.shakeit.app.Constant.DEFAULT_CAMERA_FPS;
-import static com.example.kjh.shakeit.app.Constant.DISABLE_BUILT_IN_AEC;
-import static com.example.kjh.shakeit.app.Constant.DISABLE_BUILT_IN_AGC;
-import static com.example.kjh.shakeit.app.Constant.DISABLE_BUILT_IN_NS;
-import static com.example.kjh.shakeit.app.Constant.DISABLE_WEBRTC_AGC_AND_HPE;
-import static com.example.kjh.shakeit.app.Constant.DISPLAY_HUD;
-import static com.example.kjh.shakeit.app.Constant.ENABLE_LEVEL_CONTROL;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_AECDUMP_ENABLED;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_AUDIOCODEC;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_AUDIO_BITRATE;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_CAMERA2;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_CAPTURETOTEXTURE_ENABLED;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_CMDLINE;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_DATA_CHANNEL_ENABLED;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_DISABLE_BUILT_IN_AEC;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_DISABLE_BUILT_IN_AGC;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_DISABLE_BUILT_IN_NS;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_DISABLE_WEBRTC_AGC_AND_HPF;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_DISPLAY_HUD;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_ENABLE_LEVEL_CONTROL;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_FLEXFEC_ENABLED;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_HWCODEC_ENABLED;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_ID;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_LOOPBACK;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_MAX_RETRANSMITS;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_MAX_RETRANSMITS_MS;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_NEGOTIATED;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_NOAUDIOPROCESSING_ENABLED;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_OPENSLES_ENABLED;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_ORDERED;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_PROTOCOL;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_ROOMID;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_RUNTIME;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_SAVE_REMOTE_VIDEO_TO_FILE;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_HEIGHT;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_WIDTH;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_SCREENCAPTURE;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_TRACING;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEOCODEC;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_BITRATE;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_CALL;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_CAPTUREQUALITYSLIDER_ENABLED;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_FILE_AS_CAMERA;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_FPS;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_HEIGHT;
-import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_WIDTH;
-import static com.example.kjh.shakeit.app.Constant.FLEXFEC_ENABLED;
-import static com.example.kjh.shakeit.app.Constant.HD_VIDEO_HEIGHT;
-import static com.example.kjh.shakeit.app.Constant.HD_VIDEO_WIDTH;
-import static com.example.kjh.shakeit.app.Constant.HW_CODEC;
-import static com.example.kjh.shakeit.app.Constant.ID;
-import static com.example.kjh.shakeit.app.Constant.MAX_RETR;
-import static com.example.kjh.shakeit.app.Constant.MAX_RETR_MS;
-import static com.example.kjh.shakeit.app.Constant.NEGOTIATED;
-import static com.example.kjh.shakeit.app.Constant.NO_AUDIO_PROCESSING;
-import static com.example.kjh.shakeit.app.Constant.ORDERED;
-import static com.example.kjh.shakeit.app.Constant.PROTOCOL;
-import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_CHAT_TO_CALL_WAIT;
-import static com.example.kjh.shakeit.app.Constant.REQUEST_CONNECTION;
-import static com.example.kjh.shakeit.app.Constant.ROOM_URL;
-import static com.example.kjh.shakeit.app.Constant.TRACING;
-import static com.example.kjh.shakeit.app.Constant.USE_CAMERA_2;
-import static com.example.kjh.shakeit.app.Constant.USE_OPENSLES;
-import static com.example.kjh.shakeit.app.Constant.USE_SCREEN_CAPTURE;
-import static com.example.kjh.shakeit.app.Constant.VIDEO_CALL_ENABLED;
-import static com.example.kjh.shakeit.app.Constant.VIDEO_CODEC;
-import static com.example.kjh.shakeit.app.Constant.VIDEO_START_BITRATE;
+import static com.example.kjh.shakeit.app.Constant.*;
 
 public class ChatActivity extends AppCompatActivity implements ChatContract.View {
 
@@ -267,10 +195,9 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
     @Override
     protected void onDestroy() {
         AppManager.getAppManager().removeActivity(this);
+
         super.onDestroy();
-
         unbinder.unbind();
-
         presenter.onDestroy();
     }
 
@@ -283,6 +210,7 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
             dlRoot.closeDrawer(rightSideLayout);
         else
             super.onBackPressed();
+
     }
 
     /**------------------------------------------------------------------
@@ -322,7 +250,6 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
      ------------------------------------------------------------------*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         if(resultCode != RESULT_OK)
             return;
 
@@ -330,19 +257,14 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
         if(requestCode == REQUEST_CODE_CHAT_TO_CALL_WAIT)
             presenter.toCall(data.getStringExtra("roomID"));
 
-    }
+        /** ProfileDetailActivity 에서 1:1채팅 눌렀을 때 */
+        else if(requestCode == REQUEST_CODE_CHAT_TO_PROFILE_DETAIL) {
+            Intent intent = new Intent();
+            intent.putExtra("friend", data.getSerializableExtra("friend"));
+            setResult(RESULT_OK, intent);
+            finish();
+        }
 
-    /**------------------------------------------------------------------
-     메서드 ==> 프로필이미지 Bitmap 반환
-     ------------------------------------------------------------------*/
-    private Bitmap makeBitmap(String url) {
-        Bitmap bitmap;
-        if(StrUtil.isBlank(url))
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_basic_profile);
-        else
-            bitmap = ImageLoaderUtil.getBitmap(url);
-
-        return bitmap;
     }
 
     @Override
@@ -516,4 +438,18 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
 
         startActivityForResult(intent, REQUEST_CONNECTION);
     }
+
+    /**------------------------------------------------------------------
+     메서드 ==> 프로필이미지 Bitmap 반환
+     ------------------------------------------------------------------*/
+    private Bitmap makeBitmap(String url) {
+        Bitmap bitmap;
+        if(StrUtil.isBlank(url))
+            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_basic_profile);
+        else
+            bitmap = ImageLoaderUtil.getBitmap(url);
+
+        return bitmap;
+    }
+
 }

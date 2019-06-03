@@ -16,6 +16,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAPTURE_VIDEO_OUTPUT" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -88,6 +89,10 @@
             android:theme="@style/CallTheme" />
 
         <activity android:name=".main.call.CallWaitActivity"
+            android:theme="@style/AppTheme_StatusBar_Black"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".main.friend.ShakeActivity"
             android:theme="@style/AppTheme_StatusBar_Black"
             android:screenOrientation="portrait" />
 

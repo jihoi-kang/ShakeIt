@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
+import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.webrtc.CpuMonitor;
@@ -48,6 +49,8 @@ public class HudFragment extends Fragment {
     @BindView(R.id.hud_stat_video_recv) TextView hudViewVideoRecv;
     @BindView(R.id.button_toggle_debug) ImageButton toggleDebugButton;
     @BindView(R.id.chronometer) Chronometer chronometerView;
+    @BindView(R.id.name) TextView nameTxt;
+    @BindView(R.id.calling) TextView callingTxt;
 
     private boolean videoCallEnabled;
     private boolean displayHud;
@@ -85,6 +88,9 @@ public class HudFragment extends Fragment {
         super.onStart();
 
         Bundle args = getArguments();
+        // 이름 셋팅
+        User otherUser = (User) args.getSerializable("otherUser");
+        nameTxt.setText("" + otherUser.getName());
         if (args != null) {
             videoCallEnabled = args.getBoolean(EXTRA_VIDEO_CALL, true);
             displayHud = args.getBoolean(EXTRA_DISPLAY_HUD, false);
@@ -249,7 +255,6 @@ public class HudFragment extends Fragment {
      메서드 ==> 통화 시간 기록
      ------------------------------------------------------------------*/
     private void countTime() {
-
         getActivity().runOnUiThread(() -> {
             chronometerView.setBase(SystemClock.elapsedRealtime());
             chronometerView.start();
@@ -278,6 +283,12 @@ public class HudFragment extends Fragment {
         String message = event.getMessage();
 
         if(message.equals("start")) {
+            /** 영상통화 대기 할 때에 보여준 View 숨기기  */
+            getActivity().runOnUiThread(() -> {
+                nameTxt.setVisibility(View.GONE);
+                callingTxt.setVisibility(View.GONE);
+            });
+
             countTime();
         }
     }

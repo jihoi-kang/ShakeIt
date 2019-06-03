@@ -31,6 +31,14 @@
             android:layout_marginEnd="16dp"
             android:layout_gravity="center_vertical|end" />
 
+        <ImageView
+            android:id="@+id/shake"
+            android:src="@drawable/ic_shake"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="center_vertical|end" />
+
     </android.support.v7.widget.Toolbar>
 
     <android.support.design.widget.TabLayout

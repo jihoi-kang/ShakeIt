@@ -27,6 +27,7 @@ import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.netty.NettyClient;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
+import com.example.kjh.shakeit.utils.ToastGenerator;
 import com.example.kjh.shakeit.webrtc.AppRTCAudioManager;
 import com.example.kjh.shakeit.webrtc.AppRTCAudioManager.AudioDevice;
 import com.example.kjh.shakeit.webrtc.AppRTCClient;
@@ -183,6 +184,9 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     @BindView(R.id.fullscreen_video_view) SurfaceViewRenderer fullscreenRenderer;
 
     private String roomId;
+
+    // 영상 통화 걸고 30초동안 응답 없을 시 자동 종료를 위해
+    private Thread thread;
 
     /**------------------------------------------------------------------
      생명주기 ==> onCreate()
@@ -426,6 +430,9 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
         activityRunning = false;
         unbinder.unbind();
         BusProvider.getInstance().unregister(this);
+
+        runOnUiThread(() -> ToastGenerator.show(R.string.msg_disconnect_call));
+
         super.onDestroy();
     }
 
@@ -578,6 +585,17 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
         Log.d(TAG, "Starting the audio manager...");
         // 사용 가능한 오디오 장치 수가 변경 될 때마다 호출
         audioManager.start((audioDevice, availableAudioDevices) -> onAudioManagerDevicesChanged(audioDevice, availableAudioDevices));
+
+        thread = new Thread(() -> {
+            try {
+                Thread.sleep(30000);
+                finish();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        thread.start();
     }
 
     // UI Thread로 부터 호출 되어야 함
@@ -635,6 +653,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
         } else {
             setResult(RESULT_CANCELED);
         }
+
         finish();
     }
 
@@ -838,6 +857,9 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
             iceConnected = true;
             callConnected();
         });
+
+        /** 30초 후 영상 통화 자동 종료 시키는 thread 종료 */
+        thread.interrupt();
 
         /** 연결되었음을 Fragment에게 알림 */
         Events.webRTCEvent event = new Events.webRTCEvent("start");

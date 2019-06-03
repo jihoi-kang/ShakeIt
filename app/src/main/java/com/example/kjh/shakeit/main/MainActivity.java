@@ -19,6 +19,7 @@ import com.example.kjh.shakeit.main.adapter.ViewPagerAdapter;
 import com.example.kjh.shakeit.main.chat.AddChatActivity;
 import com.example.kjh.shakeit.main.chat.ChatActivity;
 import com.example.kjh.shakeit.main.friend.AddFriendActivity;
+import com.example.kjh.shakeit.main.friend.ShakeActivity;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.Injector;
@@ -31,7 +32,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_FRIEND_LIST_TO_PROFILE_DETAIL;
 import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_MAIN_AFTER_LOGIN_TO_ADD_CHAT;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_MAIN_TO_CHAT;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_MAIN_TO_SHAKE;
 import static com.example.kjh.shakeit.app.Constant.nonTabIcon;
 import static com.example.kjh.shakeit.app.Constant.onTabIcon;
 import static com.example.kjh.shakeit.app.Constant.tabLayoutImage;
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @BindView(R.id.view_pager) ViewPager viewPager;
     @BindView(R.id.title) TextView title;
     @BindView(R.id.add) ImageView add;
+    @BindView(R.id.shake) ImageView shake;
 
     /** 뷰페이저 변수 */
     private ViewPagerAdapter viewPagerAdapter;
@@ -124,10 +129,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     protected void onDestroy() {
         AppManager.getAppManager().removeActivity(this);
-        super.onDestroy();
-        unbinder.unbind();
-        BusProvider.getInstance().unregister(this);
 
+        super.onDestroy();
+        BusProvider.getInstance().unregister(this);
+        unbinder.unbind();
         presenter.onDestroy();
     }
 
@@ -158,6 +163,16 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     /**------------------------------------------------------------------
+     클릭이벤트 ==> TabLayout 우측에 흔들기
+     ------------------------------------------------------------------*/
+    @OnClick(R.id.shake)
+    void onClickShake() {
+        Intent intent = new Intent(MainActivity.this, ShakeActivity.class);
+        intent.putExtra("user", user);
+        startActivityForResult(intent, REQUEST_CODE_MAIN_TO_SHAKE);
+    }
+
+    /**------------------------------------------------------------------
      콜백이벤트 ==> onActivityResult()
      ------------------------------------------------------------------*/
     @Override
@@ -165,27 +180,55 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         if(resultCode != RESULT_OK)
             return;
 
+        ArrayList<ChatRoom> chatRooms = null;
+        ArrayList<User> participants = null;
+
         /** 채팅방 만든후 */
         if(requestCode == REQUEST_CODE_MAIN_AFTER_LOGIN_TO_ADD_CHAT) {
-            ArrayList<ChatRoom> chatRooms = ChatRoomListAdapter.getChatRooms();
-            ArrayList<User> participants = (ArrayList<User>) data.getSerializableExtra("invitedFriends");
-
-            Intent intent = new Intent(MainActivity.this, ChatActivity.class);
-            intent.putExtra("user", user);
-
-            /** 중복되는 방이 존재하는지 확인 */
-            ChatRoom room = new ChatRoom();
-            room.setParticipants(participants);
-            room.setMemberCount(participants.size() + 1);
-            intent.putExtra("room", room);
-
-            for(int index = 0; index < chatRooms.size(); index++){
-                if(isEqual(participants, chatRooms.get(index).getParticipants()))
-                    intent.putExtra("room", chatRooms.get(index));
-            }
-
-            startActivity(intent);
+            chatRooms = ChatRoomListAdapter.getChatRooms();
+            participants = (ArrayList<User>) data.getSerializableExtra("invitedFriends");
         }
+        /** ChatActivity 에서 돌아옴(그전 1:1 채팅을 어디선가 실행) */
+        else if(requestCode == REQUEST_CODE_MAIN_TO_CHAT) {
+            chatRooms = ChatRoomListAdapter.getChatRooms();
+            User friend = (User) data.getSerializableExtra("friend");
+            participants = new ArrayList<>();
+            participants.add(friend);
+        }
+        /** ProfileDetailActivity 에서 돌아옴(1:1 채팅 눌렀을 때) */
+        else if(requestCode == REQUEST_CODE_FRIEND_LIST_TO_PROFILE_DETAIL) {
+            chatRooms = ChatRoomListAdapter.getChatRooms();
+            User friend = (User) data.getSerializableExtra("friend");
+            participants = new ArrayList<>();
+            participants.add(friend);
+        }
+        /** ShakeActivity 에서 돌아옴(흔든 사람과 매칭되어 친구 추가 후 1:1 채팅 눌렀을 때) */
+        else if (requestCode == REQUEST_CODE_MAIN_TO_SHAKE) {
+            chatRooms = ChatRoomListAdapter.getChatRooms();
+            User friend = (User) data.getSerializableExtra("friend");
+            participants = new ArrayList<>();
+            participants.add(friend);
+        }
+
+        Intent intent = new Intent(MainActivity.this, ChatActivity.class);
+        intent.putExtra("user", user);
+
+        /** 중복되는 방이 존재하는지 확인 */
+        ChatRoom room = new ChatRoom();
+        room.setParticipants(participants);
+        room.setMemberCount(participants.size() + 1);
+        intent.putExtra("room", room);
+
+        for(int index = 0; index < chatRooms.size(); index++){
+            if(isEqual(participants, chatRooms.get(index).getParticipants()))
+                intent.putExtra("room", chatRooms.get(index));
+        }
+
+        /** 단체 채팅인 경우 참여자들 메뉴를 통해 1:1 채팅할 수 있으므로 StartActivityForResult 호출 */
+        if(room.getParticipants().size() > 1)
+            startActivityForResult(intent, REQUEST_CODE_MAIN_TO_CHAT);
+        else
+            startActivity(intent);
     }
 
     /**------------------------------------------------------------------
@@ -228,10 +271,20 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         for(int index = 0; index < viewPagerAdapter.getCount(); index++) {
             if(index == position) {
                 title.setText(titles[index]);
-                if(position == 2)
-                    add.setImageDrawable(null);
-                else
-                    add.setImageResource(tabLayoutImage[index]);
+                switch (position) {
+                    case 0:
+                        add.setImageResource(tabLayoutImage[index]);
+                        shake.setImageResource(R.drawable.ic_shake);
+                        break;
+                    case 1:
+                        add.setImageResource(tabLayoutImage[index]);
+                        shake.setImageDrawable(null);
+                        break;
+                    case 2:
+                        add.setImageDrawable(null);
+                        shake.setImageDrawable(null);
+                        break;
+                }
                 tabLayout.getTabAt(index).setIcon(onTabIcon[index]);
             } else
                 tabLayout.getTabAt(index).setIcon(nonTabIcon[index]);

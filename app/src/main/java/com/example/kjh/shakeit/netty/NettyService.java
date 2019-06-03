@@ -171,11 +171,11 @@ public class NettyService extends Service implements NettyListener {
                     if(unreadUsers.getInt(unreadIdx) == readHolder.getUserId())
                         unreadUsers.remove(unreadIdx);
                 }
-
                 chatHolder.setUnreadUsers(unreadUsers.toString());
                 if(readHolder.getUserId() == ShareUtil.getPreferInt("userId"))
                     chatHolder.setRead(true);
             }
+
             realm.commitTransaction();
         } catch (JSONException e) {
             e.printStackTrace();

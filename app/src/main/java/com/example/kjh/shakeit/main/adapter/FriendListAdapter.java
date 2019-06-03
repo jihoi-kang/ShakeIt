@@ -1,5 +1,6 @@
 package com.example.kjh.shakeit.main.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -25,13 +26,23 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_CHAT_TO_PROFILE_DETAIL;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_FRIEND_LIST_TO_PROFILE_DETAIL;
+
 /**
  * 친구 목록 탭에서 친구 목록 아답터
  * @author 강지회
  * @version 1.0.0
  * @since 2019. 5. 2. PM 9:21
+ *
+ * TabFriendListFragment.class,
+ * AddChatActivity.class,
+ * ChatActivity.class
+ * 위 세 클래스에서 사용
  **/
 public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.ViewHolder> {
+
+    private final String TAG = FriendListAdapter.class.getSimpleName();
 
     private ArrayList<User> users;
     private Context context;
@@ -45,6 +56,14 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
         this.users = users;
         this.from = from;
         this.listener = listener;
+
+        if(from.equals(AddChatActivity.class.getSimpleName())) {
+            uncheckedRadioDrawable = context.getResources().getDrawable(
+                    R.drawable.ic_outline_radio_button_unchecked_black_48dp);
+
+            checkedRadioDrawable = context.getResources().getDrawable(
+                    R.drawable.ic_radio_button_checked_black_48dp);
+        }
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -101,22 +120,17 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
             holder.container.setOnClickListener(view -> {
                 Intent intent = new Intent(context, ProfileDetailActivity.class);
-                intent.putExtra("user", user);
+                intent.putExtra("user", users.get(0));
+                intent.putExtra("friend", user);
                 intent.putExtra("position", position);
                 intent.putExtra("from", TabFriendListFragment.class.getSimpleName());
-                context.startActivity(intent);
+                ((Activity)context).startActivityForResult(intent, REQUEST_CODE_FRIEND_LIST_TO_PROFILE_DETAIL);
             });
 
             holder.selectBox.setVisibility(View.GONE);
         }
         /** AddChatActivity에서 사용할 경우 ==> 채팅방 만들때 대상 선택 목록 */
         else if(from.equals(AddChatActivity.class.getSimpleName())) {
-            uncheckedRadioDrawable = context.getResources().getDrawable(
-                    R.drawable.ic_outline_radio_button_unchecked_black_48dp);
-
-            checkedRadioDrawable = context.getResources().getDrawable(
-                    R.drawable.ic_radio_button_checked_black_48dp);
-
             holder.inputStatusMessage.setVisibility(View.GONE);
 
             holder.container.setOnClickListener(view -> {
@@ -129,6 +143,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
                     flag = true;
                 }
 
+                /** 대상 선택 및 해제 */
                 listener.onItemClick(user, flag);
             });
         }
@@ -143,10 +158,12 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
             holder.container.setOnClickListener(view -> {
                 Intent intent = new Intent(context, ProfileDetailActivity.class);
-                intent.putExtra("user", user);
+                intent.putExtra("user", users.get(0));
+                intent.putExtra("friend", user);
                 intent.putExtra("position", position);
                 intent.putExtra("from", ChatActivity.class.getSimpleName());
-                context.startActivity(intent);
+                intent.putExtra("size", getItemCount());
+                ((Activity)context).startActivityForResult(intent, REQUEST_CODE_CHAT_TO_PROFILE_DETAIL);
             });
         }
 

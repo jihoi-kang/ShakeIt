@@ -117,5 +117,12 @@ public interface ApiInterface {
     Call<ResponseBody> getChatLogList(
             @Query("userId") Integer userId
     );
+
+    /** 친구인지 확인 */
+    @GET("/" + Constant.IS_FRIEND)
+    Call<ResponseBody> isFriend(
+            @Query("userId") Integer userId,
+            @Query("friendId") Integer friendId
+    );
 }
 

@@ -13,8 +13,12 @@ import com.example.kjh.shakeit.main.chat.model.AddChatModel;
 import com.example.kjh.shakeit.main.chat.model.ChatModel;
 import com.example.kjh.shakeit.main.chat.model.TabChatRoomListModel;
 import com.example.kjh.shakeit.main.friend.contract.AddFriendContract;
+import com.example.kjh.shakeit.main.friend.contract.ProfileDetailContract;
+import com.example.kjh.shakeit.main.friend.contract.ShakeContract;
 import com.example.kjh.shakeit.main.friend.model.AddFriendModel;
 import com.example.kjh.shakeit.main.friend.contract.TabFriendListContract;
+import com.example.kjh.shakeit.main.friend.model.ProfileDetailModel;
+import com.example.kjh.shakeit.main.friend.model.ShakeModel;
 import com.example.kjh.shakeit.main.friend.model.TabFriendListModel;
 import com.example.kjh.shakeit.main.more.contract.UpdateProfileContract;
 import com.example.kjh.shakeit.main.more.model.UpdateProfileModel;
@@ -64,5 +68,13 @@ public class Injector {
 
     public static AddChatContract.Model provideAddChatModel() {
         return new AddChatModel();
+    }
+
+    public static ShakeContract.Model provideShakeModel() {
+        return new ShakeModel();
+    }
+
+    public static ProfileDetailContract.Model provideProfileDetailModel() {
+        return new ProfileDetailModel();
     }
 }

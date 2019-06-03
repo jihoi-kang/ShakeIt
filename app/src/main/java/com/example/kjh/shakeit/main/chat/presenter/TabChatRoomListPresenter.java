@@ -123,19 +123,22 @@ public class TabChatRoomListPresenter implements TabChatRoomListContract.Present
             }
 
         } else if (holder.getType() == UPDATE_UNREAD) {
+            Log.d(TAG, "NettyEvnet!!!!! In UPDATE_UNREAD");
             ReadHolder readHolder = Serializer.deserialize(holder.getBody(), ReadHolder.class);
             /** 채팅방 목록에서 UnreadCount 컨트롤 */
             for(int index = 0; index < rooms.size(); index++) {
                 if(rooms.get(index).getRoomId() == readHolder.getRoomId()) {
                     ChatRoom room = rooms.get(index);
 
+                    Log.d(TAG, "unread => " + room.getUnreadCount());
+                    Log.d(TAG, "size => " + readHolder.getChatIds().size());
+
                     room.setUnreadCount(room.getUnreadCount() - readHolder.getChatIds().size());
                     if(holder.getSign() == CALLBACK) {
                         rooms.remove(index);
                         rooms.add(0, room);
-                    } else if(holder.getSign() == DELIVERY) {
+                    } else if(holder.getSign() == DELIVERY)
                         rooms.set(index, room);
-                    }
 
                 }
             }

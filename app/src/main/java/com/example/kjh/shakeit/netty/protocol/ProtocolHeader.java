@@ -19,5 +19,7 @@ public class ProtocolHeader {
     public static final byte UPDATE_UNREAD = 0x13;
     public static final byte CONN_WEBRTC = 0x14;
     public static final byte DISCONN_WEBRTC = 0x15;
+    public static final byte SHAKE_ON = 0x16;
+    public static final byte SHAKE_OFF = 0x17;
 
 }

@@ -25,6 +25,7 @@ public class Constant {
     public static final String ADD_FRIEND = "api/friend/create.php";
     public static final String GET_CHATROOM_LIST = "api/chatroom/read.php";
     public static final String GET_CHATLOG_LIST = "api/chatlog/read.php";
+    public static final String IS_FRIEND = "api/friend/isfriend.php";
 
     /** HTTP RESPONSE CODE */
     public static final int SUCCESS_OK = 200;
@@ -54,6 +55,13 @@ public class Constant {
     public static final int REQUEST_CONNECTION = 10007;
 
     public static final int REQUEST_CODE_CHAT_TO_CALL_WAIT = 10008;
+
+    public static final int REQUEST_CODE_MAIN_TO_CHAT = 10009;
+    public static final int REQUEST_CODE_CHAT_TO_PROFILE_DETAIL = 10010;
+    public static final int REQUEST_CODE_FRIEND_LIST_TO_PROFILE_DETAIL = 10011;
+    public static final int REQUEST_CODE_SHAKE_TO_PROFILE_DETAIL = 10012;
+    public static final int REQUEST_CODE_MAIN_TO_SHAKE = 10013;
+
 
     /** WebRTC */
     public static final String ROOM_URL = "https://appr.tc";

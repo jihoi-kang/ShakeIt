@@ -130,10 +130,10 @@ public class TabMoreFragment extends Fragment {
 
         Realm realm = Realm.getDefaultInstance();
 
-        realm.executeTransaction(r -> {
-            RealmResults<ChatHolder> result = r.where(ChatHolder.class).findAll();
-            result.deleteAllFromRealm();
-        });
+        realm.beginTransaction();
+        RealmResults<ChatHolder> result = realm.where(ChatHolder.class).findAll();
+        result.deleteAllFromRealm();
+        realm.commitTransaction();
 
         realm.close();
 
