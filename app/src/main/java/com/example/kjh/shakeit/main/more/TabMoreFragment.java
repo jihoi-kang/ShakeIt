@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.data.ChatHolder;
+import com.example.kjh.shakeit.data.ImageHolder;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.fcm.FcmGenerator;
 import com.example.kjh.shakeit.login.MainActivity;
@@ -133,6 +134,8 @@ public class TabMoreFragment extends Fragment {
         realm.beginTransaction();
         RealmResults<ChatHolder> result = realm.where(ChatHolder.class).findAll();
         result.deleteAllFromRealm();
+        RealmResults<ImageHolder> imageResult = realm.where(ImageHolder.class).findAll();
+        imageResult.deleteAllFromRealm();
         realm.commitTransaction();
 
         realm.close();

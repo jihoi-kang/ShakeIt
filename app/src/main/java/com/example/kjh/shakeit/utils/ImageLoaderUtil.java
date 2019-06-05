@@ -3,6 +3,7 @@ package com.example.kjh.shakeit.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -15,9 +16,9 @@ import java.net.URL;
 public class ImageLoaderUtil {
 
     public static void display(Context context, ImageView imageView, String url) {
-        if (imageView == null) {
+        if (imageView == null)
             throw new IllegalArgumentException("argument error");
-        }
+
         Glide.with(context).load(url)
                 .apply(new RequestOptions().placeholder(R.drawable.ic_image_loading))
                 .into(imageView);
@@ -28,7 +29,34 @@ public class ImageLoaderUtil {
         try {
             bitmap = BitmapFactory.decodeStream((InputStream)new URL(url).getContent());
         } catch (Exception e) {}
-        bitmap = Bitmap.createScaledBitmap(bitmap,500,500,true);
+
+        /** 비율 맞추기 위해 */
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+
+        int convertHeight = (height * 500) / width;
+
+        bitmap = Bitmap.createScaledBitmap(bitmap,500, convertHeight,true);
+
+        return bitmap;
+    }
+
+    /**------------------------------------------------------------------
+     메서드 ==> 디스플레이 2 / 3의 width만큼 너비 Bitmap
+     ------------------------------------------------------------------*/
+    public static Bitmap getBitmap(String url, Point size) {
+        Bitmap bitmap = null;
+        try {
+            bitmap = BitmapFactory.decodeStream((InputStream)new URL(url).getContent());
+        } catch (Exception e) {}
+
+        /** 비율 맞추기 위해 */
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+
+        int convertHeight = (height * ((2 * size.x) / 3)) / width;
+
+        bitmap = Bitmap.createScaledBitmap(bitmap,(2 * size.x) / 3, convertHeight,true);
 
         return bitmap;
     }

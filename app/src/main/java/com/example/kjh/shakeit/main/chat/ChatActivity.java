@@ -1,13 +1,17 @@
 package com.example.kjh.shakeit.main.chat;
 
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -30,14 +34,19 @@ import com.example.kjh.shakeit.main.call.CallActivity;
 import com.example.kjh.shakeit.main.call.CallWaitActivity;
 import com.example.kjh.shakeit.main.chat.contract.ChatContract;
 import com.example.kjh.shakeit.main.chat.presenter.ChatPresenter;
+import com.example.kjh.shakeit.main.more.ImageFilterActivity;
+import com.example.kjh.shakeit.utils.FileUtil;
 import com.example.kjh.shakeit.utils.ImageCombiner;
 import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.Injector;
 import com.example.kjh.shakeit.utils.StrUtil;
 import com.example.kjh.shakeit.utils.ToastGenerator;
+import com.soundcloud.android.crop.Crop;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -47,7 +56,83 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import rebus.bottomdialog.BottomDialog;
 
-import static com.example.kjh.shakeit.app.Constant.*;
+import static com.example.kjh.shakeit.app.Constant.AEC_DUMP;
+import static com.example.kjh.shakeit.app.Constant.AUDIO_CODEC;
+import static com.example.kjh.shakeit.app.Constant.AUDIO_START_BITRATE;
+import static com.example.kjh.shakeit.app.Constant.CAPTURE_QUALITY_SLIDER;
+import static com.example.kjh.shakeit.app.Constant.CAPTURE_TO_TEXTURE;
+import static com.example.kjh.shakeit.app.Constant.DATA_CHANNEL_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.DEFAULT_CAMERA_FPS;
+import static com.example.kjh.shakeit.app.Constant.DISABLE_BUILT_IN_AEC;
+import static com.example.kjh.shakeit.app.Constant.DISABLE_BUILT_IN_AGC;
+import static com.example.kjh.shakeit.app.Constant.DISABLE_BUILT_IN_NS;
+import static com.example.kjh.shakeit.app.Constant.DISABLE_WEBRTC_AGC_AND_HPE;
+import static com.example.kjh.shakeit.app.Constant.DISPLAY_HUD;
+import static com.example.kjh.shakeit.app.Constant.ENABLE_LEVEL_CONTROL;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_AECDUMP_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_AUDIOCODEC;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_AUDIO_BITRATE;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_CAMERA2;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_CAPTURETOTEXTURE_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_CMDLINE;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_DATA_CHANNEL_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_DISABLE_BUILT_IN_AEC;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_DISABLE_BUILT_IN_AGC;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_DISABLE_BUILT_IN_NS;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_DISABLE_WEBRTC_AGC_AND_HPF;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_DISPLAY_HUD;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_ENABLE_LEVEL_CONTROL;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_FLEXFEC_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_HWCODEC_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_ID;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_LOOPBACK;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_MAX_RETRANSMITS;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_MAX_RETRANSMITS_MS;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_NEGOTIATED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_NOAUDIOPROCESSING_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_OPENSLES_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_ORDERED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_PROTOCOL;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_ROOMID;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_RUNTIME;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_SAVE_REMOTE_VIDEO_TO_FILE;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_HEIGHT;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_SAVE_REMOTE_VIDEO_TO_FILE_WIDTH;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_SCREENCAPTURE;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_TRACING;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEOCODEC;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_BITRATE;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_CALL;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_CAPTUREQUALITYSLIDER_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_FILE_AS_CAMERA;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_FPS;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_HEIGHT;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_WIDTH;
+import static com.example.kjh.shakeit.app.Constant.FLEXFEC_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.HD_VIDEO_HEIGHT;
+import static com.example.kjh.shakeit.app.Constant.HD_VIDEO_WIDTH;
+import static com.example.kjh.shakeit.app.Constant.HW_CODEC;
+import static com.example.kjh.shakeit.app.Constant.ID;
+import static com.example.kjh.shakeit.app.Constant.MAX_RETR;
+import static com.example.kjh.shakeit.app.Constant.MAX_RETR_MS;
+import static com.example.kjh.shakeit.app.Constant.NEGOTIATED;
+import static com.example.kjh.shakeit.app.Constant.NO_AUDIO_PROCESSING;
+import static com.example.kjh.shakeit.app.Constant.ORDERED;
+import static com.example.kjh.shakeit.app.Constant.PROTOCOL;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_CAMERA;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_CHAT_TO_CALL_WAIT;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_CHAT_TO_PROFILE_DETAIL;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_GALLERY;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_UPDATE_PROFILE_TO_IMAGE_FILTER;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CONNECTION;
+import static com.example.kjh.shakeit.app.Constant.ROOM_URL;
+import static com.example.kjh.shakeit.app.Constant.TRACING;
+import static com.example.kjh.shakeit.app.Constant.USE_CAMERA_2;
+import static com.example.kjh.shakeit.app.Constant.USE_OPENSLES;
+import static com.example.kjh.shakeit.app.Constant.USE_SCREEN_CAPTURE;
+import static com.example.kjh.shakeit.app.Constant.VIDEO_CALL_ENABLED;
+import static com.example.kjh.shakeit.app.Constant.VIDEO_CODEC;
+import static com.example.kjh.shakeit.app.Constant.VIDEO_START_BITRATE;
 
 public class ChatActivity extends AppCompatActivity implements ChatContract.View {
 
@@ -58,6 +143,10 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
     private User user;
     private ChatRoom room;
     private Intent intent;
+
+    private File file;
+    private String path;
+    private int tempOrientation = 0;
 
     private Unbinder unbinder;
     @BindView(R.id.inputContent) EditText inputContent;
@@ -264,6 +353,44 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
             setResult(RESULT_OK, intent);
             finish();
         }
+        /** 카메라 찍은후 */
+        else if(requestCode == REQUEST_CODE_CAMERA) {
+            Intent media_scan_intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            media_scan_intent.setData(Uri.fromFile(file));
+            sendBroadcast(media_scan_intent);
+
+            try {
+                ExifInterface ei = new ExifInterface(file.getAbsolutePath());
+                tempOrientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                        ExifInterface.ORIENTATION_NORMAL);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Crop.of(Uri.fromFile(file), Uri.fromFile(file)).asSquare().start(this);
+        }
+        /** 갤러리에서 선택한 후 */
+        else if(requestCode == REQUEST_CODE_GALLERY) {
+            path = uriToPath(data.getData());
+
+            Intent toImageFilterGallery = new Intent(ChatActivity.this, ImageFilterActivity.class);
+            toImageFilterGallery.putExtra("path", path);
+            startActivityForResult(toImageFilterGallery, REQUEST_CODE_UPDATE_PROFILE_TO_IMAGE_FILTER);
+        }
+        /** 이미지 크롭한 후 */
+        else if(requestCode == Crop.REQUEST_CROP) {
+            path = file.getAbsolutePath();
+
+            Intent toImageFilterCamera = new Intent(ChatActivity.this, ImageFilterActivity.class);
+            toImageFilterCamera.putExtra("path", path);
+            toImageFilterCamera.putExtra("orientation", tempOrientation);
+            startActivityForResult(toImageFilterCamera, REQUEST_CODE_UPDATE_PROFILE_TO_IMAGE_FILTER);
+        }
+        /** 이미지 필터 씌운 후 */
+        else if(requestCode == REQUEST_CODE_UPDATE_PROFILE_TO_IMAGE_FILTER) {
+            path = uriToPath(data.getParcelableExtra("uri"));
+            presenter.sendImage(path);
+        }
 
     }
 
@@ -305,17 +432,18 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
 
         dialog.setOnItemSelectedListener(id -> {
             switch (id) {
-                /** 카메라 선택 */
+                /** 카메라 */
                 case R.id.action_camera:
-                    Log.d(TAG, "카메라 선택");
+                    file = FileUtil.create();
+                    presenter.onClickCamera();
                     return true;
-                /** 갤러리 선택 */
+                /** 갤러리 */
                 case R.id.action_gallery:
-                    Log.d(TAG, "갤러리 선택");
+                    presenter.onClickGallery();
                     return true;
+                /** 영상통화 */
                 case R.id.action_call:
                     presenter.toCall(null);
-                    Log.d(TAG, "영상통화 선택");
                     return true;
                 default:
                     return false;
@@ -349,6 +477,14 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
     @Override
     public Context getContext() {
         return this;
+    }
+
+    @Override
+    public File getFile() {
+        if(file == null)
+            file = FileUtil.create();
+
+        return file;
     }
 
     /**------------------------------------------------------------------
@@ -450,6 +586,20 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
             bitmap = ImageLoaderUtil.getBitmap(url);
 
         return bitmap;
+    }
+
+    /**------------------------------------------------------------------
+     메서드 ==> Uri값을 통해 Path 얻기
+     ------------------------------------------------------------------*/
+    private String uriToPath(Uri uri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+
+        CursorLoader cursorLoader = new CursorLoader(this, uri, proj, null, null, null);
+        Cursor cursor = cursorLoader.loadInBackground();
+
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        return cursor.getString(column_index);
     }
 
 }

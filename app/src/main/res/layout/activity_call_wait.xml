@@ -1,46 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/chacol"
+    android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+    <ImageView
         android:id="@+id/profile_image"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/ic_basic_profile"
-        android:layout_marginTop="84dp"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="@string/msg_profile_image"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:civ_border_color="@color/background_grey_primary"
-        app:civ_border_width="0.7dp" />
+        android:scaleType="centerCrop"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:background="@color/transparent_black"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="64dp"
+        android:textSize="28sp"
+        android:gravity="center"
+        android:text="토르"
         android:textColor="@color/white"
-        android:textSize="36dp"
-        android:fontFamily="@font/nanum_barun_gothic"
-        app:layout_constraintTop_toBottomOf="@+id/profile_image"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_gravity="center_vertical"
+        android:fontFamily="@font/nanum_barun_gothic" />
+
 
     <LinearLayout
         android:orientation="horizontal"
+        android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name">
+        android:layout_marginBottom="32dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true">
 
         <LinearLayout
             android:id="@+id/decline"
@@ -52,8 +52,8 @@
 
             <ImageView
                 android:src="@drawable/decline"
-                android:layout_width="72dp"
-                android:layout_height="72dp" />
+                android:layout_width="64dp"
+                android:layout_height="64dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -78,8 +78,8 @@
 
             <ImageView
                 android:src="@drawable/accept"
-                android:layout_width="72dp"
-                android:layout_height="72dp" />
+                android:layout_width="64dp"
+                android:layout_height="64dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -95,4 +95,4 @@
 
     </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

@@ -126,7 +126,7 @@ public class SignUpActivity extends AppCompatActivity implements SignUpContract.
 
     @Override
     public void showLoadingDialog() {
-        progressDialog = ProgressDialogGenerator.show(this, "잠시만 기다려주세요");
+        progressDialog = ProgressDialogGenerator.create(this, "잠시만 기다려주세요");
         progressDialog.show();
     }
 

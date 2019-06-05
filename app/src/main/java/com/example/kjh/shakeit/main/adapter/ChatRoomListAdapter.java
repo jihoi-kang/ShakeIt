@@ -45,6 +45,8 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
     private User user;
     private Activity activity;
 
+    long tempTime;
+
     public ChatRoomListAdapter(Activity activity, ArrayList<ChatRoom> rooms, User user) {
         this.activity = activity;
         this.rooms = rooms;
@@ -131,8 +133,12 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
 
         ChatHolder lastMessage = rooms.get(position).getChatHolder();
 
+        String lastMessageType = lastMessage.getMessageType();
         String lastMessageContent = lastMessage.getMessageContent();
         String lastMessageTime = lastMessage.getSended_at();
+
+        if(lastMessageType.equals("image"))
+            lastMessageContent = "사진";
 
         int memberCount = rooms.get(position).getMemberCount();
         int unreadCount = rooms.get(position).getUnreadCount();
@@ -159,6 +165,12 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
             holder.unreadCountTxt.setVisibility(View.GONE);
 
         holder.container.setOnClickListener(view -> {
+            long currentTime = System.currentTimeMillis();
+            if(tempTime + 1000 > currentTime)
+                return;
+
+            tempTime = currentTime;
+
             ChatRoom room = rooms.get(position);
 
             Intent intent = new Intent(activity, ChatActivity.class);

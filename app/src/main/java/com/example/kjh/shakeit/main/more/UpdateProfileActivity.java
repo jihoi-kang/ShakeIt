@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -24,12 +23,12 @@ import com.example.kjh.shakeit.app.AppManager;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.more.contract.UpdateProfileContract;
 import com.example.kjh.shakeit.main.more.presenter.UpdateProfilePresenter;
+import com.example.kjh.shakeit.utils.FileUtil;
 import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.Injector;
 import com.example.kjh.shakeit.utils.KeyboardManager;
 import com.example.kjh.shakeit.utils.ProgressDialogGenerator;
 import com.example.kjh.shakeit.utils.StrUtil;
-import com.example.kjh.shakeit.utils.TimeManager;
 import com.example.kjh.shakeit.utils.ToastGenerator;
 import com.soundcloud.android.crop.Crop;
 
@@ -159,7 +158,6 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
                 Intent toImageFilterGallery = new Intent(UpdateProfileActivity.this, ImageFilterActivity.class);
                 toImageFilterGallery.putExtra("path", path);
                 startActivityForResult(toImageFilterGallery, REQUEST_CODE_UPDATE_PROFILE_TO_IMAGE_FILTER);
-
                 break;
             /** 카메라에서 찍은 후 */
             case REQUEST_CODE_CAMERA:
@@ -201,7 +199,7 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
 
     @Override
     public void showLoadingDialog() {
-        dialog = ProgressDialogGenerator.show(this, "잠시만 기다려주세요");
+        dialog = ProgressDialogGenerator.create(this, "잠시만 기다려주세요");
         dialog.show();
     }
 
@@ -239,7 +237,7 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
             switch (id) {
                 /** 카메라 선택 */
                 case R.id.action_camera:
-                    file = createFile();
+                    file = FileUtil.create();
                     presenter.onClickCamera();
                     return true;
                 /** 갤러리 선택 */
@@ -321,23 +319,6 @@ public class UpdateProfileActivity extends AppCompatActivity implements UpdatePr
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
     @Override
     public void afterTextChanged(Editable editable) {}
-
-    /**------------------------------------------------------------------
-     메서드 ==> 파일 생성
-     ------------------------------------------------------------------*/
-    private File createFile() {
-        String sdPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/ShakeIt";
-        File folder = new File(sdPath);
-        if (!folder.exists()) {
-            folder.mkdirs();
-        }
-        // 현재 시간 기준 파일명 생성
-        String now = TimeManager.now();
-        String imageFileName = user.getUserId() + now + ".jpg";
-        // 파일 생성
-        File curFile = new File(sdPath, imageFileName);
-        return curFile;
-    }
 
     /**------------------------------------------------------------------
      메서드 ==> Uri값을 통해 Path 얻기

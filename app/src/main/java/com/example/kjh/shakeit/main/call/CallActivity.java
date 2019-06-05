@@ -184,6 +184,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     @BindView(R.id.fullscreen_video_view) SurfaceViewRenderer fullscreenRenderer;
 
     private String roomId;
+    private User otherUser;
 
     // 영상 통화 걸고 30초동안 응답 없을 시 자동 종료를 위해
     private Thread thread;
@@ -225,6 +226,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
         remoteRenderers.add(remoteProxyRenderer);
 
         final Intent intent = getIntent();
+        otherUser = (User) intent.getSerializableExtra("otherUser");
 
         rootEglBase = EglBase.create();
 
@@ -436,6 +438,20 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
         super.onDestroy();
     }
 
+    /**------------------------------------------------------------------
+     메서드 ==> 소프트 back key 클릭
+     ------------------------------------------------------------------*/
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        MessageHolder holder = new MessageHolder();
+        holder.setSign(REQUEST);
+        holder.setType(DISCONN_WEBRTC);
+        holder.setBody("" + otherUser.getUserId());
+        NettyClient.getInstance().sendMsgToServer(holder, null);
+    }
+
     /** 기기 해상도 가져오기 */
     @TargetApi(17)
     private DisplayMetrics getDisplayMetrics() {
@@ -520,6 +536,12 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     /** CallFragment.OnCallEvents 인터페이스 구현 */
     @Override
     public void onCallHangUp() {
+        MessageHolder holder = new MessageHolder();
+        holder.setSign(REQUEST);
+        holder.setType(DISCONN_WEBRTC);
+        holder.setBody("" + otherUser.getUserId());
+        NettyClient.getInstance().sendMsgToServer(holder, null);
+
         disconnect();
     }
 

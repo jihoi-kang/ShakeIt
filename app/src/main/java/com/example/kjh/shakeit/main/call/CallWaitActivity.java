@@ -12,8 +12,11 @@ import com.example.kjh.shakeit.app.AppManager;
 import com.example.kjh.shakeit.data.MessageHolder;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.netty.NettyClient;
+import com.example.kjh.shakeit.otto.BusProvider;
+import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.StrUtil;
+import com.squareup.otto.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,6 +52,7 @@ public class CallWaitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_call_wait);
 
         unbinder = ButterKnife.bind(this);
+        BusProvider.getInstance().register(this);
 
         Intent intent = getIntent();
         roomID = intent.getStringExtra("roomID");
@@ -70,7 +74,14 @@ public class CallWaitActivity extends AppCompatActivity {
 
         super.onDestroy();
         unbinder.unbind();
+        BusProvider.getInstance().unregister(this);
     }
+
+    /**------------------------------------------------------------------
+     메서드 ==> Soft Back 키 눌렀을 때 어떤일도 해서는 안됨
+     ------------------------------------------------------------------*/
+    @Override
+    public void onBackPressed() {}
 
     /**------------------------------------------------------------------
      클릭이벤트 ==> 거절
@@ -96,6 +107,17 @@ public class CallWaitActivity extends AppCompatActivity {
         intent.putExtra("roomID", roomID);
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    /**------------------------------------------------------------------
+     구독이벤트 ==> Netty에서 이벤트 왔을 때 ==> 메시지 받거나 콜백
+     ------------------------------------------------------------------*/
+    @Subscribe
+    public void nettyEvent (Events.nettyEvent event) {
+        MessageHolder holder = event.getMessageHolder();
+
+        if(holder.getType() == DISCONN_WEBRTC)
+            finish();
     }
 
 }

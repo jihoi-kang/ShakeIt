@@ -1,7 +1,11 @@
 package com.example.kjh.shakeit.main.chat.presenter;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Message;
+import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.api.ResultCallback;
@@ -28,9 +32,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_CAMERA;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_GALLERY;
 import static com.example.kjh.shakeit.main.chat.ChatActivity.chatActHandler;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.CONN_WEBRTC;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.DELIVERY;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.IMAGE;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.MESSAGE;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.UPDATE_UNREAD;
 
@@ -100,6 +107,46 @@ public class ChatPresenter implements ChatContract.Presenter {
 
         model.sendMessage(body);
         view.clearInputContent();
+    }
+
+    /**------------------------------------------------------------------
+     메서드 ==> 이미지 메시지 전송 로직
+     ------------------------------------------------------------------*/
+    @Override
+    public void sendImage(String path) {
+        User user = view.getUser();
+        ChatRoom room = view.getChatRoom();
+        String time = TimeManager.nowTime();
+
+        /** 참가자들의 아이디들 => JSONArray */
+        JSONArray unreadUsers = new JSONArray();
+        for(int index = 0; index < room.getParticipants().size(); index++)
+            unreadUsers.put(room.getParticipants().get(index).getUserId());
+
+        /** 이미지 업로드 후 프로필 업데이트 */
+        model.uploadImage(user.getUserId(), path, new ResultCallback() {
+            @Override
+            public void onSuccess(String body) {
+                JSONObject jsonObject;
+                String imageUrl = "";
+                try {
+                    jsonObject = new JSONObject(body);
+                    imageUrl = jsonObject.getString("message");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                room.setChatHolder(
+                        new ChatHolder(0, room.getRoomId(), user.getUserId(), "image", imageUrl, time, unreadUsers.toString(), true)
+                );
+                String nettyBody = Serializer.serialize(room);
+
+                model.sendImage(nettyBody);
+            }
+
+            @Override
+            public void onFailure(String errorMsg) {}
+        });
     }
 
     /**------------------------------------------------------------------
@@ -175,13 +222,65 @@ public class ChatPresenter implements ChatContract.Presenter {
     }
 
     /**------------------------------------------------------------------
+     메서드 ==> 갤러리
+     ------------------------------------------------------------------*/
+    @Override
+    public void onClickGallery() {
+        /** 권한 확인 */
+        TedPermission.with(view.getContext())
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        Intent intent = new Intent(Intent.ACTION_PICK);
+                        intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                        intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        ((Activity)view.getContext()).startActivityForResult(intent, REQUEST_CODE_GALLERY);
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {}
+                })
+                .setDeniedTitle(R.string.permission_denied_title)
+                .setDeniedMessage(R.string.permission_denied_message)
+                .setGotoSettingButtonText(R.string.tedpermission_setting)
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                .check();
+    }
+
+    /**------------------------------------------------------------------
+     메서드 ==> 카메라
+     ------------------------------------------------------------------*/
+    @Override
+    public void onClickCamera() {
+        /** 권한 확인 */
+        TedPermission.with(view.getContext())
+                .setPermissionListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted() {
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(view.getContext(), "com.example.kjh.shakeit.fileprovider", view.getFile()));
+                        ((Activity)view.getContext()).startActivityForResult(intent, REQUEST_CODE_CAMERA);
+                    }
+
+                    @Override
+                    public void onPermissionDenied(List<String> deniedPermissions) {
+                    }
+                })
+                .setDeniedTitle(R.string.permission_denied_title)
+                .setDeniedMessage(R.string.permission_denied_message)
+                .setGotoSettingButtonText(R.string.tedpermission_setting)
+                .setPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                .check();
+    }
+
+    /**------------------------------------------------------------------
      구독이벤트 ==> Netty에서 이벤트 왔을 때 ==> 메시지 받거나 콜백
      ------------------------------------------------------------------*/
     @Subscribe
     public void nettyEvent (Events.nettyEvent event) {
         MessageHolder holder = event.getMessageHolder();
 
-        if(holder.getType() == MESSAGE) {
+        if(holder.getType() == MESSAGE || holder.getType() == IMAGE) {
             ChatRoom room = Serializer.deserialize(holder.getBody(), ChatRoom.class);
 
             /** 채팅방 처음 생성되고 채팅 메시지 보냈을 때 */
@@ -231,10 +330,12 @@ public class ChatPresenter implements ChatContract.Presenter {
 
             view.goCallWaitActivity(roomID);
             return;
-        }
+        } else
+            return;
 
         Message msg = chatActHandler.obtainMessage();
         msg.obj = chats;
         chatActHandler.sendMessage(msg);
     }
+
 }

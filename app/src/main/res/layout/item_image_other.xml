@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/chacol"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/ll_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <View
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/background_grey_light2"
+            android:layout_width="match_parent"
+            android:layout_height="0.3dp" />
+
+        <TextView
+            android:id="@+id/time"
+            android:fontFamily="@font/nanum_barun_gothic"
+            android:textSize="12sp"
+            android:textColor="@color/background_grey_light1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:layout_weight="1"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="8dp"
+            android:background="@color/background_grey_light2"
+            android:layout_width="match_parent"
+            android:layout_height="0.3dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_read"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" >
+
+        <TextView
+            android:gravity="center"
+            android:text="@string/msg_read"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="6dp"
+        android:fontFamily="@font/nanum_barun_gothic_bold"
+        android:textColor="@color/background_grey_light1"
+        android:layout_marginBottom="4dp"/>
+
+    <LinearLayout
+        android:gravity="bottom|start"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/message_content_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_marginStart="16dp" />
+
+        <TextView
+            android:id="@+id/sendedTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/background_grey_light1"
+            android:textSize="12sp"
+            android:fontFamily="@font/nanum_barun_gothic"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="8dp"/>
+
+        <TextView
+            android:id="@+id/unreadCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/nanum_barun_gothic"
+            android:textSize="12sp"
+            android:layout_marginStart="8dp"
+            android:layout_gravity="bottom"
+            android:textColor="@color/yellow" />
+
+    </LinearLayout>
+
+</LinearLayout>

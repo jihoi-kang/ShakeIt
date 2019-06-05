@@ -1,13 +1,19 @@
 package com.example.kjh.shakeit.main;
 
+import android.graphics.Bitmap;
+import android.graphics.Point;
+
 import com.example.kjh.shakeit.api.ApiClient;
 import com.example.kjh.shakeit.api.ResultCallback;
 import com.example.kjh.shakeit.data.ChatHolder;
+import com.example.kjh.shakeit.data.ImageHolder;
+import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.Serializer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import io.realm.Realm;
@@ -25,10 +31,10 @@ public class MainModel implements MainContract.Model {
     private final String TAG = MainModel.class.getSimpleName();
 
     /**------------------------------------------------------------------
-     메서드 ==> 채팅 목록 가져와서 Realm에 저장
+     메서드 ==> 채팅 목록 가져와서 Realm에 저장 & 이미지 캐싱
      ------------------------------------------------------------------*/
     @Override
-    public void getChatLogList(int userId, ResultCallback callback) {
+    public void getChatLogList(int userId, Point size, ResultCallback callback) {
         Call<ResponseBody> result = ApiClient.create().getChatLogList(userId);
 
         result.enqueue(new Callback<ResponseBody>() {
@@ -43,6 +49,23 @@ public class MainModel implements MainContract.Model {
                             for(int index = 0; index < jsonArray.length(); index++) {
                                 ChatHolder holder = Serializer.deserialize(jsonArray.getJSONObject(index).toString(), ChatHolder.class);
                                 realm.copyToRealm(holder);
+
+                                if(holder.getMessageType().equals("image")){
+                                    new Thread(() -> {
+                                        Realm rm = Realm.getDefaultInstance();
+                                        rm.beginTransaction();
+                                        Bitmap bitmap = ImageLoaderUtil.getBitmap(holder.getMessageContent(), size);
+                                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                                        byte[] imageByteArray = stream.toByteArray();
+
+                                        rm.copyToRealm(new ImageHolder(holder.getMessageContent(), imageByteArray));
+                                        rm.commitTransaction();
+
+                                        rm.close();
+                                    }).start();
+                                }
+
                             }
                             realm.commitTransaction();
                         } catch (IOException e) {

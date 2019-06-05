@@ -143,7 +143,7 @@ public class AddFriendActivity extends AppCompatActivity implements AddFriendCon
 
     @Override
     public void showLoadingDialog() {
-        dialog = ProgressDialogGenerator.show(this, "잠시만 기다려주세요");
+        dialog = ProgressDialogGenerator.create(this, "잠시만 기다려주세요");
         dialog.show();
     }
 

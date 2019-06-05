@@ -1,11 +1,16 @@
 package com.example.kjh.shakeit.main;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Display;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +28,7 @@ import com.example.kjh.shakeit.main.friend.ShakeActivity;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.Injector;
+import com.example.kjh.shakeit.utils.ProgressDialogGenerator;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -55,6 +61,9 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     private User user;
 
+    private Point size;
+    private ProgressDialog dialog;
+
     private Unbinder unbinder;
     @BindView(R.id.layout_tab) TabLayout tabLayout;
     @BindView(R.id.view_pager) ViewPager viewPager;
@@ -78,6 +87,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_after_login);
 
+        /** 디스플레이 해상도 구하기 */
+        Display display = getWindowManager().getDefaultDisplay();
+        size = new Point();
+        display.getSize(size);
+        Log.d(TAG, "해상도: X => " + size.x + " / Y => " + size.y);
+
         unbinder = ButterKnife.bind(this);
 
         presenter = new MainPresenter(this, Injector.provideAfterLoginMainModel());
@@ -97,6 +112,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
         setIconToViewpager(0);
+
+        /** 초기 화면 설정 위해 시간 벌어주기 */
+        dialog = ProgressDialogGenerator.create(this, "초기 화면 설정중입니다");
+        dialog.show();
     }
 
     /**------------------------------------------------------------------
@@ -121,6 +140,14 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 setIconToViewpager(position);
             }
         });
+
+        if(dialog != null) {
+            new Handler().postDelayed(() -> {
+                dialog.dismiss();
+                dialog = null;
+            }, 2000);
+        }
+
     }
 
     /**------------------------------------------------------------------
@@ -262,6 +289,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         return user;
     }
 
+    @Override
+    public Point getPoint() {
+        return size;
+    }
 
     /**------------------------------------------------------------------
      메서드 ==> 뷰페이저 탭 변경시 적절한 탭 아이콘 변경 로직

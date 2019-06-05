@@ -12,6 +12,7 @@
     <color name="orange">#FCCC00</color>
     <color name="chacol">#36454f</color>
     <color name="transparent_chacol">#8836454f</color>
+    <color name="transparent_black">#AA000000</color>
     <color name="google_background">#d62d20</color>
 
     <color name="background_grey_transparent">#88EAEAEA</color>

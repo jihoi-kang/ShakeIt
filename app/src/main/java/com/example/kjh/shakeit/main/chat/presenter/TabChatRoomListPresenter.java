@@ -21,8 +21,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 
 import static com.example.kjh.shakeit.main.chat.TabChatRoomListFragment.chatRoomFragHandler;
-import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.CALLBACK;
-import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.DELIVERY;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.IMAGE;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.MESSAGE;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.UPDATE_UNREAD;
 
@@ -101,7 +100,7 @@ public class TabChatRoomListPresenter implements TabChatRoomListContract.Present
     public void nettyEvent (Events.nettyEvent event) {
         MessageHolder holder = event.getMessageHolder();
 
-        if(holder.getType() == MESSAGE) {
+        if(holder.getType() == MESSAGE || holder.getType() == IMAGE) {
             int cnt = 0;
             ChatRoom chatRoom = Serializer.deserialize(holder.getBody(), ChatRoom.class);
             /** RoomId를 통해 변경된 방을 찾아 변경 */
@@ -121,28 +120,19 @@ public class TabChatRoomListPresenter implements TabChatRoomListContract.Present
                 /** refresh */
                 getChatRoomList();
             }
-
         } else if (holder.getType() == UPDATE_UNREAD) {
-            Log.d(TAG, "NettyEvnet!!!!! In UPDATE_UNREAD");
             ReadHolder readHolder = Serializer.deserialize(holder.getBody(), ReadHolder.class);
             /** 채팅방 목록에서 UnreadCount 컨트롤 */
             for(int index = 0; index < rooms.size(); index++) {
                 if(rooms.get(index).getRoomId() == readHolder.getRoomId()) {
                     ChatRoom room = rooms.get(index);
 
-                    Log.d(TAG, "unread => " + room.getUnreadCount());
-                    Log.d(TAG, "size => " + readHolder.getChatIds().size());
-
                     room.setUnreadCount(room.getUnreadCount() - readHolder.getChatIds().size());
-                    if(holder.getSign() == CALLBACK) {
-                        rooms.remove(index);
-                        rooms.add(0, room);
-                    } else if(holder.getSign() == DELIVERY)
-                        rooms.set(index, room);
-
+                    rooms.set(index, room);
                 }
             }
-        }
+        } else
+            return;
 
         Message msg = chatRoomFragHandler.obtainMessage();
         msg.obj = rooms;

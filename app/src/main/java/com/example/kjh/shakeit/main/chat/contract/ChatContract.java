@@ -7,6 +7,7 @@ import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.User;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public interface ChatContract {
@@ -25,6 +26,7 @@ public interface ChatContract {
         Context getContext();
         void connectToRoom(String roomId, boolean commandLineRun, boolean loopback,
                            boolean useValuesFromIntent, int runTimeMs, String type);
+        File getFile();
 
     }
 
@@ -35,6 +37,9 @@ public interface ChatContract {
         void onDestroy();
         void onClickAttach();
         void toCall(String roomID);
+        void onClickGallery();
+        void onClickCamera();
+        void sendImage(String path);
 
     }
 
@@ -43,6 +48,8 @@ public interface ChatContract {
         void sendMessage(String body);
         void getChatList(int roomId, ResultCallback callback);
         void updateUnreadChat(int userId, ChatRoom room);
+        void sendImage(String body);
+        void uploadImage(int _id, String path, ResultCallback callback);
 
     }
 

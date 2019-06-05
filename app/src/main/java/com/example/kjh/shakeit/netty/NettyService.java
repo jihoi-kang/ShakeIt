@@ -5,6 +5,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.IBinder;
@@ -14,22 +16,27 @@ import android.util.Log;
 
 import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ChatRoom;
+import com.example.kjh.shakeit.data.ImageHolder;
 import com.example.kjh.shakeit.data.MessageHolder;
 import com.example.kjh.shakeit.data.ReadHolder;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.netty.protocol.ProtocolHeader;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
+import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.Serializer;
 import com.example.kjh.shakeit.utils.ShareUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.ByteArrayOutputStream;
+
 import io.realm.Realm;
 import io.realm.internal.IOException;
 
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.CONN;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.IMAGE;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.MESSAGE;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.REQUEST;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.UPDATE_UNREAD;
@@ -39,6 +46,8 @@ public class NettyService extends Service implements NettyListener {
     private final String TAG = NettyService.class.getSimpleName();
 
     private NetworkReceiver receiver;
+
+    private Point size;
 
     /**------------------------------------------------------------------
      생명주기 ==> onCreate()
@@ -58,6 +67,7 @@ public class NettyService extends Service implements NettyListener {
      ------------------------------------------------------------------*/
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        size = intent.getParcelableExtra("size");
         NettyClient.getInstance().setListener(this);
         connect();
         return START_NOT_STICKY;
@@ -148,6 +158,7 @@ public class NettyService extends Service implements NettyListener {
         switch (holder.getType()) {
             case MESSAGE: insertChatHolder(holder); break;
             case UPDATE_UNREAD: updateUnreadStatus(holder); break;
+            case IMAGE: insertChatHolderAndImageHolder(holder); break;
         }
 
         Events.nettyEvent event = new Events.nettyEvent(holder);
@@ -193,6 +204,41 @@ public class NettyService extends Service implements NettyListener {
             realm.beginTransaction();
             ChatRoom room = Serializer.deserialize(holder.getBody(), ChatRoom.class);
             ChatHolder chatHolder = room.getChatHolder();
+            realm.copyToRealm(chatHolder);
+            realm.commitTransaction();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            realm.close();
+        }
+    }
+
+    /**------------------------------------------------------------------
+     메서드 ==> 채팅 이미지 받으면 Realm에 저장 및 이미지 캐시
+     ------------------------------------------------------------------*/
+    private void insertChatHolderAndImageHolder(MessageHolder holder) {
+        Realm realm = Realm.getDefaultInstance();
+        try {
+            realm.beginTransaction();
+            ChatRoom room = Serializer.deserialize(holder.getBody(), ChatRoom.class);
+            ChatHolder chatHolder = room.getChatHolder();
+
+            if(chatHolder.getMessageType().equals("image")){
+                new Thread(() -> {
+                    Realm rm = Realm.getDefaultInstance();
+                    rm.beginTransaction();
+                    Bitmap bitmap = ImageLoaderUtil.getBitmap(chatHolder.getMessageContent(), size);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byte[] imageByteArray = stream.toByteArray();
+
+                    rm.copyToRealm(new ImageHolder(chatHolder.getMessageContent(), imageByteArray));
+                    rm.commitTransaction();
+
+                    rm.close();
+                }).start();
+            }
+
             realm.copyToRealm(chatHolder);
             realm.commitTransaction();
         } catch (IOException e) {

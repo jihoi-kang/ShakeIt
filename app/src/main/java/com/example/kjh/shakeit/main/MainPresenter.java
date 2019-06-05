@@ -28,7 +28,7 @@ public class MainPresenter implements MainContract.Presenter {
         User user = view.getUser();
 
         /** 채팅목록 Realm에 저장 */
-        model.getChatLogList(user.getUserId(), new ResultCallback() {
+        model.getChatLogList(user.getUserId(), view.getPoint(), new ResultCallback() {
             @Override
             public void onSuccess(String body) {
                 Log.d(TAG, "onSuccess");
@@ -47,7 +47,9 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void onStart() {
         /** Netty 서비스 시작 */
-        App.getApplication().startService(new Intent(App.getApplication(), NettyService.class));
+        Intent intent = new Intent(App.getApplication(), NettyService.class);
+        intent.putExtra("size", view.getPoint());
+        App.getApplication().startService(intent);
     }
 
     /**------------------------------------------------------------------

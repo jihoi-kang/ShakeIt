@@ -102,7 +102,7 @@ public class EmailLoginActivity extends AppCompatActivity implements EmailLoginC
 
     @Override
     public void showLoadingDialog() {
-        progressDialog = ProgressDialogGenerator.show(this, "잠시만 기다려주세요");
+        progressDialog = ProgressDialogGenerator.create(this, "잠시만 기다려주세요");
         progressDialog.show();
     }
 
