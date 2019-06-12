@@ -134,9 +134,19 @@ public class TabChatRoomListFragment extends Fragment implements TabChatRoomList
     }
 
     @Override
+    public void setUser(User user) {
+        this.user = user;
+
+        // 아답터에 변경된 User 정보 업데이트
+        adapter.setUser(user);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void showChatRoomList(ArrayList<ChatRoom> roomList) {
         rooms = roomList;
 
+        // 아답터에 변경된 채팅방 정보들 업데이트
         adapter.changeList(rooms);
         adapter.notifyDataSetChanged();
     }

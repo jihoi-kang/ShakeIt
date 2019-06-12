@@ -1,5 +1,7 @@
 package com.example.kjh.shakeit.main.chat.contract;
 
+import android.content.Context;
+
 import com.example.kjh.shakeit.api.ResultCallback;
 import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.User;
@@ -12,6 +14,8 @@ public interface TabChatRoomListContract {
 
         User getUser();
         void showChatRoomList(ArrayList<ChatRoom> roomList);
+        void setUser(User user);
+        Context getContext();
 
     }
 

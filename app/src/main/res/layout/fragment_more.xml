@@ -112,6 +112,7 @@
             android:layout_weight="1" />
 
         <TextView
+            android:id="@+id/send"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
             android:paddingEnd="8dp"
@@ -128,6 +129,7 @@
             android:background="@color/background_grey_primary"/>
 
         <TextView
+            android:id="@+id/charge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="4dp"

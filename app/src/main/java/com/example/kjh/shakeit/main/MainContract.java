@@ -5,6 +5,8 @@ import android.graphics.Point;
 import com.example.kjh.shakeit.api.ResultCallback;
 import com.example.kjh.shakeit.data.User;
 
+import java.util.ArrayList;
+
 
 public interface MainContract {
 
@@ -12,6 +14,7 @@ public interface MainContract {
 
         User getUser();
         Point getPoint();
+        ArrayList<User> getFriends();
 
     }
 

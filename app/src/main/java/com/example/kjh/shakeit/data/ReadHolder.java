@@ -2,6 +2,12 @@ package com.example.kjh.shakeit.data;
 
 import java.util.ArrayList;
 
+/**
+ * 채팅 메시지 읽을 때 사용되는 데이터 클래스
+ * @author 강지회
+ * @version 1.0.0
+ * @since 2019. 6. 12. PM 5:22
+ **/
 public class ReadHolder {
 
     private int userId;

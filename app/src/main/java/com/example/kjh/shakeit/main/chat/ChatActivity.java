@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.app.AppManager;
+import com.example.kjh.shakeit.cash.WireCashActivity;
 import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.User;
@@ -134,6 +135,12 @@ import static com.example.kjh.shakeit.app.Constant.VIDEO_CALL_ENABLED;
 import static com.example.kjh.shakeit.app.Constant.VIDEO_CODEC;
 import static com.example.kjh.shakeit.app.Constant.VIDEO_START_BITRATE;
 
+/**
+ * 채팅 클래스
+ * @author 강지회
+ * @version 1.0.0
+ * @since 2019. 6. 12. PM 5:38
+ **/
 public class ChatActivity extends AppCompatActivity implements ChatContract.View {
 
     private final String TAG = ChatActivity.class.getSimpleName();
@@ -445,6 +452,12 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
                 case R.id.action_call:
                     presenter.toCall(null);
                     return true;
+                case R.id.action_wire:
+                    Intent intent = new Intent(ChatActivity.this, WireCashActivity.class);
+                    intent.putExtra("user", user);
+                    intent.putExtra("otherUser", room.getParticipants().get(0));
+                    startActivity(intent);
+                    return true;
                 default:
                     return false;
             }
@@ -477,6 +490,11 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
     @Override
     public Context getContext() {
         return this;
+    }
+
+    @Override
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

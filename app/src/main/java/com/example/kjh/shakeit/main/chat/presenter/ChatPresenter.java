@@ -92,6 +92,7 @@ public class ChatPresenter implements ChatContract.Presenter {
         ChatRoom room = view.getChatRoom();
         String time = TimeManager.nowTime();
 
+        // 채팅 메시지가 비어 있으면 종료
         if(StrUtil.isBlank(content))
             return;
 
@@ -336,6 +337,14 @@ public class ChatPresenter implements ChatContract.Presenter {
         Message msg = chatActHandler.obtainMessage();
         msg.obj = chats;
         chatActHandler.sendMessage(msg);
+    }
+
+    /**------------------------------------------------------------------
+     구독이벤트 ==> 프로필 변경시 발생
+     ------------------------------------------------------------------*/
+    @Subscribe
+    public void getUpdateProfileInfo(Events.updateProfileEvent event) {
+        view.setUser(event.getUser());
     }
 
 }

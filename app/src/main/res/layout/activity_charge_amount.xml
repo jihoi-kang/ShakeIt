@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <ImageView
+            android:id="@+id/close"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/white"
+            android:src="@drawable/ic_close_black_48dp" />
+
+        <TextView
+            android:id="@+id/charge"
+            android:visibility="gone"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="16dp"
+            android:layout_gravity="end"
+            android:fontFamily="@font/nanum_barun_gothic"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/msg_charge"/>
+
+    </android.support.v7.widget.Toolbar>
+
+    <com.example.kjh.shakeit.view.ClearEditText
+        android:id="@+id/amount"
+        android:background="@drawable/shape_round_edge_back_light_gray"
+        android:textCursorDrawable="@drawable/color_cursor"
+        android:hint="@string/msg_charge_amount"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:padding="16dp"
+        android:inputType="number"
+        android:maxLength="9"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/nanum_barun_gothic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/status"
+        android:fontFamily="@font/nanum_barun_gothic"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

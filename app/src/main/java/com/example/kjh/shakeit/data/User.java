@@ -18,6 +18,7 @@ public class User implements Serializable {
     private String statusMessage;
     private int cash;
     private String deviceToken;
+    private boolean flag = false;
 
     public int getUserId() {
         return userId;
@@ -81,5 +82,13 @@ public class User implements Serializable {
 
     public void setDeviceToken(String deviceToken) {
         this.deviceToken = deviceToken;
+    }
+
+    public boolean isFlag() {
+        return flag;
+    }
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
     }
 }

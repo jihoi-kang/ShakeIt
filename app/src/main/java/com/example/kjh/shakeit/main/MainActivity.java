@@ -16,8 +16,11 @@ import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.app.AppManager;
+import com.example.kjh.shakeit.cash.ChargeActivity;
 import com.example.kjh.shakeit.data.ChatRoom;
+import com.example.kjh.shakeit.data.MessageHolder;
 import com.example.kjh.shakeit.data.User;
+import com.example.kjh.shakeit.data.WireHolder;
 import com.example.kjh.shakeit.fcm.FcmGenerator;
 import com.example.kjh.shakeit.main.adapter.ChatRoomListAdapter;
 import com.example.kjh.shakeit.main.adapter.ViewPagerAdapter;
@@ -29,6 +32,8 @@ import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.Injector;
 import com.example.kjh.shakeit.utils.ProgressDialogGenerator;
+import com.example.kjh.shakeit.utils.Serializer;
+import com.example.kjh.shakeit.utils.StrUtil;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -40,12 +45,14 @@ import butterknife.Unbinder;
 
 import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_FRIEND_LIST_TO_PROFILE_DETAIL;
 import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_MAIN_AFTER_LOGIN_TO_ADD_CHAT;
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_MAIN_TO_CHARGE;
 import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_MAIN_TO_CHAT;
 import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_MAIN_TO_SHAKE;
 import static com.example.kjh.shakeit.app.Constant.nonTabIcon;
 import static com.example.kjh.shakeit.app.Constant.onTabIcon;
 import static com.example.kjh.shakeit.app.Constant.tabLayoutImage;
 import static com.example.kjh.shakeit.app.Constant.titles;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.WIRE;
 
 /**
  * 로그인 후 메인 화면 클래스
@@ -113,9 +120,25 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         tabLayout.setupWithViewPager(viewPager);
         setIconToViewpager(0);
 
+        /** 뷰페이저 페이지 변화 리스너 */
+        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                setIconToViewpager(position);
+            }
+        });
+
         /** 초기 화면 설정 위해 시간 벌어주기 */
         dialog = ProgressDialogGenerator.create(this, "초기 화면 설정중입니다");
         dialog.show();
+
+        /** Notification으로 접속 한 경우(알림) */
+        if(StrUtil.isNotBlank(intent.getStringExtra("notifyType"))
+                && intent.getStringExtra("notifyType").equals("notice")) {
+            viewPager.setOffscreenPageLimit(2);
+            viewPager.setCurrentItem(2);
+        }
+
     }
 
     /**------------------------------------------------------------------
@@ -133,13 +156,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Override
     protected void onResume() {
         super.onResume();
-
-        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                setIconToViewpager(position);
-            }
-        });
 
         if(dialog != null) {
             new Handler().postDelayed(() -> {
@@ -236,6 +252,14 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             participants = new ArrayList<>();
             participants.add(friend);
         }
+        /** ChargeAmountActivity 에서 돌아옴(충전할 금액) */
+        else if (requestCode == REQUEST_CODE_MAIN_TO_CHARGE) {
+            Intent chargeIntent = new Intent(this, ChargeActivity.class);
+            chargeIntent.putExtra("amount", data.getIntExtra("amount", 0));
+            chargeIntent.putExtra("user", user);
+            startActivity(chargeIntent);
+            return;
+        }
 
         Intent intent = new Intent(MainActivity.this, ChatActivity.class);
         intent.putExtra("user", user);
@@ -290,6 +314,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
+    public ArrayList<User> getFriends() {
+        return friends;
+    }
+
+    @Override
     public Point getPoint() {
         return size;
     }
@@ -337,5 +366,21 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Subscribe
     public void getFriendList(Events.friendEvent event) {
         friends = event.getFriends();
+    }
+
+    /**------------------------------------------------------------------
+     구독이벤트 ==> Netty에서 이벤트 왔을 때 ==> 메시지 받거나 콜백
+     ------------------------------------------------------------------*/
+    @Subscribe
+    public void nettyEvent (Events.nettyEvent event) {
+        MessageHolder holder = event.getMessageHolder();
+
+        if(holder.getType() == WIRE) {
+            WireHolder wireHolder = Serializer.deserialize(holder.getBody(), WireHolder.class);
+
+            user.setCash(user.getCash() + wireHolder.getAmount());
+            Events.updateProfileEvent profileEvent = new Events.updateProfileEvent(user);
+            BusProvider.getInstance().post(profileEvent);
+        }
     }
 }

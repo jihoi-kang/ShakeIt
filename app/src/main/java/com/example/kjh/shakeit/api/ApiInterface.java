@@ -62,7 +62,7 @@ public interface ApiInterface {
     );
 
     /** 아이디 값으로 사용자 한명의 정보 받아오기 */
-    @GET("/" + Constant.GET_USER + "?userId={userId}")
+    @GET("/" + Constant.GET_USER)
     Call<ResponseBody> getUserById(
             @Query("userId") Integer userId
     );
@@ -123,6 +123,22 @@ public interface ApiInterface {
     Call<ResponseBody> isFriend(
             @Query("userId") Integer userId,
             @Query("friendId") Integer friendId
+    );
+
+    /** 카카오페이 충전 준비 URL */
+    @GET("/" + Constant.KAKAOPAY_READY)
+    Call<ResponseBody> chargeReady(
+            @Query("userId") Integer userId,
+            @Query("amount") Integer amount
+    );
+
+    /** 포인트 전송 */
+    @FormUrlEncoded
+    @POST("/" + Constant.WIRE_CASH)
+    Call<ResponseBody> wire(
+            @Field(value = "userId") int userId,
+            @Field(value = "friendId") int friendId,
+            @Field(value = "amount") int amount
     );
 }
 

@@ -1,8 +1,5 @@
 package com.example.kjh.shakeit.fcm;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -11,18 +8,23 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.example.kjh.shakeit.R;
-import com.example.kjh.shakeit.main.MainActivity;
+import com.example.kjh.shakeit.app.App;
+import com.example.kjh.shakeit.app.AppManager;
+import com.example.kjh.shakeit.login.MainActivity;
+import com.example.kjh.shakeit.utils.NotificationManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+
+    private final String TAG = MyFirebaseMessagingService.class.getSimpleName();
 
     /**------------------------------------------------------------------
      메서드 ==> 새로운 토큰 발급, 이 토큰을 통해 디바이스에 대한 고유값으로 푸쉬 보냄
      ------------------------------------------------------------------*/
     @Override
     public void onNewToken(String s) {
-        Log.d("FirebaseMessaging", "Refreshed ==> " + s);
+        Log.d("FirebaseMessaging", "Refreshed => " + s);
     }
 
     /**------------------------------------------------------------------
@@ -41,71 +43,62 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         /** 오레오 버전 이상 */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Intent intent;
+            if (title.equals("메시지")) {
+                intent = new Intent(this, MainActivity.class);
+                intent.putExtra("notifyType", "message");
 
-            String channel = "채널";
-            String channel_nm = "채널명";
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-            NotificationManager notichannel = (android.app.NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            NotificationChannel channelMessage = new NotificationChannel(channel, channel_nm,
-                    android.app.NotificationManager.IMPORTANCE_DEFAULT);
-            channelMessage.setDescription("채널에 대한 설명.");
-            channelMessage.enableLights(true);
-            channelMessage.enableVibration(true);
-            channelMessage.setShowBadge(false);
-            channelMessage.setVibrationPattern(new long[]{100, 200, 100, 200});
-            notichannel.createNotificationChannel(channelMessage);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code*/, intent,
+                        PendingIntent.FLAG_ONE_SHOT);
 
-            Intent intent = null;
+                NotificationManager.sendNotification(this, 1, NotificationManager.Channel.MESSAGE, title, message, pendingIntent);
+            } else if (title.equals("알림")) {
+                // 카카오페이 송금 알림
+                intent = new Intent(this, MainActivity.class);
+                intent.putExtra("notifyType", "notice");
 
-            intent = new Intent(this, MainActivity.class);
-            intent.putExtra("key", "value");
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code*/, intent,
+                        PendingIntent.FLAG_ONE_SHOT);
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 1/* Request code*/, intent,
-                    PendingIntent.FLAG_ONE_SHOT);
+                // 액티비티 스택이 0보다 클 때 들어와 있음 => Intent를 보내지 않음
+                if(AppManager.getActivityStack().size() > 0)
+                    pendingIntent = null;
 
-            NotificationCompat.Builder notificationBuilder =
-                    new NotificationCompat.Builder(this, channel)
-                            .setSmallIcon(R.drawable.ic_launcher_background)
-                            .setContentTitle(title)
-                            .setContentText(message)
-                            .setChannelId(channel)
-                            .setAutoCancel(true)
-                            .setContentIntent(pendingIntent)
-                            .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
-
-            NotificationManager notificationManager =
-                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-            notificationManager.notify(9999, notificationBuilder.build());
-
+                NotificationManager.sendNotification(this, 2, NotificationManager.Channel.NOTICE, title, message, pendingIntent);
+            }
         } else {
-            Intent intent = null;
+            Intent intent = new Intent(this, MainActivity.class);
 
-            intent = new Intent(this, MainActivity.class);
-            intent.putExtra("key", "value");
+            if(title.equals("메시지"))
+                intent.putExtra("notifyType", "message");
+            else if(title.equals("알림"))
+                intent.putExtra("notifyType", "notice");
 
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 1/* Request code*/, intent,
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code*/, intent,
                     PendingIntent.FLAG_ONE_SHOT);
 
+            // 액티비티 스택이 0보다 클 때 들어와 있음 => Intent를 보내지 않음
+            if(AppManager.getActivityStack().size() > 0)
+                pendingIntent = null;
+
             NotificationCompat.Builder notificationBuilder =
-                    new NotificationCompat.Builder(this, "")
-                            .setSmallIcon(R.drawable.ic_cancel_primary)
+                    new NotificationCompat.Builder(App.getApplication(), getString(R.string.notification_channel_notice_title))
+                            .setSmallIcon(R.drawable.launcher_icon)
                             .setContentTitle(title)
                             .setContentText(message)
                             .setContentIntent(pendingIntent)
-                            .setAutoCancel(true)
-                            .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
+                            .setAutoCancel(true);
 
-            NotificationManager notificationManager =
-                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            android.app.NotificationManager notificationManager =
+                    (android.app.NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-            notificationManager.notify(9999, notificationBuilder.build());
-
+            notificationManager.notify(3, notificationBuilder.build());
         }
-
     }
 }

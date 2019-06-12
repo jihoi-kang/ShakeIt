@@ -26,6 +26,8 @@ public class Constant {
     public static final String GET_CHATROOM_LIST = "api/chatroom/read.php";
     public static final String GET_CHATLOG_LIST = "api/chatlog/read.php";
     public static final String IS_FRIEND = "api/friend/isfriend.php";
+    public static final String KAKAOPAY_READY = "kakaopay/payment.php";
+    public static final String WIRE_CASH = "api/point/wire.php";
 
     /** HTTP RESPONSE CODE */
     public static final int SUCCESS_OK = 200;
@@ -61,6 +63,8 @@ public class Constant {
     public static final int REQUEST_CODE_FRIEND_LIST_TO_PROFILE_DETAIL = 10011;
     public static final int REQUEST_CODE_SHAKE_TO_PROFILE_DETAIL = 10012;
     public static final int REQUEST_CODE_MAIN_TO_SHAKE = 10013;
+    public static final int REQUEST_CODE_MAIN_TO_CHARGE = 10015;
+    public static final int REQUEST_CODE_CHOOSE_FRIEND_TO_WIRE_CASH = 10016;
 
 
     /** WebRTC */

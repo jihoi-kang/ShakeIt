@@ -7,7 +7,7 @@ import com.example.kjh.shakeit.main.MainActivity;
 import java.util.Stack;
 
 /**
- * 앱의 액티비티 관리 클래스
+ * 로그인 후 앱의 액티비티 관리 클래스
  * @author 강지회
  * @version 1.0.0
  * @since 2019. 5. 27. PM 8:41

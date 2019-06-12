@@ -27,6 +27,7 @@ public interface ChatContract {
         void connectToRoom(String roomId, boolean commandLineRun, boolean loopback,
                            boolean useValuesFromIntent, int runTimeMs, String type);
         File getFile();
+        void setUser(User user);
 
     }
 

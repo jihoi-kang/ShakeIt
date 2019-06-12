@@ -13,6 +13,12 @@ import com.example.kjh.shakeit.R;
 import java.io.InputStream;
 import java.net.URL;
 
+/**
+ * 이미지 관련 유틸리티
+ * @author 강지회
+ * @version 1.0.0
+ * @since 2019. 6. 12. PM 5:47
+ **/
 public class ImageLoaderUtil {
 
     public static void display(Context context, ImageView imageView, String url) {

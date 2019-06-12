@@ -1,7 +1,9 @@
 package com.example.kjh.shakeit.app;
 
 import android.app.Application;
+import android.os.Build;
 
+import com.example.kjh.shakeit.utils.NotificationManager;
 import com.example.kjh.shakeit.utils.ShareUtil;
 
 import io.realm.Realm;
@@ -28,6 +30,12 @@ public class App extends Application {
                 .name("shake.realm")
                 .build();
         Realm.setDefaultConfiguration(config);
+
+        /** Notification 채널 만들기 */
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            NotificationManager.createChannel(this);
+
+
     }
 
     public static App getApplication() {

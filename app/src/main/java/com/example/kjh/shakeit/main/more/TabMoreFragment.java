@@ -12,11 +12,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
+import com.example.kjh.shakeit.app.App;
+import com.example.kjh.shakeit.cash.ChargeAmountActivity;
+import com.example.kjh.shakeit.cash.ChooseFriendActivity;
 import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ImageHolder;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.fcm.FcmGenerator;
 import com.example.kjh.shakeit.login.MainActivity;
+import com.example.kjh.shakeit.netty.NettyService;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.ImageLoaderUtil;
@@ -25,12 +29,17 @@ import com.example.kjh.shakeit.utils.StrUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.otto.Subscribe;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.realm.Realm;
 import io.realm.RealmResults;
+
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_MAIN_TO_CHARGE;
 
 /**
  * 더보기 탭
@@ -49,8 +58,12 @@ public class TabMoreFragment extends Fragment {
     @BindView(R.id.name) TextView name;
     @BindView(R.id.email) TextView statusMessage;
     @BindView(R.id.profile_image) ImageView profileImage;
+    @BindView(R.id.cash) TextView cashTxt;
 
     private User user;
+    private ArrayList<User> friends = new ArrayList<>();
+
+    private DecimalFormat decimalFormat = new DecimalFormat("#,###");
 
     public static TabMoreFragment getInstance() {
         if(instance == null)
@@ -66,6 +79,7 @@ public class TabMoreFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         user = ((com.example.kjh.shakeit.main.MainActivity)getActivity()).getUser();
+        friends = ((com.example.kjh.shakeit.main.MainActivity)getActivity()).getFriends();
     }
 
     /**------------------------------------------------------------------
@@ -76,6 +90,7 @@ public class TabMoreFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         BusProvider.getInstance().register(this);
+
     }
 
     /**------------------------------------------------------------------
@@ -110,6 +125,29 @@ public class TabMoreFragment extends Fragment {
     }
 
     /**------------------------------------------------------------------
+     클릭이벤트 ==> 포인트 보내기
+     ------------------------------------------------------------------*/
+    @OnClick(R.id.send)
+    void onClickSend() {
+        Intent intent = new Intent(getContext(), ChooseFriendActivity.class);
+        intent.putExtra("user", user);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("friends", friends);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    /**------------------------------------------------------------------
+     클릭이벤트 ==> 충전하기
+     ------------------------------------------------------------------*/
+    @OnClick(R.id.charge)
+    void onClickCharge() {
+        Intent intent = new Intent(getContext(), ChargeAmountActivity.class);
+        intent.putExtra("cash", user.getCash());
+        getActivity().startActivityForResult(intent, REQUEST_CODE_MAIN_TO_CHARGE);
+    }
+
+    /**------------------------------------------------------------------
      클릭이벤트 ==> 프로필 수정
      ------------------------------------------------------------------*/
     @OnClick(R.id.update_profile)
@@ -127,8 +165,10 @@ public class TabMoreFragment extends Fragment {
         FirebaseAuth.getInstance().signOut();
         ShareUtil.clear();
 
+        /** FCM Token 값 삭제 */
         FcmGenerator.updateUserToken(user.getUserId(), "logout");
 
+        /** Realm 데이터 삭제 */
         Realm realm = Realm.getDefaultInstance();
 
         realm.beginTransaction();
@@ -137,12 +177,14 @@ public class TabMoreFragment extends Fragment {
         RealmResults<ImageHolder> imageResult = realm.where(ImageHolder.class).findAll();
         imageResult.deleteAllFromRealm();
         realm.commitTransaction();
-
         realm.close();
 
         Intent intent = new Intent(getActivity(), MainActivity.class);
         startActivity(intent);
         getActivity().finish();
+
+        /** Netty 서버와 연결 끊기 */
+        App.getApplication().stopService(new Intent(App.getApplication(), NettyService.class));
     }
 
     /**------------------------------------------------------------------
@@ -151,6 +193,7 @@ public class TabMoreFragment extends Fragment {
     private void showProfileInfo() {
         name.setText(user.getName());
         statusMessage.setText(user.getEmail());
+        cashTxt.setText(decimalFormat.format(user.getCash()));
 
         if(StrUtil.isBlank(user.getImageUrl()))
             profileImage.setImageResource(R.drawable.ic_basic_profile);
@@ -164,7 +207,16 @@ public class TabMoreFragment extends Fragment {
     @Subscribe
     public void getUpdateProfileInfo(Events.updateProfileEvent event) {
         user = event.getUser();
-        showProfileInfo();
+        getActivity().runOnUiThread(() -> showProfileInfo());
     }
+
+    /**------------------------------------------------------------------
+     구독이벤트 ==> 친구목록 변경시 발생
+     ------------------------------------------------------------------*/
+    @Subscribe
+    public void getFriendList(Events.friendEvent event) {
+        friends = event.getFriends();
+    }
+
 }
 

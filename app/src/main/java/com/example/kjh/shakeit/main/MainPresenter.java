@@ -58,6 +58,6 @@ public class MainPresenter implements MainContract.Presenter {
     @Override
     public void onDestroy() {
         /** Netty 서비스 종료 */
-        App.getApplication().stopService(new Intent(App.getApplication(), NettyService.class));
+//        App.getApplication().stopService(new Intent(App.getApplication(), NettyService.class));
     }
 }

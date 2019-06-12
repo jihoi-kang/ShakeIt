@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
+import com.example.kjh.shakeit.cash.ChooseFriendActivity;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.chat.AddChatActivity;
 import com.example.kjh.shakeit.main.chat.ChatActivity;
@@ -37,8 +38,9 @@ import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_FRIEND_LIST_TO_P
  *
  * TabFriendListFragment.class,
  * AddChatActivity.class,
- * ChatActivity.class
- * 위 세 클래스에서 사용
+ * ChatActivity.class,
+ * ChooseFriendActivity
+ * 위 네개의 클래스에서 사용
  **/
 public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.ViewHolder> {
 
@@ -47,17 +49,20 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
     private ArrayList<User> users;
     private Context context;
     private String from;
-    private AddChatActivity.OnItemClickListener listener;
+    private OnItemClickListener listener;
 
     private Drawable uncheckedRadioDrawable, checkedRadioDrawable;
 
-    public FriendListAdapter(Context context, ArrayList<User> users, String from, AddChatActivity.OnItemClickListener listener) {
+    private int targetPosition = -1;
+
+    public FriendListAdapter(Context context, ArrayList<User> users, String from, OnItemClickListener listener) {
         this.context = context;
         this.users = users;
         this.from = from;
         this.listener = listener;
 
-        if(from.equals(AddChatActivity.class.getSimpleName())) {
+        if(from.equals(AddChatActivity.class.getSimpleName())
+                || from.equals(ChooseFriendActivity.class.getSimpleName())) {
             uncheckedRadioDrawable = context.getResources().getDrawable(
                     R.drawable.ic_outline_radio_button_unchecked_black_48dp);
 
@@ -164,6 +169,37 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
                 intent.putExtra("from", ChatActivity.class.getSimpleName());
                 intent.putExtra("size", getItemCount());
                 ((Activity)context).startActivityForResult(intent, REQUEST_CODE_CHAT_TO_PROFILE_DETAIL);
+            });
+        }
+        /** ChooseFriendActivity에서 사용할 경우 */
+        else if(from.equals(ChooseFriendActivity.class.getSimpleName())) {
+            holder.inputStatusMessage.setVisibility(View.GONE);
+
+            if(user.isFlag())
+                holder.selectBox.setImageDrawable(checkedRadioDrawable);
+            else
+                holder.selectBox.setImageDrawable(uncheckedRadioDrawable);
+
+            holder.container.setOnClickListener(view -> {
+                // 모든 친구목록 중 오직 하나의 친구만 선택할 수 있음
+                if(user.isFlag()){
+                    user.setFlag(false);
+                } else {
+                    for(int idx = 0; idx < getItemCount(); idx++) {
+                        User target = users.get(idx);
+                        if(target.isFlag()) {
+                            target.setFlag(false);
+                            users.set(idx, target);
+                        }
+                    }
+                    user.setFlag(true);
+                }
+
+                users.set(position, user);
+                notifyDataSetChanged();
+
+                /** 대상 선택 및 해제 */
+                listener.onItemClick(user, user.isFlag());
             });
         }
 

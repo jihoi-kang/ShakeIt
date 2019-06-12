@@ -27,7 +27,6 @@
         android:layout_height="wrap_content"
         android:textColor="@color/black" />
 
-
     <Button
         android:layout_gravity="center_horizontal"
         android:id="@+id/confirm"

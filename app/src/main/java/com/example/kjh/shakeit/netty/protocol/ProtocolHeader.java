@@ -22,5 +22,6 @@ public class ProtocolHeader {
     public static final byte SHAKE_ON           = 0x16; // 흔들기 기능 사용할 때
     public static final byte SHAKE_OFF          = 0x17; // 시간 초과 되어 흔들기 종료 할 때
     public static final byte IMAGE              = 0x18; // 채팅 이미지 보낼 때
+    public static final byte WIRE               = 0x19; // 송금
 
 }

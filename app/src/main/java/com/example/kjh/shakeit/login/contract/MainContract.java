@@ -25,13 +25,15 @@ public interface MainContract {
 
         void onClickFacebookLogin();
         void onClickGoogleLogin(GoogleSignInResult result);
-        void autoLogin(int _id);
+        void autoLogin(int userId);
+
     }
 
     interface Model {
 
         void socialLogin(String email, String uid, String displayName, String photoUrl, String login_type, ResultCallback callback);
         void getUser(int id, ResultCallback callback);
+
     }
 
 }

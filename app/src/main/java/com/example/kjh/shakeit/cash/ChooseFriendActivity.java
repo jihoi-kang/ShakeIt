@@ -1,4 +1,4 @@
-package com.example.kjh.shakeit.main.chat;
+package com.example.kjh.shakeit.cash;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,9 +13,6 @@ import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.app.AppManager;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.adapter.FriendListAdapter;
-import com.example.kjh.shakeit.main.chat.contract.AddChatContract;
-import com.example.kjh.shakeit.main.chat.presenter.AddChatPresenter;
-import com.example.kjh.shakeit.utils.Injector;
 
 import java.util.ArrayList;
 
@@ -24,27 +21,27 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_CHOOSE_FRIEND_TO_WIRE_CASH;
+
 /**
- * 채팅방 생성 클래스
+ * 송금할 친구를 선택하는 클래스
  * @author 강지회
  * @version 1.0.0
- * @since 2019. 6. 12. PM 5:38
+ * @since 2019. 6. 12. PM 5:18
  **/
-public class AddChatActivity extends AppCompatActivity implements AddChatContract.View {
+public class ChooseFriendActivity extends AppCompatActivity {
 
-    private final String TAG = AddChatActivity.class.getSimpleName();
-
-    private AddChatContract.Presenter presenter;
+    private final String TAG = ChooseFriendActivity.class.getSimpleName();
 
     private Unbinder unbinder;
-    @BindView(R.id.invite) TextView invite;
+    @BindView(R.id.confirm) TextView confirm;
     @BindView(R.id.friend_list) RecyclerView friendListView;
 
     private FriendListAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
 
     ArrayList<User> friends = new ArrayList<>();
-    ArrayList<User> invitedFriends = new ArrayList<>();
+    User otherUser, user;
 
     /**------------------------------------------------------------------
      생명주기 ==> onCreate()
@@ -54,15 +51,14 @@ public class AddChatActivity extends AppCompatActivity implements AddChatContrac
         AppManager.getAppManager().addActivity(this);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_chat);
+        setContentView(R.layout.activity_choose_friend);
 
         unbinder = ButterKnife.bind(this);
 
-        presenter = new AddChatPresenter(this, Injector.provideAddChatModel());
-
         Intent intent = getIntent();
         friends = (ArrayList<User>) intent.getExtras().getSerializable("friends");
-//        자기자신은 제거
+        user = (User) intent.getSerializableExtra("user");
+        // 자기자신은 제거
         friends.remove(0);
 
         friendListView.setHasFixedSize(true);
@@ -72,9 +68,9 @@ public class AddChatActivity extends AppCompatActivity implements AddChatContrac
 
         adapter = new FriendListAdapter(
                 this,
-                friends, AddChatActivity.class.getSimpleName(),
+                friends, ChooseFriendActivity.class.getSimpleName(),
                 /** 대상 선택 이벤트 */
-                (user, isChecked) -> presenter.onItemClick(user, isChecked)
+                (user, isChecked) -> onItemClick(user, isChecked)
         );
         friendListView.setAdapter(adapter);
     }
@@ -91,6 +87,17 @@ public class AddChatActivity extends AppCompatActivity implements AddChatContrac
     }
 
     /**------------------------------------------------------------------
+     콜백이벤트 ==> onActivityResult()
+     ------------------------------------------------------------------*/
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // 결제가 정상적으로 완료 되어 돌아온 경우
+        if(resultCode == RESULT_OK
+                && requestCode == REQUEST_CODE_CHOOSE_FRIEND_TO_WIRE_CASH)
+            finish();
+    }
+
+    /**------------------------------------------------------------------
      클릭이벤트 ==> 닫기
      ------------------------------------------------------------------*/
     @OnClick(R.id.close)
@@ -99,37 +106,27 @@ public class AddChatActivity extends AppCompatActivity implements AddChatContrac
     }
 
     /**------------------------------------------------------------------
-     클릭이벤트 ==> 초대
+     클릭이벤트 ==> 송금할 대상 선택 후 확인
      ------------------------------------------------------------------*/
-    @OnClick(R.id.invite)
-    void onClickInvite() {
-        Intent intent = new Intent();
-        intent.putExtra("invitedFriends", invitedFriends);
-        setResult(RESULT_OK, intent);
-        finish();
-    }
-
-    @Override
-    public ArrayList<User> getInvitedFriends() {
-        return invitedFriends;
+    @OnClick(R.id.confirm)
+    void onClickConfirm() {
+        Intent intent = new Intent(this, WireCashActivity.class);
+        intent.putExtra("user", user);
+        intent.putExtra("otherUser", otherUser);
+        startActivityForResult(intent, REQUEST_CODE_CHOOSE_FRIEND_TO_WIRE_CASH);
     }
 
     /**------------------------------------------------------------------
-     메서드 ==> 선택된 대상에 따라 초대 버튼 변화
+     메서드 ==> 아이템 클릭시 이벤트
      ------------------------------------------------------------------*/
-    @Override
-    public void setInviteButton(ArrayList<User> invitedFriends) {
-        this.invitedFriends = invitedFriends;
-
-        if(invitedFriends.size() == 0)
-            invite.setVisibility(View.GONE);
-        else {
-            invite.setVisibility(View.VISIBLE);
-            invite.setText("초대 (" + invitedFriends.size() + ")");
+    private void onItemClick(User user, boolean isChecked) {
+        /** 초대할 대상 Array 업데이트 */
+        if(isChecked) {
+            otherUser = user;
+            confirm.setVisibility(View.VISIBLE);
+        } else {
+            otherUser = null;
+            confirm.setVisibility(View.GONE);
         }
-
     }
-
-
-
 }

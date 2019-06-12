@@ -17,7 +17,6 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             TabMoreFragment.getInstance()
     };
 
-
     public ViewPagerAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);
     }

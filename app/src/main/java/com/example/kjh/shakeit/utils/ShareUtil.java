@@ -4,6 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+/**
+ * SharedPreferences 유틸리티
+ * @author 강지회
+ * @version 1.0.0
+ * @since 2019. 6. 12. PM 5:48
+ **/
 public class ShareUtil {
 
     static SharedPreferences sharedPreferences;

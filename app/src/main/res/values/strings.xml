@@ -78,5 +78,20 @@
     <string name="msg_no_response">응답이 없어 종료합니다</string>
     <string name="msg_calling">Calling...</string>
     <string name="msg_disconnect_call">통화를 종료합니다</string>
+    <string name="msg_charge_amount">충전금액(원)</string>
+    <string name="msg_do_charge">충전하기</string>
+    <string name="msg_for_charge_over_1000">최소 1천원 이상 충전 가능</string>
+    <string name="msg_wire_select_target">송금 대상 선택</string>
+    <string name="msg_wire">송금</string>
+    <string name="msg_to">에게</string>
+    <string name="msg_wire_amount">보낼금액(원)</string>
+    <string name="msg_for_lack_of_point">포인트가 부족합니다</string>
+    <string name="msg_for_lack_of_point_slide"> / 포인트가 부족합니다</string>
+    <string name="msg_for_success_wire">송금이 완료되었습니다</string>
+    <string name="msg_for_wait">잠시만 기다려주세요</string>
 
+    <string name="notification_channel_message_title">Message</string>
+    <string name="notification_channel_message_description">Receive notification about new message.</string>
+    <string name="notification_channel_notice_title">Notice</string>
+    <string name="notification_channel_notice_description">Receive notification about our service\'s notice</string>
 </resources>

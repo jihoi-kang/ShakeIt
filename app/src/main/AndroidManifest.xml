@@ -96,6 +96,21 @@
             android:theme="@style/AppTheme_StatusBar_Black"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".cash.ChargeAmountActivity"
+            android:theme="@style/AppTheme_StatusBar_Black"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".cash.ChargeActivity"
+            android:theme="@style/AppTheme_StatusBar_Black"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".cash.ChooseFriendActivity"
+            android:theme="@style/AppTheme_StatusBar_Black"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".cash.WireCashActivity"
+            android:theme="@style/AppTheme_StatusBar_Black"
+            android:screenOrientation="portrait" />
 
         <!-- Crop Image -->
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />

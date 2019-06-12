@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
@@ -21,7 +20,6 @@ import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -77,20 +75,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 .requestEmail()
                 .build();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        showMessageForFailureLogin();
-                    }
-                })
+                .enableAutoManage(this, connectionResult -> showMessageForFailureLogin())
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-        reset();
-    }
 
-    private void reset(){
-        ShareUtil.clear();
-        FirebaseAuth.getInstance().signOut();
+//        reset();
     }
 
     /**------------------------------------------------------------------
@@ -194,6 +183,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
         Intent intent = new Intent(MainActivity.this, com.example.kjh.shakeit.main.MainActivity.class);
         intent.putExtra("user", user);
+        // Notification을 통해 앱에 접속 한 경우
+        intent.putExtra("notifyType", getIntent().getStringExtra("notifyType"));
         startActivity(intent);
         finish();
     }
@@ -207,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             return;
 
         switch (requestCode){
-            /** From 이메일 로그인 화면 */
+            /** 이메일 로그인 화면에서 돌아온 경우 */
             case REQUEST_CODE_MAIN_BEFORE_LOGIN_TO_EMAILLOGIN:
                 moveActivityWithUserInfo(data.getStringExtra("user"));
                 break;
@@ -222,6 +213,12 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 break;
         }
 
+    }
+
+    /** 폰에 저장된 데이터 초기화 */
+    private void reset(){
+        ShareUtil.clear();
+        FirebaseAuth.getInstance().signOut();
     }
 
 }

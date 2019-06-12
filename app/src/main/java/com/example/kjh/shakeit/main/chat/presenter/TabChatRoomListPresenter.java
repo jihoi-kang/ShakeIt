@@ -1,5 +1,6 @@
 package com.example.kjh.shakeit.main.chat.presenter;
 
+import android.app.Activity;
 import android.os.Message;
 import android.util.Log;
 
@@ -137,5 +138,13 @@ public class TabChatRoomListPresenter implements TabChatRoomListContract.Present
         Message msg = chatRoomFragHandler.obtainMessage();
         msg.obj = rooms;
         chatRoomFragHandler.sendMessage(msg);
+    }
+
+    /**------------------------------------------------------------------
+     구독이벤트 ==> 프로필 변경시 발생
+     ------------------------------------------------------------------*/
+    @Subscribe
+    public void getUpdateProfileInfo(Events.updateProfileEvent event) {
+        ((Activity)view.getContext()).runOnUiThread(() -> view.setUser(event.getUser()));
     }
 }

@@ -53,10 +53,6 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
         this.user = user;
     }
 
-    public void changeList(ArrayList<ChatRoom> rooms) {
-        this.rooms = rooms;
-    }
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.profile_image) ImageView profileImage;
@@ -212,4 +208,13 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
     public static ArrayList<ChatRoom> getChatRooms() {
         return rooms;
     }
+
+    public void changeList(ArrayList<ChatRoom> rooms) {
+        this.rooms = rooms;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 }

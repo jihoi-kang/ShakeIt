@@ -30,14 +30,14 @@ public class FcmGenerator {
     private static String postUrl = "https://fcm.googleapis.com/fcm/send";
 
     /**------------------------------------------------------------------
-     메서드 ==> 메시지를 보냄
+     메서드 ==> FCM 메시지 발송
      ------------------------------------------------------------------*/
-    public static boolean postRequest(String token, String message) {
+    public static boolean postRequest(String token, String title, String message) {
         String postBody="{\n" +
                 "    \"to\": \"" + token + "\",\n" +
                 "    \"priority\": \"high\",\n" +
                 "    \"data\":{\n" +
-                "       \"title\":\"\",\n" +
+                "       \"title\":\"" + title + "\",\n" +
                 "       \"message\":\"" + message + "\"\n" +
                 "    }\n" +
                 "}";
@@ -61,7 +61,7 @@ public class FcmGenerator {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.e("TAG", response.body().string());
+                Log.d("FcmGenerator", response.body().string());
                 isSuccess = true;
             }
         });
@@ -84,36 +84,35 @@ public class FcmGenerator {
                 @Override
                 public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) { }
             });
-
-            return;
         }
-
         /** 로그인시 */
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(task -> {
-                    if (!task.isSuccessful())
-                        return;
+        else if(type.equals("login")) {
+            FirebaseInstanceId.getInstance().getInstanceId()
+                    .addOnCompleteListener(task -> {
+                        if (!task.isSuccessful())
+                            return;
 
-                    String token = task.getResult().getToken();
-                    Log.d("FcmGenerator", "Token => " + token);
+                        String token = task.getResult().getToken();
+                        Log.d("FcmGenerator", "Token => " + token);
 
-                    retrofit2.Call<ResponseBody> result = ApiClient.create().updateUserToken(_id, token);
+                        retrofit2.Call<ResponseBody> result = ApiClient.create().updateUserToken(_id, token);
 
-                    result.enqueue(new retrofit2.Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
-                            try {
-                                Log.d("FcmGenerator", response.body().string());
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                        result.enqueue(new retrofit2.Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                                try {
+                                    Log.d("FcmGenerator", response.body().string());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
-                            Log.e("FcmGenerator", t.getMessage());
-                        }
+                            @Override
+                            public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
+                                Log.e("FcmGenerator", t.getMessage());
+                            }
+                        });
                     });
-                });
+        }
     }
 }
