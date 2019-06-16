@@ -53,15 +53,6 @@
             android:layout_height="0.3dp" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/name"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="6dp"
-        android:fontFamily="@font/nanum_barun_gothic_bold"
-        android:textColor="@color/background_grey_light1"
-        android:layout_marginBottom="4dp"/>
 
     <LinearLayout
         android:orientation="horizontal"
@@ -70,15 +61,30 @@
         android:layout_marginBottom="4dp"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/message_content"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:fontFamily="@font/nanum_barun_gothic"
             android:layout_marginStart="16dp"
+            android:background="@drawable/message_shape"
             android:padding="8dp"
-            android:background="@drawable/message_shape" />
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/points"
+                android:src="@drawable/ic_points"
+                android:adjustViewBounds="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/message_content_point"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/nanum_barun_gothic" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/sendedTime"

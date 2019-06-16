@@ -51,6 +51,7 @@ public interface ChatContract {
         void updateUnreadChat(int userId, ChatRoom room);
         void sendImage(String body);
         void uploadImage(int _id, String path, ResultCallback callback);
+        void getUser(int userId, ResultCallback callback);
 
     }
 

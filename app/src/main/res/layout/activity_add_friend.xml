@@ -60,6 +60,7 @@
             android:layout_width="108dp"
             android:layout_height="108dp"
             android:layout_gravity="center_horizontal"
+            android:background="@color/transparent"
             android:src="@drawable/ic_basic_profile"
             android:contentDescription="@string/msg_profile_image"
             app:civ_border_color="@color/background_grey_primary"

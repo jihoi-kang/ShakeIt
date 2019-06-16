@@ -36,10 +36,12 @@ import io.realm.Realm;
 import io.realm.internal.IOException;
 
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.CONN;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.DELIVERY;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.IMAGE;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.MESSAGE;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.REQUEST;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.UPDATE_UNREAD;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.WIRE;
 
 public class NettyService extends Service implements NettyListener {
 
@@ -156,13 +158,32 @@ public class NettyService extends Service implements NettyListener {
             return;
 
         switch (holder.getType()) {
-            case MESSAGE: insertChatHolder(holder); break;
+            case MESSAGE: insertChatHolder(holder);break;
             case UPDATE_UNREAD: updateUnreadStatus(holder); break;
             case IMAGE: insertChatHolderAndImageHolder(holder); break;
+            case WIRE:
+                insertChatHolder(holder);
+                updateUserCash(holder);
+                break;
         }
 
         Events.nettyEvent event = new Events.nettyEvent(holder);
         BusProvider.getInstance().post(event);
+    }
+
+    /**------------------------------------------------------------------
+     메서드 ==> 사용자 포인트 변경사항 저장
+     ------------------------------------------------------------------*/
+    private void updateUserCash(MessageHolder holder) {
+        if(holder.getSign() == DELIVERY) {
+            ChatRoom room = Serializer.deserialize(holder.getBody(), ChatRoom.class);
+            if(room.getParticipants().get(0).getUserId() == ShareUtil.getPreferInt("userId")) {
+                ShareUtil.setPreferInt("cash", ShareUtil.getPreferInt("cash") + Integer.parseInt(room.getChatHolder().getMessageContent()));
+
+                Events.updateProfileEvent event = new Events.updateProfileEvent(getUser());
+                BusProvider.getInstance().post(event);
+            }
+        }
     }
 
     /**------------------------------------------------------------------
@@ -246,6 +267,19 @@ public class NettyService extends Service implements NettyListener {
         } finally {
             realm.close();
         }
+    }
+
+    public User getUser() {
+        User user = new User();
+        user.setUserId(ShareUtil.getPreferInt("userId"));
+        user.setEmail(ShareUtil.getPreferStr("email"));
+        user.setLoginType(ShareUtil.getPreferStr("loginType"));
+        user.setName(ShareUtil.getPreferStr("name"));
+        user.setImageUrl(ShareUtil.getPreferStr("imageUrl"));
+        user.setStatusMessage(ShareUtil.getPreferStr("statusMessage"));
+        user.setCash(ShareUtil.getPreferInt("cash"));
+
+        return user;
     }
 
     /**------------------------------------------------------------------

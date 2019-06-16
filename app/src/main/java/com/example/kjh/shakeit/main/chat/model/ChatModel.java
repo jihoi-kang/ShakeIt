@@ -31,6 +31,7 @@ import retrofit2.Response;
 import static com.example.kjh.shakeit.app.Constant.ERROR_BAD_REQUEST;
 import static com.example.kjh.shakeit.app.Constant.ERROR_SERVICE_UNAVAILABLE;
 import static com.example.kjh.shakeit.app.Constant.SUCCESS_CREATED;
+import static com.example.kjh.shakeit.app.Constant.SUCCESS_OK;
 
 public class ChatModel implements ChatContract.Model {
 
@@ -58,6 +59,40 @@ public class ChatModel implements ChatContract.Model {
         holder.setType(ProtocolHeader.IMAGE);
         holder.setBody(body);
         NettyClient.getInstance().sendMsgToServer(holder, null);
+    }
+
+    /**------------------------------------------------------------------
+     메서드 ==> 사용자 정보
+     ------------------------------------------------------------------*/
+    @Override
+    public void getUser(int userId, ResultCallback callback) {
+        Call<ResponseBody> result = ApiClient.create().getUserById(userId);
+
+        result.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    switch (response.code()){
+                        case SUCCESS_OK:
+                            callback.onSuccess(response.body().string());
+                            break;
+                        case ERROR_SERVICE_UNAVAILABLE:
+                            callback.onFailure("SERVICE_UNAVAILABLE");
+                            break;
+                        case ERROR_BAD_REQUEST:
+                            callback.onFailure("SERVER_ERROR");
+                            break;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                callback.onFailure(t.getMessage());
+            }
+        });
     }
 
     /**------------------------------------------------------------------

@@ -3,6 +3,7 @@ package com.example.kjh.shakeit.main.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
+import com.example.kjh.shakeit.app.App;
 import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.ImageHolder;
@@ -21,6 +23,7 @@ import com.example.kjh.shakeit.utils.ShareUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -41,10 +44,14 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     private static final int MINE_MSG = 2;
     private static final int OTHER_IMG = 3;
     private static final int MINE_IMG = 4;
+    private static final int OTHER_PNT = 5;
+    private static final int MINE_PNT = 6;
 
     private ArrayList<ChatHolder> chats;
     private Context context;
     private ChatRoom room;
+
+    private DecimalFormat decimalFormat = new DecimalFormat("#,###");
 
     public ChatListAdapter(Context context, ArrayList<ChatHolder> chats, ChatRoom room) {
         this.context = context;
@@ -63,6 +70,10 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                 return new MineImageViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_image_mine, parent, false));
             case OTHER_IMG:
                 return new OtherImageViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_image_other, parent, false));
+            case MINE_PNT:
+                return new MinePointViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_point_mine, parent, false));
+            case OTHER_PNT:
+                return new OtherPointViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_point_other, parent, false));
             default:
                 return null;
         }
@@ -75,16 +86,21 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     public int getItemViewType(int position) {
         int user_id = chats.get(position).getUserId();
         boolean isMine = (user_id == ShareUtil.getPreferInt("userId"));
+
         if(isMine){
             if(chats.get(position).getMessageType().equals("text"))
                 return MINE_MSG;
             else if(chats.get(position).getMessageType().equals("image"))
                 return MINE_IMG;
+            else if(chats.get(position).getMessageType().equals("point"))
+                return MINE_PNT;
         } else {
             if(chats.get(position).getMessageType().equals("text"))
                 return OTHER_MSG;
             else if(chats.get(position).getMessageType().equals("image"))
                 return OTHER_IMG;
+            else if(chats.get(position).getMessageType().equals("point"))
+                return OTHER_PNT;
         }
         return -1;
     }
@@ -115,10 +131,15 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             case OTHER_MSG: setOtherValue((OtherViewHolder) holder, chatHolder, preChatHolder, haveToShowTime); break;
             case MINE_IMG: setMineValueImage((MineImageViewHolder) holder, chatHolder, haveToShowTime); break;
             case OTHER_IMG: setOtherValueImage((OtherImageViewHolder) holder, chatHolder, preChatHolder, haveToShowTime); break;
+            case MINE_PNT: setMineValuePoint((MinePointViewHolder) holder, chatHolder, haveToShowTime); break;
+            case OTHER_PNT: setOtherValuePoint((OtherPointViewHolder) holder, chatHolder, preChatHolder, haveToShowTime); break;
         }
 
     }
 
+    /**------------------------------------------------------------------
+     메서드 ==> 내가 쓴 메시지(text) 유형
+     ------------------------------------------------------------------*/
     private void setMineValue(MineViewHolder holder, ChatHolder chatHolder, boolean haveToShowTime) {
         if(haveToShowTime){
             holder.timeLayout.setVisibility(View.VISIBLE);
@@ -142,6 +163,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         }
     }
 
+    /**------------------------------------------------------------------
+     메서드 ==> 내가 보낸 메시지(image) 유형
+     ------------------------------------------------------------------*/
     private void setMineValueImage(MineImageViewHolder holder, ChatHolder chatHolder, boolean haveToShowTime) {
         if(haveToShowTime){
             holder.timeLayout.setVisibility(View.VISIBLE);
@@ -172,6 +196,46 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         }
     }
 
+    /**------------------------------------------------------------------
+     메서드 ==> 내가 보낸 메시지(point) 유형
+     ------------------------------------------------------------------*/
+    private void setMineValuePoint(MinePointViewHolder holder, ChatHolder chatHolder, boolean haveToShowTime) {
+        if(haveToShowTime){
+            holder.timeLayout.setVisibility(View.VISIBLE);
+            holder.time.setText(chatHolder.getSended_at().substring(0, 10));
+        } else {
+            holder.timeLayout.setVisibility(View.GONE);
+        }
+        holder.sendedTimeTxt.setText(chatHolder.getSended_at().substring(11, 16));
+        holder.messageContent.setText(decimalFormat.format(Integer.parseInt(chatHolder.getMessageContent())) + "포인트를 보냅니다!");
+
+        /** points 이미지 사이즈 조절 */
+        Bitmap bitmap = ((BitmapDrawable)holder.points.getDrawable()).getBitmap();
+
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+
+        int convertHeight = (height * ((2 * App.getApplication().getDisplay().x) / 3)) / width;
+
+        bitmap = Bitmap.createScaledBitmap(bitmap,(2 * App.getApplication().getDisplay().x) / 3, convertHeight,true);
+        holder.points.setImageBitmap(bitmap);
+
+        try {
+            JSONArray jsonArray = new JSONArray(chatHolder.getUnreadUsers());
+            if(jsonArray.length() == 0) {
+                holder.unreadCountTxt.setVisibility(View.GONE);
+            } else {
+                holder.unreadCountTxt.setVisibility(View.VISIBLE);
+                holder.unreadCountTxt.setText("" + jsonArray.length());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**------------------------------------------------------------------
+     메서드 ==> 상대방이 쓴 메시지(text) 유형
+     ------------------------------------------------------------------*/
     private void setOtherValue(OtherViewHolder holder, ChatHolder chatHolder, ChatHolder preChatHolder, boolean haveToShowTime) {
         if(haveToShowTime){
             holder.timeLayout.setVisibility(View.VISIBLE);
@@ -212,6 +276,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         }
     }
 
+    /**------------------------------------------------------------------
+     메서드 ==> 상대방이 보낸 메시지(image) 유형
+     ------------------------------------------------------------------*/
     private void setOtherValueImage(OtherImageViewHolder holder, ChatHolder chatHolder, ChatHolder preChatHolder, boolean haveToShowTime) {
         if(haveToShowTime){
             holder.timeLayout.setVisibility(View.VISIBLE);
@@ -257,7 +324,44 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
 
+    /**------------------------------------------------------------------
+     메서드 ==> 상대방이 보낸 메시지(point) 유형
+     ------------------------------------------------------------------*/
+    private void setOtherValuePoint(OtherPointViewHolder holder, ChatHolder chatHolder, ChatHolder preChatHolder, boolean haveToShowTime) {
+        if(haveToShowTime){
+            holder.timeLayout.setVisibility(View.VISIBLE);
+            holder.time.setText(chatHolder.getSended_at().substring(0, 10));
+        } else {
+            holder.timeLayout.setVisibility(View.GONE);
+        }
+
+        holder.sendedTimeTxt.setText(chatHolder.getSended_at().substring(11, 16));
+        holder.messageContent.setText(decimalFormat.format(Integer.parseInt(chatHolder.getMessageContent())) + "포인트 받기 완료!");
+
+        /** points 이미지 사이즈 조절 */
+        Bitmap bitmap = ((BitmapDrawable)holder.points.getDrawable()).getBitmap();
+
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+
+        int convertHeight = (height * ((2 * App.getApplication().getDisplay().x) / 3)) / width;
+
+        bitmap = Bitmap.createScaledBitmap(bitmap,(2 * App.getApplication().getDisplay().x) / 3, convertHeight,true);
+        holder.points.setImageBitmap(bitmap);
+
+        try {
+            JSONArray jsonArray = new JSONArray(chatHolder.getUnreadUsers());
+            if(jsonArray.length() == 0) {
+                holder.unreadCountTxt.setVisibility(View.GONE);
+            } else {
+                holder.unreadCountTxt.setVisibility(View.VISIBLE);
+                holder.unreadCountTxt.setText("" + jsonArray.length());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void changeList(ArrayList<ChatHolder> chats) {
@@ -297,6 +401,21 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         }
     }
 
+    public class MinePointViewHolder extends ViewHolder {
+
+        @BindView(R.id.ll_time) LinearLayout timeLayout;
+        @BindView(R.id.time) TextView time;
+        @BindView(R.id.message_content_point) TextView messageContent;
+        @BindView(R.id.sendedTime) TextView sendedTimeTxt;
+        @BindView(R.id.unreadCount) TextView unreadCountTxt;
+        @BindView(R.id.points) ImageView points;
+
+        public MinePointViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
     public class OtherViewHolder extends ViewHolder {
 
         @BindView(R.id.ll_time) LinearLayout timeLayout;
@@ -324,6 +443,22 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         @BindView(R.id.ll_read) LinearLayout readLayout;
 
         public OtherImageViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    public class OtherPointViewHolder extends ViewHolder {
+
+        @BindView(R.id.ll_time) LinearLayout timeLayout;
+        @BindView(R.id.time) TextView time;
+        @BindView(R.id.message_content_point) TextView messageContent;
+        @BindView(R.id.sendedTime) TextView sendedTimeTxt;
+        @BindView(R.id.unreadCount) TextView unreadCountTxt;
+        @BindView(R.id.ll_read) LinearLayout readLayout;
+        @BindView(R.id.points) ImageView points;
+
+        public OtherPointViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

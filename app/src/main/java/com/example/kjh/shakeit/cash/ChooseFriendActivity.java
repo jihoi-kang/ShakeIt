@@ -110,9 +110,10 @@ public class ChooseFriendActivity extends AppCompatActivity {
      ------------------------------------------------------------------*/
     @OnClick(R.id.confirm)
     void onClickConfirm() {
-        Intent intent = new Intent(this, WireCashActivity.class);
+        Intent intent = new Intent(ChooseFriendActivity.this, WireCashActivity.class);
         intent.putExtra("user", user);
         intent.putExtra("otherUser", otherUser);
+        intent.putExtra("from", ChooseFriendActivity.class.getSimpleName());
         startActivityForResult(intent, REQUEST_CODE_CHOOSE_FRIEND_TO_WIRE_CASH);
     }
 

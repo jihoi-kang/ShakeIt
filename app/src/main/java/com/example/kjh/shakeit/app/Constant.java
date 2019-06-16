@@ -24,6 +24,7 @@ public class Constant {
     public static final String GET_FRIEND_LIST = "api/friend/read.php";
     public static final String ADD_FRIEND = "api/friend/create.php";
     public static final String GET_CHATROOM_LIST = "api/chatroom/read.php";
+    public static final String GET_CHATROOM = "api/chatroom/read_one.php";
     public static final String GET_CHATLOG_LIST = "api/chatlog/read.php";
     public static final String IS_FRIEND = "api/friend/isfriend.php";
     public static final String KAKAOPAY_READY = "kakaopay/payment.php";

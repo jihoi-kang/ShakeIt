@@ -23,6 +23,36 @@ import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.WIRE;
 public class WireCashModel implements WireCashContract.Model {
 
     /**------------------------------------------------------------------
+     메서드 ==> 채팅방 정보 가져오기
+     ------------------------------------------------------------------*/
+    @Override
+    public void getChatRoom(int userId, int friendId, ResultCallback callback) {
+        Call<ResponseBody> result = ApiClient.create().getChatRoom(userId, friendId);
+
+        result.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                switch (response.code()) {
+                    case SUCCESS_OK:
+                        try {
+                            callback.onSuccess(response.body().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case ERROR_SERVICE_UNAVAILABLE: callback.onFailure("SERVICE_UNAVAILABLE"); break;
+                    case ERROR_BAD_REQUEST: callback.onFailure("SERVER_ERROR"); break;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                callback.onFailure(t.getMessage());
+            }
+        });
+    }
+
+    /**------------------------------------------------------------------
      메서드 ==> 송금
      ------------------------------------------------------------------*/
     @Override
@@ -39,40 +69,6 @@ public class WireCashModel implements WireCashContract.Model {
                             break;
                         case ERROR_SERVICE_UNAVAILABLE: callback.onFailure("SERVICE_UNAVAILABLE"); break;
                         case ERROR_BAD_REQUEST: callback.onFailure("SERVER_ERROR"); break;
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                callback.onFailure(t.getMessage());
-            }
-        });
-    }
-
-    /**------------------------------------------------------------------
-     메서드 ==> 사용자 정보
-     ------------------------------------------------------------------*/
-    @Override
-    public void getUser(int userId, ResultCallback callback) {
-        Call<ResponseBody> result = ApiClient.create().getUserById(userId);
-
-        result.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    switch (response.code()){
-                        case SUCCESS_OK:
-                            callback.onSuccess(response.body().string());
-                            break;
-                        case ERROR_SERVICE_UNAVAILABLE:
-                            callback.onFailure("SERVICE_UNAVAILABLE");
-                            break;
-                        case ERROR_BAD_REQUEST:
-                            callback.onFailure("SERVER_ERROR");
-                            break;
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

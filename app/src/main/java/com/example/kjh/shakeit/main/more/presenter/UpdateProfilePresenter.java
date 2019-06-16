@@ -11,6 +11,7 @@ import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.more.contract.UpdateProfileContract;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
+import com.example.kjh.shakeit.utils.ShareUtil;
 import com.example.kjh.shakeit.utils.Validator;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
@@ -187,6 +188,12 @@ public class UpdateProfilePresenter implements UpdateProfileContract.Presenter {
                     user.setImageUrl(path);
                     user.setName(name);
                     user.setStatusMessage(statusMessage);
+
+                    // 변경 사항 Shared에 저장
+                    ShareUtil.setPreferStr("name", name);
+                    ShareUtil.setPreferStr("imageUrl", path);
+                    ShareUtil.setPreferStr("statusMessage", statusMessage);
+
                     noticeUpdateProfile(user);
 
                     view.hideLoadingDialog();

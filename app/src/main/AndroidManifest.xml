@@ -30,7 +30,9 @@
         android:supportsRtl="true" >
 
         <activity android:name=".login.MainActivity"
-            android:theme="@style/AppTheme_StatusBar_Black">
+            android:theme="@style/AppTheme_StatusBar_Black"
+            android:launchMode="singleTask"
+            android:clearTaskOnLaunch="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

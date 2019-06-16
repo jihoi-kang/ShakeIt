@@ -1,9 +1,10 @@
 package com.example.kjh.shakeit.login.presenter;
 
-import android.support.annotation.NonNull;
-
 import com.example.kjh.shakeit.api.ResultCallback;
+import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.login.contract.MainContract;
+import com.example.kjh.shakeit.utils.Serializer;
+import com.example.kjh.shakeit.utils.ShareUtil;
 import com.facebook.AccessToken;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -11,10 +12,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -75,21 +73,17 @@ public class MainPresenter implements MainContract.Presenter {
      메서드 ==> 자동 로그인시 유저 정보를 받아옴
      ------------------------------------------------------------------*/
     @Override
-    public void autoLogin(int _id) {
-        view.showLoadingDialog();
-        model.getUser(_id, new ResultCallback(){
-            @Override
-            public void onSuccess(String body) {
-                view.hideLoadingDialog();
-                view.moveActivityWithUserInfo(body);
-            }
+    public void autoLogin() {
+        User user = new User();
+        user.setUserId(ShareUtil.getPreferInt("userId"));
+        user.setEmail(ShareUtil.getPreferStr("email"));
+        user.setLoginType(ShareUtil.getPreferStr("loginType"));
+        user.setName(ShareUtil.getPreferStr("name"));
+        user.setImageUrl(ShareUtil.getPreferStr("imageUrl"));
+        user.setStatusMessage(ShareUtil.getPreferStr("statusMessage"));
+        user.setCash(ShareUtil.getPreferInt("cash"));
 
-            @Override
-            public void onFailure(String errorMsg) {
-                view.hideLoadingDialog();
-                view.showMessageForFailureLogin();
-            }
-        });
+        view.moveActivityWithUserInfo(Serializer.serialize(user));
     }
 
     /**------------------------------------------------------------------
@@ -113,29 +107,26 @@ public class MainPresenter implements MainContract.Presenter {
 
         final String finalLogin_type = login_type;
         view.getAuth().signInWithCredential(credential)
-                .addOnCompleteListener(view.getActivity(), new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            final FirebaseUser user = view.getAuth().getCurrentUser();
-                            model.socialLogin(user.getEmail(), user.getUid(), user.getDisplayName(), user.getPhotoUrl().toString(), finalLogin_type, new ResultCallback(){
+                .addOnCompleteListener(view.getActivity(), task -> {
+                    if (task.isSuccessful()) {
+                        final FirebaseUser user = view.getAuth().getCurrentUser();
+                        model.socialLogin(user.getEmail(), user.getUid(), user.getDisplayName(), user.getPhotoUrl().toString(), finalLogin_type, new ResultCallback(){
 
-                                @Override
-                                public void onSuccess(String body) {
-                                    view.hideLoadingDialog();
-                                    view.moveActivityWithUserInfo(body);
-                                }
+                            @Override
+                            public void onSuccess(String body) {
+                                view.hideLoadingDialog();
+                                view.moveActivityWithUserInfo(body);
+                            }
 
-                                @Override
-                                public void onFailure(String errorMsg) {
-                                    view.hideLoadingDialog();
-                                    view.showMessageForFailureLogin();
-                                }
-                            });
-                        } else {
-                            view.hideLoadingDialog();
-                            view.showMessageForFailureLogin();
-                        }
+                            @Override
+                            public void onFailure(String errorMsg) {
+                                view.hideLoadingDialog();
+                                view.showMessageForFailureLogin();
+                            }
+                        });
+                    } else {
+                        view.hideLoadingDialog();
+                        view.showMessageForFailureLogin();
                     }
                 });
 

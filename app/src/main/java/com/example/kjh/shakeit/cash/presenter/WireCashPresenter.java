@@ -4,13 +4,16 @@ import android.app.Activity;
 
 import com.example.kjh.shakeit.api.ResultCallback;
 import com.example.kjh.shakeit.cash.contract.WireCashContract;
+import com.example.kjh.shakeit.data.ChatHolder;
+import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.User;
-import com.example.kjh.shakeit.data.WireHolder;
-import com.example.kjh.shakeit.fcm.FcmGenerator;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.Serializer;
-import com.example.kjh.shakeit.utils.StrUtil;
+import com.example.kjh.shakeit.utils.ShareUtil;
+import com.example.kjh.shakeit.utils.TimeManager;
+
+import org.json.JSONArray;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -30,8 +33,9 @@ public class WireCashPresenter implements WireCashContract.Presenter {
     @Override
     public void onClickWire() {
         User user = view.getUser();
-        User otherUser = view.getOtherUser();
         int amount = view.getAmount();
+        ChatRoom room = view.getChatRoom();
+        String time = TimeManager.nowTime();
 
         /** 사용자가 가진 포인트보다 많이 송금할 수 없음 */
         if(view.getAmount() > view.getUser().getCash()) {
@@ -39,44 +43,49 @@ public class WireCashPresenter implements WireCashContract.Presenter {
             return;
         }
 
-        // 송금
-        model.wire(user.getUserId(), otherUser.getUserId(), amount, new ResultCallback() {
+        /** 유저 변경사항 저장(포인트) */
+        user.setCash(user.getCash() - amount);
+        ShareUtil.setPreferInt("cash", user.getCash() - amount);
+
+        Events.updateProfileEvent event = new Events.updateProfileEvent(user);
+        BusProvider.getInstance().post(event);
+
+        /** 참가자들의 아이디들 => JSONArray */
+        JSONArray unreadUsers = new JSONArray();
+        for(int index = 0; index < room.getParticipants().size(); index++)
+            unreadUsers.put(room.getParticipants().get(index).getUserId());
+
+        room.setChatHolder(
+                new ChatHolder(0, room.getRoomId(), user.getUserId(), "point", String.valueOf(amount), time, unreadUsers.toString(), true)
+        );
+        String body = Serializer.serialize(room);
+
+        // Netty
+        model.sendMessage(body);
+
+        view.showMessageForSuccess();
+
+        ((Activity)view.getContext()).setResult(RESULT_OK);
+        ((Activity)view.getContext()).finish();
+    }
+
+    /**------------------------------------------------------------------
+     메서드 ==> 해당하는 채팅방을 가져오는 로직
+     ------------------------------------------------------------------*/
+    @Override
+    public void getChatRoom() {
+        User user = view.getUser();
+        User otherUser = view.getOtherUser();
+
+        model.getChatRoom(user.getUserId(), otherUser.getUserId(), new ResultCallback() {
             @Override
             public void onSuccess(String body) {
-                user.setCash(user.getCash() - amount);
-                Events.updateProfileEvent event = new Events.updateProfileEvent(user);
-                BusProvider.getInstance().post(event);
-
-                // Token 정보 알기 위해 사용자 현재 정보 얻어오기
-                model.getUser(otherUser.getUserId(), new ResultCallback() {
-                    @Override
-                    public void onSuccess(String body) {
-                        User otherUser = Serializer.deserialize(body, User.class);
-                        // 서버의 Token 상태 확인
-                        if(StrUtil.isBlank(otherUser.getDeviceToken()))
-                            return;
-
-                        // Netty 전송
-                        String nettyBody = Serializer.serialize(new WireHolder(user.getUserId(), otherUser.getUserId(), amount));
-                        model.sendMessage(nettyBody);
-
-                        // FCM 전송
-                        FcmGenerator.postRequest(otherUser.getDeviceToken(),"알림", user.getName() + "님이 포인트를 보냈어요!");
-                    }
-
-                    @Override
-                    public void onFailure(String errorMsg) {}
-                });
-
-                view.showMessageForSucces();
-
-                ((Activity)view.getContext()).setResult(RESULT_OK);
-                ((Activity)view.getContext()).finish();
+                view.setChatRoom(body);
             }
 
             @Override
             public void onFailure(String errorMsg) {}
         });
-
     }
+
 }

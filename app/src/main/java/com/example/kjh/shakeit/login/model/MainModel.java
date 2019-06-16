@@ -51,37 +51,4 @@ public class MainModel implements MainContract.Model {
         });
     }
 
-    /**------------------------------------------------------------------
-     메서드 ==> 사용자 정보 받아오기
-     ------------------------------------------------------------------*/
-    @Override
-    public void getUser(int userId, final ResultCallback callback) {
-        Call<ResponseBody> result = ApiClient.create().getUserById(userId);
-
-        result.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    switch (response.code()){
-                        case SUCCESS_OK:
-                            callback.onSuccess(response.body().string());
-                            break;
-                        case ERROR_SERVICE_UNAVAILABLE:
-                            callback.onFailure("SERVICE_UNAVAILABLE");
-                            break;
-                        case ERROR_BAD_REQUEST:
-                            callback.onFailure("SERVER_ERROR");
-                            break;
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                callback.onFailure(t.getMessage());
-            }
-        });
-    }
 }

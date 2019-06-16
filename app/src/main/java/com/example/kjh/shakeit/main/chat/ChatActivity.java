@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
+import com.example.kjh.shakeit.app.App;
 import com.example.kjh.shakeit.app.AppManager;
 import com.example.kjh.shakeit.cash.WireCashActivity;
 import com.example.kjh.shakeit.data.ChatHolder;
@@ -193,6 +194,7 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
         intent = getIntent();
         room = (ChatRoom) intent.getSerializableExtra("room");
         user = (User) intent.getSerializableExtra("user");
+        App.getApplication().setRoomId(room.getRoomId());
 
         presenter = new ChatPresenter(this, Injector.provideChatModel());
 
@@ -291,6 +293,7 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
     @Override
     protected void onDestroy() {
         AppManager.getAppManager().removeActivity(this);
+        App.getApplication().setRoomId(0);
 
         super.onDestroy();
         unbinder.unbind();
@@ -456,6 +459,8 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
                     Intent intent = new Intent(ChatActivity.this, WireCashActivity.class);
                     intent.putExtra("user", user);
                     intent.putExtra("otherUser", room.getParticipants().get(0));
+                    intent.putExtra("from", ChatActivity.class.getSimpleName());
+                    intent.putExtra("room", room);
                     startActivity(intent);
                     return true;
                 default:

@@ -135,6 +135,8 @@ public class ChatRoomListAdapter extends RecyclerView.Adapter<ChatRoomListAdapte
 
         if(lastMessageType.equals("image"))
             lastMessageContent = "사진";
+        else if(lastMessageType.equals("point"))
+            lastMessageContent = "포인트";
 
         int memberCount = rooms.get(position).getMemberCount();
         int unreadCount = rooms.get(position).getUnreadCount();

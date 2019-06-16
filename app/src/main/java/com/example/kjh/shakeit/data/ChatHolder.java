@@ -10,7 +10,7 @@ import io.realm.RealmObject;
  * @version 1.0.0
  * @since 2019. 5. 8. PM 6:42
  **/
-public class ChatHolder extends RealmObject implements Serializable {
+public class ChatHolder extends RealmObject implements Serializable, Cloneable {
 
     private int chatId;
     private int roomId;
@@ -98,4 +98,11 @@ public class ChatHolder extends RealmObject implements Serializable {
     public void setRead(boolean read) {
         isRead = read;
     }
+
+    /** 얕은 복사 */
+    public ChatHolder copy() throws CloneNotSupportedException {
+        ChatHolder chatHolder = (ChatHolder) clone();
+        return chatHolder;
+    }
+
 }

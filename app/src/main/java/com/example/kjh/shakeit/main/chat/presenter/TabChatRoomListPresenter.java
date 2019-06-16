@@ -25,6 +25,7 @@ import static com.example.kjh.shakeit.main.chat.TabChatRoomListFragment.chatRoom
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.IMAGE;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.MESSAGE;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.UPDATE_UNREAD;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.WIRE;
 
 public class TabChatRoomListPresenter implements TabChatRoomListContract.Presenter {
 
@@ -101,7 +102,7 @@ public class TabChatRoomListPresenter implements TabChatRoomListContract.Present
     public void nettyEvent (Events.nettyEvent event) {
         MessageHolder holder = event.getMessageHolder();
 
-        if(holder.getType() == MESSAGE || holder.getType() == IMAGE) {
+        if(holder.getType() == MESSAGE || holder.getType() == IMAGE || holder.getType() == WIRE) {
             int cnt = 0;
             ChatRoom chatRoom = Serializer.deserialize(holder.getBody(), ChatRoom.class);
             /** RoomId를 통해 변경된 방을 찾아 변경 */

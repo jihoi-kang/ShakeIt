@@ -23,6 +23,9 @@ import okhttp3.ResponseBody;
  * @since 2019. 4. 26. PM 5:47
  **/
 public class FcmGenerator {
+
+    private static final String TAG = FcmGenerator.class.getSimpleName();
+
     private static boolean isSuccess = false;
 
     private static final MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
@@ -61,7 +64,7 @@ public class FcmGenerator {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.d("FcmGenerator", response.body().string());
+                Log.d(TAG, response.body().string());
                 isSuccess = true;
             }
         });
@@ -93,7 +96,7 @@ public class FcmGenerator {
                             return;
 
                         String token = task.getResult().getToken();
-                        Log.d("FcmGenerator", "Token => " + token);
+                        Log.d(TAG, "Token => " + token);
 
                         retrofit2.Call<ResponseBody> result = ApiClient.create().updateUserToken(_id, token);
 
@@ -101,7 +104,7 @@ public class FcmGenerator {
                             @Override
                             public void onResponse(retrofit2.Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
                                 try {
-                                    Log.d("FcmGenerator", response.body().string());
+                                    Log.d(TAG, response.body().string());
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -109,7 +112,7 @@ public class FcmGenerator {
 
                             @Override
                             public void onFailure(retrofit2.Call<ResponseBody> call, Throwable t) {
-                                Log.e("FcmGenerator", t.getMessage());
+                                Log.e(TAG, t.getMessage());
                             }
                         });
                     });

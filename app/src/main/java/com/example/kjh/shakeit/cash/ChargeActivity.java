@@ -20,6 +20,7 @@ import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.Injector;
+import com.example.kjh.shakeit.utils.ShareUtil;
 
 import java.net.URISyntaxException;
 
@@ -82,6 +83,10 @@ public class ChargeActivity extends AppCompatActivity implements ChargeContract.
         // 결제성공 후 종료 된 경우
         if(isPayment) {
             user.setCash(user.getCash() + amount);
+
+            // 변경사항 Shard에 저장
+            ShareUtil.setPreferInt("cash", user.getCash() + amount);
+
             Events.updateProfileEvent event = new Events.updateProfileEvent(user);
             BusProvider.getInstance().post(event);
         }

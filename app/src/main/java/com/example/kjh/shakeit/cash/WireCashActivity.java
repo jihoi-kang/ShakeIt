@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,9 +17,12 @@ import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.app.AppManager;
 import com.example.kjh.shakeit.cash.contract.WireCashContract;
 import com.example.kjh.shakeit.cash.presenter.WireCashPresenter;
+import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.User;
+import com.example.kjh.shakeit.main.chat.ChatActivity;
 import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.Injector;
+import com.example.kjh.shakeit.utils.Serializer;
 import com.example.kjh.shakeit.utils.StrUtil;
 import com.example.kjh.shakeit.utils.ToastGenerator;
 
@@ -37,6 +41,8 @@ import butterknife.Unbinder;
  **/
 public class WireCashActivity extends AppCompatActivity implements TextWatcher, WireCashContract.View {
 
+    private final String TAG = WireCashActivity.class.getSimpleName();
+
     private WireCashContract.Presenter presenter;
 
     private Unbinder unbinder;
@@ -48,6 +54,7 @@ public class WireCashActivity extends AppCompatActivity implements TextWatcher, 
     @BindView(R.id.lack_point) TextView lackPoint;
 
     private User user, otherUser;
+    private ChatRoom room;
 
     // 화폐 단위 표시
     private DecimalFormat decimalFormat = new DecimalFormat("#,###");
@@ -69,6 +76,13 @@ public class WireCashActivity extends AppCompatActivity implements TextWatcher, 
 
         user = (User) getIntent().getSerializableExtra("user");
         otherUser = (User) getIntent().getSerializableExtra("otherUser");
+
+        /** ChatActivity에서 포인트 송금하는 경우 */
+        if(getIntent().getStringExtra("from").equals(ChatActivity.class.getSimpleName()))
+            room = (ChatRoom) getIntent().getSerializableExtra("room");
+        /** 더보기 탭에서 포인트 보내는 경우 */
+        else if(getIntent().getStringExtra("from").equals(ChooseFriendActivity.class.getSimpleName()))
+            presenter.getChatRoom();
 
         /** UI 셋팅 */
         amountEdit.addTextChangedListener(this);
@@ -111,6 +125,11 @@ public class WireCashActivity extends AppCompatActivity implements TextWatcher, 
     }
 
     @Override
+    public ChatRoom getChatRoom() {
+        return room;
+    }
+
+    @Override
     public void showMessageForLackOfPoint() {
         ToastGenerator.show(R.string.msg_for_lack_of_point);
     }
@@ -136,8 +155,16 @@ public class WireCashActivity extends AppCompatActivity implements TextWatcher, 
     }
 
     @Override
-    public void showMessageForSucces() {
+    public void showMessageForSuccess() {
         ToastGenerator.show(R.string.msg_for_success_wire);
+    }
+
+    @Override
+    public void setChatRoom(String body) {
+        ChatRoom room = Serializer.deserialize(body, ChatRoom.class);
+        this.room = room;
+
+        Log.d(TAG, "room ==> " + Serializer.serialize(this.room));
     }
 
     /**------------------------------------------------------------------

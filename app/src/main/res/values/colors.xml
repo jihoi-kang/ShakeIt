@@ -13,7 +13,11 @@
     <color name="chacol">#36454f</color>
     <color name="transparent_chacol">#8836454f</color>
     <color name="transparent_black">#AA000000</color>
+    <color name="transparent_white">#88FFFFFF</color>
+    <color name="transparent">#00FFFFFF</color>
     <color name="google_background">#d62d20</color>
+    <color name="gold">#FFD700</color>
+    <color name="transparent_gold">#88FFD700</color>
 
     <color name="background_grey_transparent">#88EAEAEA</color>
     <color name="background_grey_light3">#F7F7F7</color>

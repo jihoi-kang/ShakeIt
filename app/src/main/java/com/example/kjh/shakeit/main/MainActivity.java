@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
+import com.example.kjh.shakeit.app.App;
 import com.example.kjh.shakeit.app.AppManager;
 import com.example.kjh.shakeit.cash.ChargeActivity;
 import com.example.kjh.shakeit.data.ChatRoom;
@@ -98,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         Display display = getWindowManager().getDefaultDisplay();
         size = new Point();
         display.getSize(size);
-        Log.d(TAG, "해상도: X => " + size.x + " / Y => " + size.y);
+        App.getApplication().setDisplay(size);
 
         unbinder = ButterKnife.bind(this);
 
@@ -137,6 +138,14 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
                 && intent.getStringExtra("notifyType").equals("notice")) {
             viewPager.setOffscreenPageLimit(2);
             viewPager.setCurrentItem(2);
+        } else if(StrUtil.isNotBlank(intent.getStringExtra("notifyType"))
+                && intent.getStringExtra("notifyType").equals("message")) {
+            viewPager.setCurrentItem(1);
+            Intent goRoomIntent = new Intent(this, ChatActivity.class);
+            goRoomIntent.putExtra("user", user);
+            goRoomIntent.putExtra("room", intent.getSerializableExtra("room"));
+            startActivity(goRoomIntent);
+            Log.d(TAG, "roomId => " + ((ChatRoom)intent.getSerializableExtra("room")).getRoomId());
         }
 
     }
@@ -283,6 +292,20 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     /**------------------------------------------------------------------
+     메서드 ==> Notification 알림 수신할 때
+     ------------------------------------------------------------------*/
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if(intent.getStringExtra("notifyType").equals("message")) {
+            viewPager.setCurrentItem(1);
+            Intent goRoomIntent = new Intent(this, ChatActivity.class);
+            goRoomIntent.putExtra("user", user);
+            goRoomIntent.putExtra("room", intent.getSerializableExtra("room"));
+            startActivity(goRoomIntent);
+        }
+    }
+
+    /**------------------------------------------------------------------
      메서드 ==> 순서 상관 없이 두 ArrayList가 중복되는지 확인
      ------------------------------------------------------------------*/
     private boolean isEqual(ArrayList<User> participants, ArrayList<User> comparison) {
@@ -383,4 +406,5 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
             BusProvider.getInstance().post(profileEvent);
         }
     }
+
 }

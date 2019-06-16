@@ -25,7 +25,7 @@ public class NotificationManager {
     public static void createChannel(Context context) {
         /** 메시지 채널 */
         NotificationChannel channelMessage = new NotificationChannel(Channel.MESSAGE,
-                context.getString(R.string.notification_channel_message_title), android.app.NotificationManager.IMPORTANCE_DEFAULT);
+                context.getString(R.string.notification_channel_message_title), android.app.NotificationManager.IMPORTANCE_HIGH);
         channelMessage.setDescription(context.getString(R.string.notification_channel_message_description));
         channelMessage.enableLights(true);
         channelMessage.enableVibration(true);

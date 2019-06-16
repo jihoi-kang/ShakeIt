@@ -14,6 +14,7 @@ import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.MessageHolder;
 import com.example.kjh.shakeit.data.ReadHolder;
 import com.example.kjh.shakeit.data.User;
+import com.example.kjh.shakeit.fcm.FcmGenerator;
 import com.example.kjh.shakeit.main.chat.contract.ChatContract;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
@@ -40,6 +41,7 @@ import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.DELIVERY;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.IMAGE;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.MESSAGE;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.UPDATE_UNREAD;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.WIRE;
 
 public class ChatPresenter implements ChatContract.Presenter {
 
@@ -106,7 +108,59 @@ public class ChatPresenter implements ChatContract.Presenter {
         );
         String body = Serializer.serialize(room);
 
+        // Netty
         model.sendMessage(body);
+
+        ChatRoom newRoom = new ChatRoom();
+        try {
+            newRoom = room.copy();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+
+        // Fcm
+        for(User targetUser : newRoom.getParticipants()) {
+            ChatRoom finalNewRoom = newRoom;
+            model.getUser(targetUser.getUserId(), new ResultCallback() {
+                @Override
+                public void onSuccess(String body) {
+                    User otherUser = Serializer.deserialize(body, User.class);
+                    // 서버의 Token 상태 확인
+                    if (StrUtil.isBlank(otherUser.getDeviceToken()))
+                        return;
+
+                    // 참가자들 변경
+                    for(int idx = 0; idx < finalNewRoom.getParticipants().size(); idx++) {
+                        if(finalNewRoom.getParticipants().get(idx).getUserId() == targetUser.getUserId()) {
+                            try {
+                                JSONArray jsonArray = new JSONArray(finalNewRoom.getChatHolder().getUnreadUsers());
+                                for(int index = 0; index < jsonArray.length(); index++){
+                                    if(jsonArray.getInt(index) == targetUser.getUserId()) {
+                                        jsonArray.remove(index);
+                                        jsonArray.put(user.getUserId());
+                                    }
+
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            finalNewRoom.getParticipants().set(idx, user);
+                        }
+                    }
+
+                    // FCM 전송
+                    FcmGenerator.postRequest(otherUser.getDeviceToken(), "알림", Serializer.serialize(finalNewRoom).replaceAll("\"", "\'"));
+                }
+
+                @Override
+                public void onFailure(String errorMsg) {
+
+                }
+            });
+        }
+
         view.clearInputContent();
     }
 
@@ -281,7 +335,7 @@ public class ChatPresenter implements ChatContract.Presenter {
     public void nettyEvent (Events.nettyEvent event) {
         MessageHolder holder = event.getMessageHolder();
 
-        if(holder.getType() == MESSAGE || holder.getType() == IMAGE) {
+        if(holder.getType() == MESSAGE || holder.getType() == IMAGE || holder.getType() == WIRE) {
             ChatRoom room = Serializer.deserialize(holder.getBody(), ChatRoom.class);
 
             /** 채팅방 처음 생성되고 채팅 메시지 보냈을 때 */
@@ -308,8 +362,9 @@ public class ChatPresenter implements ChatContract.Presenter {
                         try {
                             unreadUsers = new JSONArray(chatHolder.getUnreadUsers());
                             for(int unreadIdx = 0; unreadIdx < unreadUsers.length(); unreadIdx++) {
-                                if(unreadUsers.getInt(unreadIdx) == readHolder.getUserId())
+                                if(unreadUsers.getInt(unreadIdx) == readHolder.getUserId()) {
                                     unreadUsers.remove(unreadIdx);
+                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();

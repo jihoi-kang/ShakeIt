@@ -2,7 +2,6 @@ package com.example.kjh.shakeit.main;
 
 import android.graphics.Bitmap;
 import android.graphics.Point;
-import android.util.Log;
 
 import com.example.kjh.shakeit.api.ApiClient;
 import com.example.kjh.shakeit.api.ResultCallback;
@@ -59,7 +58,6 @@ public class MainModel implements MainContract.Model {
                                 realm.copyToRealm(holder);
 
                                 if(holder.getMessageType().equals("image")){
-                                    int finalIndex = index;
                                     new Thread(() -> {
                                         Realm rm = Realm.getDefaultInstance();
                                         rm.beginTransaction();
@@ -67,8 +65,6 @@ public class MainModel implements MainContract.Model {
                                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
                                         bitmap.compress(Bitmap.CompressFormat.PNG, 30, stream);
                                         byte[] imageByteArray = stream.toByteArray();
-
-                                        Log.d(TAG, finalIndex + " / size => " + imageByteArray.length);
 
                                         rm.copyToRealm(new ImageHolder(holder.getMessageContent(), imageByteArray));
                                         rm.commitTransaction();

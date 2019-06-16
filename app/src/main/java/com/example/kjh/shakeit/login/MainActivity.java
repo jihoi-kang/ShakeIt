@@ -93,7 +93,8 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         if(ShareUtil.getPreferInt("userId") == -1)
             return;
 
-        presenter.autoLogin(ShareUtil.getPreferInt("userId"));
+        presenter.autoLogin();
+
     }
 
     /**------------------------------------------------------------------
@@ -178,8 +179,13 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     public void moveActivityWithUserInfo(String userInfo) {
         user = Serializer.deserialize(userInfo, User.class);
 
-        ShareUtil.setPreferStr("loginType", user.getLoginType());
         ShareUtil.setPreferInt("userId", user.getUserId());
+        ShareUtil.setPreferStr("email", user.getEmail());
+        ShareUtil.setPreferStr("loginType", user.getLoginType());
+        ShareUtil.setPreferStr("name", user.getName());
+        ShareUtil.setPreferStr("imageUrl", user.getImageUrl());
+        ShareUtil.setPreferStr("statusMessage", user.getStatusMessage());
+        ShareUtil.setPreferInt("cash", user.getCash());
 
         Intent intent = new Intent(MainActivity.this, com.example.kjh.shakeit.main.MainActivity.class);
         intent.putExtra("user", user);

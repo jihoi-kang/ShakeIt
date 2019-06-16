@@ -60,9 +60,10 @@
             android:layout_height="match_parent">
 
             <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/originalImage"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:id="@+id/originalImage"
+                android:background="@color/transparent"
                 android:layout_gravity="center_horizontal"
                 app:civ_border_color="@color/background_grey_primary"
                 app:civ_border_width="0.7dp" />
@@ -83,9 +84,10 @@
             android:layout_height="match_parent">
 
             <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/grayImage"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:id="@+id/grayImage"
+                android:background="@color/transparent"
                 android:layout_gravity="center_horizontal"
                 app:civ_border_color="@color/background_grey_primary"
                 app:civ_border_width="0.7dp" />
@@ -106,9 +108,10 @@
             android:layout_height="match_parent">
 
             <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/blurImage"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:id="@+id/blurImage"
+                android:background="@color/transparent"
                 android:layout_gravity="center_horizontal"
                 app:civ_border_color="@color/background_grey_primary"
                 app:civ_border_width="0.7dp" />
@@ -129,9 +132,10 @@
             android:layout_height="match_parent">
 
             <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/contrastImage"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:id="@+id/contrastImage"
+                android:background="@color/transparent"
                 android:layout_gravity="center_horizontal"
                 app:civ_border_color="@color/background_grey_primary"
                 app:civ_border_width="0.7dp" />
@@ -152,9 +156,10 @@
             android:layout_height="match_parent">
 
             <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/brightnessImage"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:id="@+id/brightnessImage"
+                android:background="@color/transparent"
                 android:layout_gravity="center_horizontal"
                 app:civ_border_color="@color/background_grey_primary"
                 app:civ_border_width="0.7dp" />

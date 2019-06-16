@@ -40,6 +40,7 @@
     <LinearLayout
         android:id="@+id/ll_read"
         android:visibility="gone"
+        android:background="@color/transparent_white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true" >

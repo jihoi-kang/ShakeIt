@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * @version 1.0.0
  * @since 2019. 5. 8. PM 6:42
  **/
-public class ChatRoom implements Serializable {
+public class ChatRoom implements Serializable, Cloneable {
 
     private int roomId;
     private ArrayList<User> participants;
@@ -55,6 +55,14 @@ public class ChatRoom implements Serializable {
 
     public void setUnreadCount(int unreadCount) {
         this.unreadCount = unreadCount;
+    }
+
+    /** 얕은 복사 */
+    public ChatRoom copy() throws CloneNotSupportedException {
+        ChatRoom room = (ChatRoom) clone();
+        room.setParticipants((ArrayList<User>) this.participants.clone());
+        room.setChatHolder(this.chatHolder.copy());
+        return room;
     }
 
 }
