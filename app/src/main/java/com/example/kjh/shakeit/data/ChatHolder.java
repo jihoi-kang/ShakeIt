@@ -99,7 +99,6 @@ public class ChatHolder extends RealmObject implements Serializable, Cloneable {
         isRead = read;
     }
 
-    /** 얕은 복사 */
     public ChatHolder copy() throws CloneNotSupportedException {
         ChatHolder chatHolder = (ChatHolder) clone();
         return chatHolder;

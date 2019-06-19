@@ -17,8 +17,7 @@ public class AppManager {
     private static Stack<Activity> activityStack;
     private volatile static AppManager instance;
 
-    private AppManager() {
-    }
+    private AppManager() {}
 
     public static AppManager getAppManager() {
         if (instance == null) {
@@ -28,13 +27,12 @@ public class AppManager {
                     instance.activityStack = new Stack();
                 }
             }
-
         }
         return instance;
     }
 
     /**------------------------------------------------------------------
-     메서드 ==> 쌓여있는 액티비티 중에 MainActivity Get
+     메서드 ==> 쌓여있는 액티비티 중에 로그인 후 MainActivity 반환
      ------------------------------------------------------------------*/
     public synchronized MainActivity getMain() {
         for (int i = 0, size = activityStack.size(); i < size; i++) {

@@ -4,12 +4,19 @@ import android.app.Application;
 import android.graphics.Point;
 import android.os.Build;
 
+import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.utils.NotificationManager;
 import com.example.kjh.shakeit.utils.ShareUtil;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
+/**
+ * 컴포넌트 상위 클래스
+ * @author 강지회
+ * @version 1.0.0
+ * @since 2019. 6. 18. PM 8:34
+ **/
 public class App extends Application {
 
     private static App application;
@@ -35,10 +42,9 @@ public class App extends Application {
                 .build();
         Realm.setDefaultConfiguration(config);
 
-        /** Notification 채널 만들기 */
+        /** Notification 채널 만들기(오레오 버전 이상일 때) */
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             NotificationManager.createChannel(this);
-
 
     }
 
@@ -62,5 +68,19 @@ public class App extends Application {
 
     public void setRoomId(int roomId) {
         this.roomId = roomId;
+    }
+
+    /** ShardPreference에 저장된 User 정보 */
+    public User getUser() {
+        User user = new User();
+        user.setUserId(ShareUtil.getPreferInt("userId"));
+        user.setEmail(ShareUtil.getPreferStr("email"));
+        user.setLoginType(ShareUtil.getPreferStr("loginType"));
+        user.setName(ShareUtil.getPreferStr("name"));
+        user.setImageUrl(ShareUtil.getPreferStr("imageUrl"));
+        user.setStatusMessage(ShareUtil.getPreferStr("statusMessage"));
+        user.setCash(ShareUtil.getPreferInt("cash"));
+
+        return user;
     }
 }

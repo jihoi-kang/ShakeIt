@@ -20,7 +20,6 @@ extern "C" {
 
         // 흑백
         cvtColor(matInput, matResult, COLOR_RGBA2GRAY);
-
     }
 
     JNIEXPORT void JNICALL

@@ -1,10 +1,9 @@
 package com.example.kjh.shakeit.login.presenter;
 
 import com.example.kjh.shakeit.api.ResultCallback;
-import com.example.kjh.shakeit.data.User;
+import com.example.kjh.shakeit.app.App;
 import com.example.kjh.shakeit.login.contract.MainContract;
 import com.example.kjh.shakeit.utils.Serializer;
-import com.example.kjh.shakeit.utils.ShareUtil;
 import com.facebook.AccessToken;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -74,16 +73,7 @@ public class MainPresenter implements MainContract.Presenter {
      ------------------------------------------------------------------*/
     @Override
     public void autoLogin() {
-        User user = new User();
-        user.setUserId(ShareUtil.getPreferInt("userId"));
-        user.setEmail(ShareUtil.getPreferStr("email"));
-        user.setLoginType(ShareUtil.getPreferStr("loginType"));
-        user.setName(ShareUtil.getPreferStr("name"));
-        user.setImageUrl(ShareUtil.getPreferStr("imageUrl"));
-        user.setStatusMessage(ShareUtil.getPreferStr("statusMessage"));
-        user.setCash(ShareUtil.getPreferInt("cash"));
-
-        view.moveActivityWithUserInfo(Serializer.serialize(user));
+        view.moveActivityWithUserInfo(Serializer.serialize(App.getApplication().getUser()));
     }
 
     /**------------------------------------------------------------------
@@ -129,7 +119,6 @@ public class MainPresenter implements MainContract.Presenter {
                         view.showMessageForFailureLogin();
                     }
                 });
-
     }
 
 }

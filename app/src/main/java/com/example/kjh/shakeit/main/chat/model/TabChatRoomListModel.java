@@ -50,6 +50,9 @@ public class TabChatRoomListModel implements TabChatRoomListContract.Model {
         });
     }
 
+    /**------------------------------------------------------------------
+     메서드 ==> 읽지않은 메시지 카운트 반환
+     ------------------------------------------------------------------*/
     @Override
     public int getUnreadCount(int roomId) {
         Realm realm = Realm.getDefaultInstance();

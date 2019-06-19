@@ -18,7 +18,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.app.AppManager;
@@ -158,7 +157,6 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     private AppRTCAudioManager audioManager = null;
     private VideoFileRenderer videoFileRenderer;
     private final List<VideoRenderer.Callbacks> remoteRenderers = new ArrayList<>();
-    private Toast logToast;
     private boolean commandLineRun;
     private boolean activityRunning;
     private RoomConnectionParameters roomConnectionParameters;
@@ -171,6 +169,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     private boolean screencaptureEnabled = false;
     private static Intent mediaProjectionPermissionResultData;
     private static int mediaProjectionPermissionResultCode;
+
     // 로컬 뷰가 풀스크린 Renderer에 있는 경우 "True"
     private boolean isSwappedFeeds;
 
@@ -426,9 +425,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
 
         Thread.setDefaultUncaughtExceptionHandler(null);
         disconnect();
-        if (logToast != null) {
-            logToast.cancel();
-        }
+
         activityRunning = false;
         unbinder.unbind();
         BusProvider.getInstance().unregister(this);

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
@@ -12,8 +13,7 @@ import android.widget.TextView;
 
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.app.AppManager;
-
-import java.text.DecimalFormat;
+import com.example.kjh.shakeit.utils.CurrencyUnitUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,9 +33,8 @@ public class ChargeAmountActivity extends AppCompatActivity implements TextWatch
     @BindView(R.id.status) TextView status;
     @BindView(R.id.charge) TextView charge;
 
-    // 화폐 단위 표시
-    private DecimalFormat decimalFormat = new DecimalFormat("#,###");
-    private String result="";
+    // 화폐 단위로 표시한 값
+    private String currencyUnitResult = "";
 
     /**------------------------------------------------------------------
      생명주기 ==> onCreate()
@@ -77,7 +76,7 @@ public class ChargeAmountActivity extends AppCompatActivity implements TextWatch
     @OnClick(R.id.charge)
     void onClickCharge() {
         Intent intent = new Intent();
-        intent.putExtra("amount", Integer.parseInt(amount.getText().toString().replaceAll(",", "")));
+        intent.putExtra("amount", CurrencyUnitUtil.toAmount(amount.getText().toString()));
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -87,24 +86,26 @@ public class ChargeAmountActivity extends AppCompatActivity implements TextWatch
      ------------------------------------------------------------------*/
     @Override
     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        if(charSequence.length() == 0) {
+        if(TextUtils.isEmpty(charSequence.toString())) {
             status.setText("");
             charge.setVisibility(View.GONE);
-        } else if(Double.parseDouble(charSequence.toString().replaceAll(",","")) < 1000
-                    && !charSequence.toString().equals(result)) {
-            result = decimalFormat.format(Double.parseDouble(charSequence.toString().replaceAll(",","")));
-            amount.setText(result);
-            amount.setSelection(result.length());
+        }
+        // 1000원 이하 충전 결제 불가
+        else if(CurrencyUnitUtil.toAmount(charSequence.toString()) < 1000
+                    && !charSequence.toString().equals(currencyUnitResult)) {
+            currencyUnitResult = CurrencyUnitUtil.toCurrency(charSequence.toString());
+            amount.setText(currencyUnitResult);
+            amount.setSelection(currencyUnitResult.length());
             status.setText(R.string.msg_for_charge_over_1000);
             charge.setVisibility(View.GONE);
-        } else if(!charSequence.toString().equals(result)){
-            result = decimalFormat.format(Double.parseDouble(charSequence.toString().replaceAll(",","")));
-            amount.setText(result);
-            amount.setSelection(result.length());
+        } else if(!charSequence.toString().equals(currencyUnitResult)){
+            currencyUnitResult = CurrencyUnitUtil.toCurrency(charSequence.toString());
+            amount.setText(currencyUnitResult);
+            amount.setSelection(currencyUnitResult.length());
             charge.setVisibility(View.VISIBLE);
 
-            int afterCharge = Integer.parseInt(charSequence.toString().replaceAll(",","")) + getIntent().getIntExtra("cash", 0);
-            String afterChargeStr = decimalFormat.format(afterCharge);
+            int afterCharge = CurrencyUnitUtil.toAmount(charSequence.toString()) + getIntent().getIntExtra("cash", 0);
+            String afterChargeStr = CurrencyUnitUtil.toCurrency(afterCharge);
             status.setText("충전 후 포인트 : " + afterChargeStr);
         }
     }

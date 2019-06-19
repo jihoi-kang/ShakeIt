@@ -145,7 +145,6 @@ public class Constant {
     public static final String EXTRA_NEGOTIATED = "org.appspot.apprtc.NEGOTIATED";
     public static final String EXTRA_ID = "org.appspot.apprtc.ID";
 
-
     /** 뷰페이저 */
     public final static int[] nonTabIcon = {
             R.drawable.ic_person_outline_grey_24dp,

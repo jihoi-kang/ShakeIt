@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -20,13 +19,11 @@ import com.example.kjh.shakeit.cash.presenter.WireCashPresenter;
 import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.main.chat.ChatActivity;
+import com.example.kjh.shakeit.utils.CurrencyUnitUtil;
 import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.Injector;
-import com.example.kjh.shakeit.utils.Serializer;
 import com.example.kjh.shakeit.utils.StrUtil;
 import com.example.kjh.shakeit.utils.ToastGenerator;
-
-import java.text.DecimalFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,9 +53,8 @@ public class WireCashActivity extends AppCompatActivity implements TextWatcher, 
     private User user, otherUser;
     private ChatRoom room;
 
-    // 화폐 단위 표시
-    private DecimalFormat decimalFormat = new DecimalFormat("#,###");
-    private String result;
+    // 화폐 단위로 표시한 값
+    private String currencyUnitResult;
 
     /**------------------------------------------------------------------
      생명주기 ==> onCreate()
@@ -94,7 +90,7 @@ public class WireCashActivity extends AppCompatActivity implements TextWatcher, 
 
         nameTxt.setText(otherUser.getName());
 
-        statusTxt.setText("포인트 : " + decimalFormat.format(user.getCash()));
+        statusTxt.setText("포인트 : " + CurrencyUnitUtil.toCurrency(user.getCash()));
     }
 
     /**------------------------------------------------------------------
@@ -136,7 +132,7 @@ public class WireCashActivity extends AppCompatActivity implements TextWatcher, 
 
     @Override
     public int getAmount() {
-        return Integer.parseInt(amountEdit.getText().toString().replaceAll(",", ""));
+        return CurrencyUnitUtil.toAmount(amountEdit.getText().toString());
     }
 
     @Override
@@ -160,11 +156,8 @@ public class WireCashActivity extends AppCompatActivity implements TextWatcher, 
     }
 
     @Override
-    public void setChatRoom(String body) {
-        ChatRoom room = Serializer.deserialize(body, ChatRoom.class);
+    public void setChatRoom(ChatRoom room) {
         this.room = room;
-
-        Log.d(TAG, "room ==> " + Serializer.serialize(this.room));
     }
 
     /**------------------------------------------------------------------
@@ -177,12 +170,13 @@ public class WireCashActivity extends AppCompatActivity implements TextWatcher, 
         else
             wire.setVisibility(View.VISIBLE);
 
-        if(!TextUtils.isEmpty(charSequence.toString()) && !charSequence.toString().equals(result)){
-            result = decimalFormat.format(Double.parseDouble(charSequence.toString().replaceAll(",","")));
-            amountEdit.setText(result);
-            amountEdit.setSelection(result.length());
+        if(!TextUtils.isEmpty(charSequence.toString())
+                && !charSequence.toString().equals(currencyUnitResult)){
+            currencyUnitResult = CurrencyUnitUtil.toCurrency(charSequence.toString());
+            amountEdit.setText(currencyUnitResult);
+            amountEdit.setSelection(currencyUnitResult.length());
 
-            if(Integer.parseInt(charSequence.toString().replaceAll(",", "")) <= user.getCash())
+            if(CurrencyUnitUtil.toAmount(charSequence.toString()) <= user.getCash())
                 lackPoint.setVisibility(View.GONE);
             else
                 lackPoint.setVisibility(View.VISIBLE);

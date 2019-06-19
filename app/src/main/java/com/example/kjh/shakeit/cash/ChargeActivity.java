@@ -111,7 +111,7 @@ public class ChargeActivity extends AppCompatActivity implements ChargeContract.
     }
 
     /**------------------------------------------------------------------
-     클래스 ==> 자바 스크립트 인터페이스
+     클래스 ==> 웹뷰 자바 스크립트 인터페이스
      ------------------------------------------------------------------*/
     class WebAppInterface {
 
@@ -121,12 +121,14 @@ public class ChargeActivity extends AppCompatActivity implements ChargeContract.
             this.context = context;
         }
 
+        /** 결제 성공시 */
         @JavascriptInterface
         public void finish() {
             isPayment = true;
             ((Activity)context).finish();
         }
 
+        /** 취소되거나 결제 실패일때 */
         @JavascriptInterface
         public void finishCancel() {
             ((Activity)context).finish();
@@ -135,7 +137,7 @@ public class ChargeActivity extends AppCompatActivity implements ChargeContract.
     }
 
     /**------------------------------------------------------------------
-     클래스 ==> WebView Load Url
+     클래스 ==> 웹뷰 URL 로드
      ------------------------------------------------------------------*/
     class MyWebViewClient extends WebViewClient {
 

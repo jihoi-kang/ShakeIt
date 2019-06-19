@@ -57,12 +57,23 @@ public class ChatRoom implements Serializable, Cloneable {
         this.unreadCount = unreadCount;
     }
 
-    /** 얕은 복사 */
     public ChatRoom copy() throws CloneNotSupportedException {
         ChatRoom room = (ChatRoom) clone();
-        room.setParticipants((ArrayList<User>) this.participants.clone());
+        room.setParticipants(copyList(this.participants));
         room.setChatHolder(this.chatHolder.copy());
         return room;
+    }
+
+    private ArrayList<User> copyList(ArrayList<User> participants) {
+        ArrayList<User> temp_participants = new ArrayList<>();
+        for(User item: participants){
+            try {
+                temp_participants.add(item.copy());
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+        }
+        return temp_participants;
     }
 
 }

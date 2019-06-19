@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.example.kjh.shakeit.data.User;
+
 /**
  * SharedPreferences 유틸리티
  * @author 강지회
@@ -24,15 +26,22 @@ public class ShareUtil {
 
     /** Setter */
     public static void setPreferStr(String key, String value) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(key, value);
-        editor.commit();
+        sharedPreferences.edit().putString(key, value).commit();
     }
-    public static void setPreferBool(String key) {
-        sharedPreferences.edit().putBoolean(key, true).commit();
+    public static void setPreferBool(String key, boolean condition) {
+        sharedPreferences.edit().putBoolean(key, condition).commit();
     }
     public static void setPreferInt(String key, int value) {
         sharedPreferences.edit().putInt(key, value).commit();
+    }
+    public static void setPreferUser(User user) {
+        setPreferInt("userId", user.getUserId());
+        setPreferStr("email", user.getEmail());
+        setPreferStr("loginType", user.getLoginType());
+        setPreferStr("name", user.getName());
+        setPreferStr("imageUrl", user.getImageUrl());
+        setPreferStr("statusMessage", user.getStatusMessage());
+        setPreferInt("cash", user.getCash());
     }
 
     /** Getter */
@@ -45,6 +54,5 @@ public class ShareUtil {
     public static int getPreferInt(String key) {
         return sharedPreferences.getInt(key,-1);
     }
-
 
 }

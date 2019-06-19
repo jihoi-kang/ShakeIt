@@ -33,17 +33,6 @@ public class NotificationManager {
         channelMessage.setVibrationPattern(new long[]{100, 200, 100, 200});
         channelMessage.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
         getManager(context).createNotificationChannel(channelMessage);
-
-        /** 알림 채널 */
-        NotificationChannel channelNotice = new NotificationChannel(Channel.NOTICE,
-                context.getString(R.string.notification_channel_notice_title), android.app.NotificationManager.IMPORTANCE_HIGH);
-        channelNotice.setDescription(context.getString(R.string.notification_channel_notice_description));
-        channelNotice.enableLights(true);
-        channelNotice.enableVibration(true);
-        channelNotice.setShowBadge(false);
-        channelNotice.setVibrationPattern(new long[]{100, 200, 100, 200});
-        channelNotice.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
-        getManager(context).createNotificationChannel(channelNotice);
     }
 
     /**------------------------------------------------------------------
@@ -74,12 +63,10 @@ public class NotificationManager {
 
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({
-            Channel.MESSAGE,
-            Channel.NOTICE
+            Channel.MESSAGE
     })
 
     public @interface Channel {
         String MESSAGE = "message";
-        String NOTICE = "notice";
     }
 }

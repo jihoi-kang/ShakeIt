@@ -27,7 +27,6 @@ public class EmailLoginPresenter implements EmailLoginContract.Presenter {
             view.showMessageForIncorrectEmail();
             return;
         }
-
         if(!Validator.isValidPassword(inputPassword)) {
             view.showMessageForIncorrectPassword();
             return;

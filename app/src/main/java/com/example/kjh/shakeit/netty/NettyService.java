@@ -14,18 +14,22 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.example.kjh.shakeit.api.ApiClient;
+import com.example.kjh.shakeit.app.App;
 import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.ImageHolder;
 import com.example.kjh.shakeit.data.MessageHolder;
 import com.example.kjh.shakeit.data.ReadHolder;
 import com.example.kjh.shakeit.data.User;
+import com.example.kjh.shakeit.fcm.FcmGenerator;
 import com.example.kjh.shakeit.netty.protocol.ProtocolHeader;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.ImageLoaderUtil;
 import com.example.kjh.shakeit.utils.Serializer;
 import com.example.kjh.shakeit.utils.ShareUtil;
+import com.example.kjh.shakeit.utils.StrUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,7 +38,13 @@ import java.io.ByteArrayOutputStream;
 
 import io.realm.Realm;
 import io.realm.internal.IOException;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
+import static com.example.kjh.shakeit.app.Constant.SUCCESS_OK;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.CALLBACK;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.CONN;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.DELIVERY;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.IMAGE;
@@ -158,12 +168,19 @@ public class NettyService extends Service implements NettyListener {
             return;
 
         switch (holder.getType()) {
-            case MESSAGE: insertChatHolder(holder);break;
+            case MESSAGE:
+                insertChatHolder(holder);
+                if(holder.getSign() == CALLBACK) postRequest(holder);
+                break;
             case UPDATE_UNREAD: updateUnreadStatus(holder); break;
-            case IMAGE: insertChatHolderAndImageHolder(holder); break;
+            case IMAGE:
+                insertChatHolderAndImageHolder(holder);
+                if(holder.getSign() == CALLBACK) postRequest(holder);
+                break;
             case WIRE:
                 insertChatHolder(holder);
-                updateUserCash(holder);
+                if(holder.getSign() == DELIVERY) updateUserCash(holder);
+                if(holder.getSign() == CALLBACK) postRequest(holder);
                 break;
         }
 
@@ -172,17 +189,84 @@ public class NettyService extends Service implements NettyListener {
     }
 
     /**------------------------------------------------------------------
+     메서드 ==> FCM 메시지 보내기
+     ------------------------------------------------------------------*/
+    private void postRequest(MessageHolder holder) {
+        User user = App.getApplication().getUser();
+        ChatRoom newRoom = null;
+        try {
+            newRoom = Serializer.deserialize(holder.getBody(), ChatRoom.class).copy();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+
+        for(User targetUser : newRoom.getParticipants()) {
+            ChatRoom finalNewRoom = null;
+            try {
+                finalNewRoom = newRoom.copy();
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+            Call<ResponseBody> result = ApiClient.create().getUserById(targetUser.getUserId());
+
+            ChatRoom finalNewRoom1 = finalNewRoom;
+            result.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    try {
+                        if(response.code() == SUCCESS_OK) {
+                            User otherUser = Serializer.deserialize(response.body().string(), User.class);
+                            // 서버의 Token 상태 확인
+                            if (StrUtil.isBlank(otherUser.getDeviceToken()))
+                                return;
+
+                            // 참가자들 변경
+                            for(int idx = 0; idx < finalNewRoom1.getParticipants().size(); idx++) {
+                                if(finalNewRoom1.getParticipants().get(idx).getUserId() == targetUser.getUserId()) {
+                                    try {
+                                        JSONArray jsonArray = new JSONArray(finalNewRoom1.getChatHolder().getUnreadUsers());
+                                        for(int index = 0; index < jsonArray.length(); index++){
+                                            if(jsonArray.getInt(index) == targetUser.getUserId()) {
+                                                jsonArray.remove(index);
+                                                jsonArray.put(user.getUserId());
+                                            }
+                                        }
+
+                                        finalNewRoom1.getChatHolder().setUnreadUsers(jsonArray.toString());
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    finalNewRoom1.getParticipants().set(idx, user);
+                                }
+                            }
+
+                            // FCM 전송
+                            FcmGenerator.postRequest(otherUser.getDeviceToken(), "메시지", Serializer.serialize(finalNewRoom1).replaceAll("\"", "\'"));
+                        }
+                    } catch (java.io.IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                }
+            });
+        }
+    }
+
+    /**------------------------------------------------------------------
      메서드 ==> 사용자 포인트 변경사항 저장
      ------------------------------------------------------------------*/
     private void updateUserCash(MessageHolder holder) {
-        if(holder.getSign() == DELIVERY) {
-            ChatRoom room = Serializer.deserialize(holder.getBody(), ChatRoom.class);
-            if(room.getParticipants().get(0).getUserId() == ShareUtil.getPreferInt("userId")) {
-                ShareUtil.setPreferInt("cash", ShareUtil.getPreferInt("cash") + Integer.parseInt(room.getChatHolder().getMessageContent()));
+        ChatRoom room = Serializer.deserialize(holder.getBody(), ChatRoom.class);
+        if(room.getParticipants().get(0).getUserId() == ShareUtil.getPreferInt("userId")) {
+            ShareUtil.setPreferInt("cash", ShareUtil.getPreferInt("cash") + Integer.parseInt(room.getChatHolder().getMessageContent()));
 
-                Events.updateProfileEvent event = new Events.updateProfileEvent(getUser());
-                BusProvider.getInstance().post(event);
-            }
+            Events.updateProfileEvent event = new Events.updateProfileEvent(App.getApplication().getUser());
+            BusProvider.getInstance().post(event);
         }
     }
 
@@ -267,19 +351,6 @@ public class NettyService extends Service implements NettyListener {
         } finally {
             realm.close();
         }
-    }
-
-    public User getUser() {
-        User user = new User();
-        user.setUserId(ShareUtil.getPreferInt("userId"));
-        user.setEmail(ShareUtil.getPreferStr("email"));
-        user.setLoginType(ShareUtil.getPreferStr("loginType"));
-        user.setName(ShareUtil.getPreferStr("name"));
-        user.setImageUrl(ShareUtil.getPreferStr("imageUrl"));
-        user.setStatusMessage(ShareUtil.getPreferStr("statusMessage"));
-        user.setCash(ShareUtil.getPreferInt("cash"));
-
-        return user;
     }
 
     /**------------------------------------------------------------------

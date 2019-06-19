@@ -158,6 +158,18 @@ public class ChatModel implements ChatContract.Model {
     }
 
     /**------------------------------------------------------------------
+     메서드 ==> 채팅방 세션 변경(To Netty Server)
+     ------------------------------------------------------------------*/
+    @Override
+    public void updateChatroomSession(String body, byte type) {
+        MessageHolder holder = new MessageHolder();
+        holder.setSign(ProtocolHeader.REQUEST);
+        holder.setType(type);
+        holder.setBody(body);
+        NettyClient.getInstance().sendMsgToServer(holder, null);
+    }
+
+    /**------------------------------------------------------------------
      메서드 ==> 이미지 업로드 요청
      ------------------------------------------------------------------*/
     @Override

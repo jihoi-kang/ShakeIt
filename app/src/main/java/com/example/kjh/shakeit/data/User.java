@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @version 1.0.0
  * @since 2019. 4. 26. PM 5:47
  **/
-public class User implements Serializable {
+public class User implements Serializable, Cloneable {
 
     private int userId;
     private String email;
@@ -90,5 +90,10 @@ public class User implements Serializable {
 
     public void setFlag(boolean flag) {
         this.flag = flag;
+    }
+
+    public User copy() throws CloneNotSupportedException {
+        User user = (User) clone();
+        return user;
     }
 }

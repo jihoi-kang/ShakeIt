@@ -220,6 +220,14 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
         participantListView.setAdapter(participantListAdapter);
 
         presenter.onCreate();
+
+        chatActHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                ArrayList<ChatHolder> chats = (ArrayList<ChatHolder>) msg.obj;
+                showChatList(chats);
+            }
+        };
     }
 
     /**------------------------------------------------------------------
@@ -228,6 +236,8 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
     @Override
     protected void onResume() {
         super.onResume();
+
+        presenter.onResume();
 
         /** 대표사진 셋팅 */
         if(intent.getByteArrayExtra("imageArray") != null) {
@@ -277,14 +287,15 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
 
         /** 소프트 키보드 올라오면 채팅목록 마지막에 포커스 */
         KeyboardVisibilityEvent.setEventListener(this, isOpen -> chatListView.scrollToPosition(chats.size() - 1));
+    }
 
-        chatActHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                ArrayList<ChatHolder> chats = (ArrayList<ChatHolder>) msg.obj;
-                showChatList(chats);
-            }
-        };
+    /**------------------------------------------------------------------
+     생명주기 ==> onStop()
+     ------------------------------------------------------------------*/
+    @Override
+    protected void onStop() {
+        super.onStop();
+        presenter.onStop();
     }
 
     /**------------------------------------------------------------------
@@ -427,6 +438,7 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
     @Override
     public void setChatRoomId(int roomId) {
         room.setRoomId(roomId);
+        App.getApplication().setRoomId(room.getRoomId());
     }
 
     @Override
@@ -455,6 +467,7 @@ public class ChatActivity extends AppCompatActivity implements ChatContract.View
                 case R.id.action_call:
                     presenter.toCall(null);
                     return true;
+                /** 송금 */
                 case R.id.action_wire:
                     Intent intent = new Intent(ChatActivity.this, WireCashActivity.class);
                     intent.putExtra("user", user);

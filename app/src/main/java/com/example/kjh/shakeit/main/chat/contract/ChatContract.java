@@ -41,6 +41,8 @@ public interface ChatContract {
         void onClickGallery();
         void onClickCamera();
         void sendImage(String path);
+        void onStop();
+        void onResume();
 
     }
 
@@ -52,6 +54,7 @@ public interface ChatContract {
         void sendImage(String body);
         void uploadImage(int _id, String path, ResultCallback callback);
         void getUser(int userId, ResultCallback callback);
+        void updateChatroomSession(String body, byte type);
 
     }
 

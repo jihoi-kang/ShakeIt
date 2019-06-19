@@ -53,8 +53,6 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
     private Drawable uncheckedRadioDrawable, checkedRadioDrawable;
 
-    private int targetPosition = -1;
-
     public FriendListAdapter(Context context, ArrayList<User> users, String from, OnItemClickListener listener) {
         this.context = context;
         this.users = users;

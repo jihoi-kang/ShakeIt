@@ -19,9 +19,7 @@ import com.example.kjh.shakeit.app.App;
 import com.example.kjh.shakeit.app.AppManager;
 import com.example.kjh.shakeit.cash.ChargeActivity;
 import com.example.kjh.shakeit.data.ChatRoom;
-import com.example.kjh.shakeit.data.MessageHolder;
 import com.example.kjh.shakeit.data.User;
-import com.example.kjh.shakeit.data.WireHolder;
 import com.example.kjh.shakeit.fcm.FcmGenerator;
 import com.example.kjh.shakeit.main.adapter.ChatRoomListAdapter;
 import com.example.kjh.shakeit.main.adapter.ViewPagerAdapter;
@@ -33,7 +31,6 @@ import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.Injector;
 import com.example.kjh.shakeit.utils.ProgressDialogGenerator;
-import com.example.kjh.shakeit.utils.Serializer;
 import com.example.kjh.shakeit.utils.StrUtil;
 import com.squareup.otto.Subscribe;
 
@@ -53,7 +50,6 @@ import static com.example.kjh.shakeit.app.Constant.nonTabIcon;
 import static com.example.kjh.shakeit.app.Constant.onTabIcon;
 import static com.example.kjh.shakeit.app.Constant.tabLayoutImage;
 import static com.example.kjh.shakeit.app.Constant.titles;
-import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.WIRE;
 
 /**
  * 로그인 후 메인 화면 클래스
@@ -389,22 +385,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     @Subscribe
     public void getFriendList(Events.friendEvent event) {
         friends = event.getFriends();
-    }
-
-    /**------------------------------------------------------------------
-     구독이벤트 ==> Netty에서 이벤트 왔을 때 ==> 메시지 받거나 콜백
-     ------------------------------------------------------------------*/
-    @Subscribe
-    public void nettyEvent (Events.nettyEvent event) {
-        MessageHolder holder = event.getMessageHolder();
-
-        if(holder.getType() == WIRE) {
-            WireHolder wireHolder = Serializer.deserialize(holder.getBody(), WireHolder.class);
-
-            user.setCash(user.getCash() + wireHolder.getAmount());
-            Events.updateProfileEvent profileEvent = new Events.updateProfileEvent(user);
-            BusProvider.getInstance().post(profileEvent);
-        }
     }
 
 }

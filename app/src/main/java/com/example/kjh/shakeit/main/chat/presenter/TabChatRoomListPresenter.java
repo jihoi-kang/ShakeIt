@@ -14,6 +14,7 @@ import com.example.kjh.shakeit.main.chat.contract.TabChatRoomListContract;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.Serializer;
+import com.example.kjh.shakeit.utils.ShareUtil;
 import com.squareup.otto.Subscribe;
 
 import org.json.JSONArray;
@@ -49,7 +50,6 @@ public class TabChatRoomListPresenter implements TabChatRoomListContract.Present
     @Override
     public void onCreate() {
         BusProvider.getInstance().register(this);
-
         getChatRoomList();
     }
 
@@ -102,7 +102,9 @@ public class TabChatRoomListPresenter implements TabChatRoomListContract.Present
     public void nettyEvent (Events.nettyEvent event) {
         MessageHolder holder = event.getMessageHolder();
 
-        if(holder.getType() == MESSAGE || holder.getType() == IMAGE || holder.getType() == WIRE) {
+        if(holder.getType() == MESSAGE
+                || holder.getType() == IMAGE
+                || holder.getType() == WIRE) {
             int cnt = 0;
             ChatRoom chatRoom = Serializer.deserialize(holder.getBody(), ChatRoom.class);
             /** RoomId를 통해 변경된 방을 찾아 변경 */
@@ -110,6 +112,7 @@ public class TabChatRoomListPresenter implements TabChatRoomListContract.Present
                 if (rooms.get(index).getRoomId() == chatRoom.getRoomId()) {
                     ChatRoom room = rooms.get(index);
                     room.setChatHolder(chatRoom.getChatHolder());
+
                     room.setUnreadCount(model.getUnreadCount(chatRoom.getRoomId()));
                     rooms.remove(index);
                     rooms.add(0, room);
@@ -129,8 +132,10 @@ public class TabChatRoomListPresenter implements TabChatRoomListContract.Present
                 if(rooms.get(index).getRoomId() == readHolder.getRoomId()) {
                     ChatRoom room = rooms.get(index);
 
-                    room.setUnreadCount(room.getUnreadCount() - readHolder.getChatIds().size());
-                    rooms.set(index, room);
+                    if(readHolder.getUserId() == ShareUtil.getPreferInt("userId")) {
+                        room.setUnreadCount(room.getUnreadCount() - readHolder.getChatIds().size());
+                        rooms.set(index, room);
+                    }
                 }
             }
         } else

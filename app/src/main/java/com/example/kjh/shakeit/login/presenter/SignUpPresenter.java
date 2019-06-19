@@ -24,23 +24,19 @@ public class SignUpPresenter implements SignUpContract.Presenter {
         String passwordAgain = view.getInputPasswordAgain();
         String name = view.getInputName();
 
-
         /** 정규식 확인 */
         if(!Validator.isValidEmail(email)) {
             view.showMessageForIncorrectEmail();
             return;
         }
-
         if(!Validator.isValidPassword(password)) {
             view.showMessageForIncorrectPassword();
             return;
         }
-
         if(!(password.equals(passwordAgain))) {
             view.showMessageForIncorrectPasswordAgain();
             return;
         }
-
         if(!Validator.isValidName(name)) {
             view.showMessageForIncorrectName();
             return;

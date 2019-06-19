@@ -62,7 +62,7 @@ public class AddChatActivity extends AppCompatActivity implements AddChatContrac
 
         Intent intent = getIntent();
         friends = (ArrayList<User>) intent.getExtras().getSerializable("friends");
-//        자기자신은 제거
+        // 자기자신은 제거
         friends.remove(0);
 
         friendListView.setHasFixedSize(true);

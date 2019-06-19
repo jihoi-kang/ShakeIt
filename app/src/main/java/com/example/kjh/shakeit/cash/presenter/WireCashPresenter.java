@@ -15,6 +15,8 @@ import com.example.kjh.shakeit.utils.TimeManager;
 
 import org.json.JSONArray;
 
+import java.util.ArrayList;
+
 import static android.app.Activity.RESULT_OK;
 
 public class WireCashPresenter implements WireCashContract.Presenter {
@@ -33,6 +35,7 @@ public class WireCashPresenter implements WireCashContract.Presenter {
     @Override
     public void onClickWire() {
         User user = view.getUser();
+        User otherUser = view.getOtherUser();
         int amount = view.getAmount();
         ChatRoom room = view.getChatRoom();
         String time = TimeManager.nowTime();
@@ -43,25 +46,24 @@ public class WireCashPresenter implements WireCashContract.Presenter {
             return;
         }
 
+        /** Netty */
+        // 참가자들
+        JSONArray unreadUsers = new JSONArray();
+        unreadUsers.put(otherUser.getUserId());
+        room.setChatHolder(
+                new ChatHolder(0, room.getRoomId(), user.getUserId(), "point", String.valueOf(amount), time, unreadUsers.toString(), true)
+        );
+        room.setUnreadCount(1);
+        String body = Serializer.serialize(room);
+
+        model.sendMessage(body);
+
         /** 유저 변경사항 저장(포인트) */
         user.setCash(user.getCash() - amount);
         ShareUtil.setPreferInt("cash", user.getCash() - amount);
 
         Events.updateProfileEvent event = new Events.updateProfileEvent(user);
         BusProvider.getInstance().post(event);
-
-        /** 참가자들의 아이디들 => JSONArray */
-        JSONArray unreadUsers = new JSONArray();
-        for(int index = 0; index < room.getParticipants().size(); index++)
-            unreadUsers.put(room.getParticipants().get(index).getUserId());
-
-        room.setChatHolder(
-                new ChatHolder(0, room.getRoomId(), user.getUserId(), "point", String.valueOf(amount), time, unreadUsers.toString(), true)
-        );
-        String body = Serializer.serialize(room);
-
-        // Netty
-        model.sendMessage(body);
 
         view.showMessageForSuccess();
 
@@ -80,7 +82,16 @@ public class WireCashPresenter implements WireCashContract.Presenter {
         model.getChatRoom(user.getUserId(), otherUser.getUserId(), new ResultCallback() {
             @Override
             public void onSuccess(String body) {
-                view.setChatRoom(body);
+                if(body.equals("null")) {
+                    ChatRoom room = new ChatRoom();
+                    room.setRoomId(0);
+                    room.setMemberCount(2);
+                    ArrayList<User> participants = new ArrayList<>();
+                    participants.add(otherUser);
+                    room.setParticipants(participants);
+                    view.setChatRoom(room);
+                } else
+                    view.setChatRoom(Serializer.deserialize(body, ChatRoom.class));
             }
 
             @Override

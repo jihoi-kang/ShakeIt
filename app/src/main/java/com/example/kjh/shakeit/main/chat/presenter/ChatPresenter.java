@@ -14,8 +14,8 @@ import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.MessageHolder;
 import com.example.kjh.shakeit.data.ReadHolder;
 import com.example.kjh.shakeit.data.User;
-import com.example.kjh.shakeit.fcm.FcmGenerator;
 import com.example.kjh.shakeit.main.chat.contract.ChatContract;
+import com.example.kjh.shakeit.netty.protocol.ProtocolHeader;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
 import com.example.kjh.shakeit.utils.Serializer;
@@ -37,7 +37,6 @@ import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_CAMERA;
 import static com.example.kjh.shakeit.app.Constant.REQUEST_CODE_GALLERY;
 import static com.example.kjh.shakeit.main.chat.ChatActivity.chatActHandler;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.CONN_WEBRTC;
-import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.DELIVERY;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.IMAGE;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.MESSAGE;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.UPDATE_UNREAD;
@@ -66,14 +65,49 @@ public class ChatPresenter implements ChatContract.Presenter {
     public void onCreate() {
         BusProvider.getInstance().register(this);
 
+        /** 채팅 목록 */
+        getChatList();
+    }
+
+    /**------------------------------------------------------------------
+     생명주기 ==> onResume()
+     ------------------------------------------------------------------*/
+    @Override
+    public void onResume() {
         User user = view.getUser();
         ChatRoom room = view.getChatRoom();
 
-        /** 채팅 목록 */
-        getChatList();
+        /** 채팅방 들어왔음을 알림 */
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("userId", user.getUserId());
+            jsonObject.put("roomId", room.getRoomId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        model.updateChatroomSession(jsonObject.toString(), ProtocolHeader.ENTER);
 
-        /** 읽지않은 메시지 읽었다고 알림 */
+        /** 읽지 않은 메시지 읽어야 함 */
         model.updateUnreadChat(user.getUserId(), room);
+    }
+
+    /**------------------------------------------------------------------
+     생명주기 ==> onStop()
+     ------------------------------------------------------------------*/
+    @Override
+    public void onStop() {
+        User user = view.getUser();
+        ChatRoom room = view.getChatRoom();
+
+        /** 채팅방에 있지 않음 */
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("userId", user.getUserId());
+            jsonObject.put("roomId", room.getRoomId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        model.updateChatroomSession(jsonObject.toString(), ProtocolHeader.OUT);
     }
 
     /**------------------------------------------------------------------
@@ -106,60 +140,12 @@ public class ChatPresenter implements ChatContract.Presenter {
         room.setChatHolder(
                 new ChatHolder(0, room.getRoomId(), user.getUserId(), "text", content, time, unreadUsers.toString(), true)
         );
+
+        room.setUnreadCount(unreadUsers.length());
         String body = Serializer.serialize(room);
 
         // Netty
         model.sendMessage(body);
-
-        ChatRoom newRoom = new ChatRoom();
-        try {
-            newRoom = room.copy();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-
-        // Fcm
-        for(User targetUser : newRoom.getParticipants()) {
-            ChatRoom finalNewRoom = newRoom;
-            model.getUser(targetUser.getUserId(), new ResultCallback() {
-                @Override
-                public void onSuccess(String body) {
-                    User otherUser = Serializer.deserialize(body, User.class);
-                    // 서버의 Token 상태 확인
-                    if (StrUtil.isBlank(otherUser.getDeviceToken()))
-                        return;
-
-                    // 참가자들 변경
-                    for(int idx = 0; idx < finalNewRoom.getParticipants().size(); idx++) {
-                        if(finalNewRoom.getParticipants().get(idx).getUserId() == targetUser.getUserId()) {
-                            try {
-                                JSONArray jsonArray = new JSONArray(finalNewRoom.getChatHolder().getUnreadUsers());
-                                for(int index = 0; index < jsonArray.length(); index++){
-                                    if(jsonArray.getInt(index) == targetUser.getUserId()) {
-                                        jsonArray.remove(index);
-                                        jsonArray.put(user.getUserId());
-                                    }
-
-                                }
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                            finalNewRoom.getParticipants().set(idx, user);
-                        }
-                    }
-
-                    // FCM 전송
-                    FcmGenerator.postRequest(otherUser.getDeviceToken(), "알림", Serializer.serialize(finalNewRoom).replaceAll("\"", "\'"));
-                }
-
-                @Override
-                public void onFailure(String errorMsg) {
-
-                }
-            });
-        }
 
         view.clearInputContent();
     }
@@ -178,7 +164,7 @@ public class ChatPresenter implements ChatContract.Presenter {
         for(int index = 0; index < room.getParticipants().size(); index++)
             unreadUsers.put(room.getParticipants().get(index).getUserId());
 
-        /** 이미지 업로드 후 프로필 업데이트 */
+        /** 이미지 업로드 후 이미지 보내기 */
         model.uploadImage(user.getUserId(), path, new ResultCallback() {
             @Override
             public void onSuccess(String body) {
@@ -266,8 +252,7 @@ public class ChatPresenter implements ChatContract.Presenter {
                     }
 
                     @Override
-                    public void onPermissionDenied(List<String> deniedPermissions) {
-                    }
+                    public void onPermissionDenied(List<String> deniedPermissions) {}
                 })
                 .setDeniedTitle(R.string.permission_denied_title)
                 .setDeniedMessage(R.string.permission_denied_message)
@@ -335,18 +320,18 @@ public class ChatPresenter implements ChatContract.Presenter {
     public void nettyEvent (Events.nettyEvent event) {
         MessageHolder holder = event.getMessageHolder();
 
-        if(holder.getType() == MESSAGE || holder.getType() == IMAGE || holder.getType() == WIRE) {
+        if(holder.getType() == MESSAGE
+                || holder.getType() == IMAGE
+                || holder.getType() == WIRE) {
             ChatRoom room = Serializer.deserialize(holder.getBody(), ChatRoom.class);
 
             /** 채팅방 처음 생성되고 채팅 메시지 보냈을 때 */
             if(view.getChatRoom().getRoomId() == 0)
                 view.setChatRoomId(room.getRoomId());
 
+            /** 채팅방에 들어와 있지만 다른 채팅방에 있을 때 */
             if(view.getChatRoom().getRoomId() != room.getRoomId())
                 return;
-
-            if(holder.getSign() == DELIVERY)
-                model.updateUnreadChat(view.getUser().getUserId(), view.getChatRoom());
 
             chats.add(room.getChatHolder());
         } else if(holder.getType() == UPDATE_UNREAD) {

@@ -96,7 +96,7 @@ public class FcmGenerator {
                             return;
 
                         String token = task.getResult().getToken();
-                        Log.d(TAG, "Token => " + token);
+//                        Log.d(TAG, "Token => " + token);
 
                         retrofit2.Call<ResponseBody> result = ApiClient.create().updateUserToken(_id, token);
 

@@ -17,7 +17,7 @@ public interface WireCashContract {
         Context getContext();
         void showMessageForSuccess();
         ChatRoom getChatRoom();
-        void setChatRoom(String body);
+        void setChatRoom(ChatRoom room);
 
     }
 
@@ -33,6 +33,7 @@ public interface WireCashContract {
         void wire(int userId, int friendId, int amount, ResultCallback callback);
         void sendMessage(String body);
         void getChatRoom(int userId, int friendId, ResultCallback callback);
+        void getUser(int userId, ResultCallback callback);
 
     }
 
