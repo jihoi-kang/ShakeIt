@@ -37,6 +37,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/button_call_toggle_mic"
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            android:background="@color/transparent"
+            android:src="@drawable/ic_mic_on"
+            android:contentDescription="@string/toggle_mic"
+            app:civ_border_color="@color/background_grey_primary"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            app:civ_border_width="0.7dp" />
+
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/button_call_toggle_video"
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            android:background="@color/transparent"
+            android:src="@drawable/ic_video_on"
+            android:contentDescription="@string/toggle_mic"
+            app:civ_border_color="@color/background_grey_primary"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            app:civ_border_width="0.7dp" />
 
         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/button_call_disconnect"
@@ -47,34 +70,6 @@
             android:contentDescription="@string/disconnect_call"
             app:civ_border_color="@color/background_grey_primary"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="36dp"
-            app:civ_border_width="0.7dp" />
-
-
-        <ImageButton
-            android:visibility="gone"
-            android:background="@android:drawable/ic_menu_camera"
-            android:contentDescription="@string/switch_camera"
-            android:layout_marginEnd="8dp"
-            android:layout_width="48dp"
-            android:layout_height="48dp"/>
-
-        <ImageButton
-            android:id="@+id/button_call_scaling_mode"
-            android:visibility="gone"
-            android:background="@drawable/ic_action_return_from_full_screen"
-            android:contentDescription="@string/disconnect_call"
-            android:layout_width="48dp"
-            android:layout_height="48dp"/>
-
-        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/button_call_toggle_mic"
-            android:layout_width="58dp"
-            android:layout_height="58dp"
-            android:background="@color/transparent"
-            android:src="@drawable/ic_mic_on"
-            android:contentDescription="@string/toggle_mic"
-            app:civ_border_color="@color/background_grey_primary"
             android:layout_marginEnd="8dp"
             app:civ_border_width="0.7dp" />
 

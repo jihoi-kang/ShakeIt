@@ -25,5 +25,7 @@ public class ProtocolHeader {
     public static final byte WIRE               = 0x19; // 송금
     public static final byte ENTER              = 0x20; // 보고 있는 채팅방
     public static final byte OUT                = 0x21; // 보고 있다가 다른 화면으로 전환시
+    public static final byte VIDEO_ON           = 0x22; // 영상통화 비디오 ON
+    public static final byte VIDEO_OFF          = 0x23; // 영상통화 비디오 OFF
 
 }

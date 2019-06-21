@@ -102,7 +102,8 @@ public class ShakePresenter implements ShakeContract.Presenter {
             Message msg = shakeActHandler.obtainMessage();
             msg.obj = user;
             shakeActHandler.sendMessage(msg);
-        }
+        } else
+            return;
 
     }
 }

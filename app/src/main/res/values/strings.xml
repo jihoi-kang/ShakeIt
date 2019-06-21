@@ -94,4 +94,5 @@
     <string name="notification_channel_message_description">Receive notification about new message.</string>
     <string name="notification_channel_notice_title">Notice</string>
     <string name="notification_channel_notice_description">Receive notification about our service\'s notice</string>
+    <string name="msg_for_camera_off">Your friend has turned off the camera</string>
 </resources>

@@ -287,6 +287,7 @@ public class HudFragment extends Fragment {
             getActivity().runOnUiThread(() -> {
                 nameTxt.setVisibility(View.GONE);
                 callingTxt.setVisibility(View.GONE);
+                chronometerView.setVisibility(View.VISIBLE);
             });
 
             countTime();

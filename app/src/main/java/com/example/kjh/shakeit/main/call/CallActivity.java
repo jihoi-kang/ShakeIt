@@ -18,6 +18,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.example.kjh.shakeit.R;
 import com.example.kjh.shakeit.app.AppManager;
@@ -26,6 +28,9 @@ import com.example.kjh.shakeit.data.User;
 import com.example.kjh.shakeit.netty.NettyClient;
 import com.example.kjh.shakeit.otto.BusProvider;
 import com.example.kjh.shakeit.otto.Events;
+import com.example.kjh.shakeit.utils.ImageLoaderUtil;
+import com.example.kjh.shakeit.utils.ShareUtil;
+import com.example.kjh.shakeit.utils.StrUtil;
 import com.example.kjh.shakeit.utils.ToastGenerator;
 import com.example.kjh.shakeit.webrtc.AppRTCAudioManager;
 import com.example.kjh.shakeit.webrtc.AppRTCAudioManager.AudioDevice;
@@ -110,6 +115,8 @@ import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_WIDTH;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.CONN_WEBRTC;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.DISCONN_WEBRTC;
 import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.REQUEST;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.VIDEO_OFF;
+import static com.example.kjh.shakeit.netty.protocol.ProtocolHeader.VIDEO_ON;
 
 /**
  * 영상 통화 액티비티
@@ -166,6 +173,7 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     private boolean callControlFragmentVisible = true;
     private long callStartedTimeMs = 0;
     private boolean micEnabled = true;
+    private boolean videoEnabled = true;
     private boolean screencaptureEnabled = false;
     private static Intent mediaProjectionPermissionResultData;
     private static int mediaProjectionPermissionResultCode;
@@ -181,9 +189,13 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
     private Unbinder unbinder;
     @BindView(R.id.pip_video_view) SurfaceViewRenderer pipRenderer;
     @BindView(R.id.fullscreen_video_view) SurfaceViewRenderer fullscreenRenderer;
+    @BindView(R.id.pip_video_off_view) RelativeLayout pipOffView;
+    @BindView(R.id.fullscreen_video_off_view) RelativeLayout fullscreenOffView;
+    @BindView(R.id.pip_profile_image) ImageView pipProfileImage;
+    @BindView(R.id.fullscreen_profile_image) ImageView fullscreenProfileImage;
 
     private String roomId;
-    private User otherUser;
+    private User user, otherUser;
 
     // 영상 통화 걸고 30초동안 응답 없을 시 자동 종료를 위해
     private Thread thread;
@@ -225,7 +237,19 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
         remoteRenderers.add(remoteProxyRenderer);
 
         final Intent intent = getIntent();
+        user = (User) intent.getSerializableExtra("user");
         otherUser = (User) intent.getSerializableExtra("otherUser");
+
+        // UI 셋팅
+        if(StrUtil.isBlank(user.getImageUrl()))
+            pipProfileImage.setImageResource(R.drawable.ic_basic_profile);
+        else
+            ImageLoaderUtil.display(this, pipProfileImage, user.getImageUrl());
+
+        if(StrUtil.isBlank(otherUser.getImageUrl()))
+            fullscreenProfileImage.setImageResource(R.drawable.ic_basic_profile);
+        else
+            ImageLoaderUtil.display(this, fullscreenProfileImage, otherUser.getImageUrl());
 
         rootEglBase = EglBase.create();
 
@@ -373,7 +397,6 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
             JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("roomID", roomId);
-                User otherUser = (User) intent.getSerializableExtra("otherUser");
                 jsonObject.put("userId", otherUser.getUserId());
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -568,6 +591,32 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
             peerConnectionClient.setAudioEnabled(micEnabled);
         }
         return micEnabled;
+    }
+
+    @Override
+    public boolean onToggleVideo() {
+        if(peerConnectionClient != null) {
+            videoEnabled = !videoEnabled;
+
+            if(videoEnabled) {
+                pipRenderer.setVisibility(View.VISIBLE);
+                pipOffView.setVisibility(View.GONE);
+            } else {
+                pipRenderer.setVisibility(View.GONE);
+                pipOffView.setVisibility(View.VISIBLE);
+            }
+
+            MessageHolder holder = new MessageHolder();
+            holder.setSign(REQUEST);
+            if(videoEnabled)
+                holder.setType(VIDEO_ON);
+            else
+                holder.setType(VIDEO_OFF);
+            holder.setBody("" + otherUser.getUserId());
+            NettyClient.getInstance().sendMsgToServer(holder, null);
+        }
+
+        return videoEnabled;
     }
 
     private void toggleCallControlFragmentVisibility() {
@@ -921,6 +970,22 @@ public class CallActivity extends Activity implements AppRTCClient.SignalingEven
 
         if(holder.getType() == DISCONN_WEBRTC)
             finish();
+        else if(holder.getType() == VIDEO_ON) {
+            if(Integer.parseInt(holder.getBody()) == ShareUtil.getPreferInt("userId")) {
+                runOnUiThread(()-> {
+                    fullscreenRenderer.setVisibility(View.VISIBLE);
+                    fullscreenOffView.setVisibility(View.GONE);
+                });
+            }
+        } else if(holder.getType() == VIDEO_OFF) {
+            if(Integer.parseInt(holder.getBody()) == ShareUtil.getPreferInt("userId")) {
+                runOnUiThread(()-> {
+                    fullscreenRenderer.setVisibility(View.GONE);
+                    fullscreenOffView.setVisibility(View.VISIBLE);
+                });
+            }
+        } else
+            return;
     }
 
 }

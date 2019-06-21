@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -21,7 +20,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-import static com.example.kjh.shakeit.app.Constant.*;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_ROOMID;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_CALL;
+import static com.example.kjh.shakeit.app.Constant.EXTRA_VIDEO_CAPTUREQUALITYSLIDER_ENABLED;
 
 /**
  * 사용자가 컨트롤 할 수 있는 Fragment 클래스
@@ -35,8 +36,8 @@ public class CallFragment extends Fragment {
     @BindView(R.id.contact_name_call) TextView contactView;
     @BindView(R.id.button_call_disconnect) ImageView disconnectButton;
     @BindView(R.id.button_call_switch_camera) ImageView cameraSwitchButton;
-    @BindView(R.id.button_call_scaling_mode) ImageButton videoScalingButton;
     @BindView(R.id.button_call_toggle_mic) ImageView toggleMuteButton;
+    @BindView(R.id.button_call_toggle_video) ImageView toggleVideoButton;
     @BindView(R.id.capture_format_text_call) TextView captureFormatText;
     @BindView(R.id.capture_format_slider_call) SeekBar captureFormatSlider;
 
@@ -52,6 +53,7 @@ public class CallFragment extends Fragment {
         void onVideoScalingSwitch(RendererCommon.ScalingType scalingType);
         void onCaptureFormatChange(int width, int height, int framerate);
         boolean onToggleMic();
+        boolean onToggleVideo();
 
     }
 
@@ -132,21 +134,6 @@ public class CallFragment extends Fragment {
     }
 
     /**------------------------------------------------------------------
-     클릭이벤트 ==> 스케일 모드
-     ------------------------------------------------------------------*/
-    @OnClick(R.id.button_call_scaling_mode)
-    void onClickScalingMode() {
-        if (scalingType == RendererCommon.ScalingType.SCALE_ASPECT_FILL) {
-            videoScalingButton.setBackgroundResource(R.drawable.ic_action_full_screen);
-            scalingType = RendererCommon.ScalingType.SCALE_ASPECT_FIT;
-        } else {
-            videoScalingButton.setBackgroundResource(R.drawable.ic_action_return_from_full_screen);
-            scalingType = RendererCommon.ScalingType.SCALE_ASPECT_FILL;
-        }
-        callEvents.onVideoScalingSwitch(scalingType);
-    }
-
-    /**------------------------------------------------------------------
      클릭이벤트 ==> 마이크 뮤트
      ------------------------------------------------------------------*/
     @OnClick(R.id.button_call_toggle_mic)
@@ -156,6 +143,18 @@ public class CallFragment extends Fragment {
             toggleMuteButton.setImageResource(R.drawable.ic_mic_on);
         else
             toggleMuteButton.setImageResource(R.drawable.ic_mic_off);
+    }
+
+    /**------------------------------------------------------------------
+     클릭이벤트 ==> 마이크 뮤트
+     ------------------------------------------------------------------*/
+    @OnClick(R.id.button_call_toggle_video)
+    void onClickToggleVideo() {
+        boolean enabled = callEvents.onToggleVideo();
+        if(enabled)
+            toggleVideoButton.setImageResource(R.drawable.ic_video_on);
+        else
+            toggleVideoButton.setImageResource(R.drawable.ic_video_off);
     }
 
 }

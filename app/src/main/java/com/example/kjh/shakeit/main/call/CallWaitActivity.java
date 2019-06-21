@@ -118,6 +118,8 @@ public class CallWaitActivity extends AppCompatActivity {
 
         if(holder.getType() == DISCONN_WEBRTC)
             finish();
+        else
+            return;
     }
 
 }

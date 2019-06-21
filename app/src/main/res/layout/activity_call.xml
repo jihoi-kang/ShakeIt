@@ -1,25 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- tools:ignore is needed because lint thinks this can be replaced with a merge. Replacing this
-     with a merge causes the fullscreen SurfaceView not to be centered. -->
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:ignore="MergeRootFrame">
+    android:layout_height="match_parent" >
 
     <org.webrtc.SurfaceViewRenderer
         android:id="@+id/fullscreen_video_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:id="@+id/fullscreen_video_off_view"
+        android:visibility="gone"
+        android:background="@color/background_grey_light2"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent" >
+
+        <ImageView
+            android:scaleType="centerCrop"
+            android:src="@drawable/webrtc_back"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/fullscreen_profile_image"
+            android:layout_centerInParent="true"
+            android:layout_width="192dp"
+            android:layout_height="192dp"
+            android:src="@drawable/ic_basic_profile"
+            android:background="@color/transparent"
+            app:civ_border_width="0.7dp"
+            android:contentDescription="@string/msg_profile_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:civ_border_color="@color/background_grey_primary"/>
+
+        <TextView
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:gravity="center"
+            android:layout_below="@id/fullscreen_profile_image"
+            android:text="@string/msg_for_camera_off"
+            android:layout_margin="16dp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/nanum_barun_gothic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
 
     <org.webrtc.SurfaceViewRenderer
         android:id="@+id/pip_video_view"
         android:layout_height="144dp"
-        android:layout_width="wrap_content"
-        android:layout_gravity="bottom|end"
+        android:layout_width="96dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_margin="16dp"/>
+
+    <RelativeLayout
+        android:id="@+id/pip_video_off_view"
+        android:visibility="gone"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="16dp"
+        android:layout_height="144dp"
+        android:layout_width="96dp" >
+
+        <ImageView
+            android:src="@drawable/webrtc_back"
+            android:scaleType="centerCrop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/pip_profile_image"
+            android:layout_centerInParent="true"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/ic_basic_profile"
+            app:civ_border_width="0.7dp"
+            android:contentDescription="@string/msg_profile_image"
+            app:civ_border_color="@color/background_grey_primary"/>
+
+    </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/call_fragment_container"
@@ -30,4 +97,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-</FrameLayout>
+</RelativeLayout>
