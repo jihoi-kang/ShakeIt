@@ -132,6 +132,16 @@ public class ProfileDetailActivity extends AppCompatActivity implements ProfileD
         finish();
     }
 
+    @OnClick(R.id.profile_image)
+    void onClickProfileImage() {
+        if(StrUtil.isBlank(friend.getImageUrl()))
+            return;
+
+        Intent intent = new Intent(ProfileDetailActivity.this, ImageDetailActivity.class);
+        intent.putExtra("imageUrl", friend.getImageUrl());
+        startActivity(intent);
+    }
+
     /**------------------------------------------------------------------
      메서드 ==> 친구추가 클릭 후 성공 했을시 발생
      ------------------------------------------------------------------*/

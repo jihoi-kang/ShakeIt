@@ -1,0 +1,546 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"  android:layout_width="match_parent"/>
+    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_width="match_parent"-->
+    <!--tools:context="com.example.jyn.remotemeeting.Activity.Call_A"-->
+    <!--&gt;-->
+
+    <!--&lt;!&ndash;full_screen 서피스뷰&ndash;&gt;-->
+    <!--<org.webrtc.SurfaceViewRenderer-->
+        <!--android:id="@+id/fullscreen_video_view"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent" />-->
+
+    <!--&lt;!&ndash;비디오 전송을 껐을 때 나타나는 백업 뷰: for fullscreen&ndash;&gt;-->
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/video_off_backup_REL_full"-->
+        <!--android:background="#e8ecff"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_width="match_parent"-->
+
+        <!--&gt;-->
+        <!--<ImageView-->
+            <!--tools:visibility="visible"-->
+            <!--android:id="@+id/back_img_full"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--tools:src="@drawable/ic_basic_profile"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--/>-->
+        <!--<View-->
+            <!--android:id="@+id/video_off_backup_backColor"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="#33000000"-->
+            <!--/>-->
+        <!--<de.hdodenhof.circleimageview.CircleImageView-->
+            <!--android:id="@+id/profile_img_full"-->
+            <!--android:layout_width="200dp"-->
+            <!--android:layout_height="200dp"-->
+            <!--tools:src="@drawable/default_profile"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--/>-->
+    <!--</RelativeLayout>-->
+
+    <!--&lt;!&ndash;=========================================================&ndash;&gt;-->
+    <!--&lt;!&ndash;FaceTracking 뷰&ndash;&gt;-->
+    <!--<com.example.jyn.remotemeeting.FaceTracking_3D_modeling.CameraSourcePreview-->
+        <!--android:id="@+id/cameraSourcePreview"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--&gt;-->
+        <!--<com.example.jyn.remotemeeting.FaceTracking_3D_modeling.GraphicOverlay-->
+            <!--android:id="@+id/faceOverlay"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"/>-->
+
+    <!--</com.example.jyn.remotemeeting.FaceTracking_3D_modeling.CameraSourcePreview>-->
+
+    <!--&lt;!&ndash;3D 모델 올릴 때 배경화면&ndash;&gt;-->
+    <!--<ImageView-->
+        <!--android:id="@+id/back_img_full_for_3D"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--tools:src="@drawable/video_off_back_5"-->
+        <!--android:scaleType="centerCrop"-->
+        <!--/>-->
+
+    <!--&lt;!&ndash;3D 모델 올라가는 뷰&ndash;&gt;-->
+    <!--<FrameLayout-->
+        <!--android:id="@+id/awd_model_view"-->
+        <!--android:layout_width="160dp"-->
+        <!--android:layout_height="160dp"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--/>-->
+
+    <!--&lt;!&ndash; frameLayout 테두리 둥글게 만들기 위한 back xml 넣는 뷰 &ndash;&gt;-->
+    <!--<View-->
+        <!--android:id="@+id/border_view"-->
+        <!--android:layout_width="185dp"-->
+        <!--android:layout_height="185dp"-->
+        <!--android:background="@drawable/shape_3d_model_border"-->
+        <!--android:layout_centerInParent="true"/>-->
+
+    <!--&lt;!&ndash;=========================================================&ndash;&gt;-->
+
+
+    <!--&lt;!&ndash;pip 서피스뷰&ndash;&gt;-->
+    <!--<org.webrtc.SurfaceViewRenderer-->
+        <!--android:id="@+id/pip_video_view"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:layout_width="177dp"-->
+        <!--android:layout_gravity="bottom|end"-->
+        <!--android:layout_margin="16dp"-->
+        <!--/>-->
+
+    <!--&lt;!&ndash;비디오 전송을 껐을 때 나타나는 백업 뷰: for pip&ndash;&gt;-->
+    <!--<RelativeLayout-->
+        <!--android:id="@+id/video_off_backup_REL"-->
+        <!--android:background="#e8ecff"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:layout_width="177dp"-->
+        <!--android:layout_gravity="bottom|end"-->
+        <!--android:layout_margin="16dp"-->
+        <!--&gt;-->
+        <!--<ImageView-->
+            <!--tools:visibility="visible"-->
+            <!--android:id="@+id/back_img"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--tools:src="@drawable/back_2"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--/>-->
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="#33000000"-->
+            <!--/>-->
+        <!--<de.hdodenhof.circleimageview.CircleImageView-->
+            <!--android:id="@+id/profile_img"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="50dp"-->
+            <!--tools:src="@drawable/default_profile"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--/>-->
+    <!--</RelativeLayout>-->
+
+
+    <!--&lt;!&ndash;상대방이 들어와있는 상황에서, 내가 얼굴인식+3d 모드로 들어갔을 때,-->
+        <!--상대방에게 표시되는 내 상태뷰: for pip&ndash;&gt;-->
+    <!--<RelativeLayout-->
+        <!--android:visibility="gone"-->
+        <!--tools:visibility="visible"-->
+        <!--android:id="@+id/face_3D_backup_REL_pip"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:layout_width="177dp"-->
+        <!--android:layout_gravity="bottom|end"-->
+        <!--android:layout_margin="16dp"-->
+        <!--&gt;-->
+        <!--&lt;!&ndash;FaceTracking 뷰&ndash;&gt;-->
+        <!--<com.example.jyn.remotemeeting.FaceTracking_3D_modeling.CameraSourcePreview-->
+            <!--android:id="@+id/cameraSourcePreview_pip"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--&gt;-->
+            <!--<com.example.jyn.remotemeeting.FaceTracking_3D_modeling.GraphicOverlay-->
+                <!--android:id="@+id/faceOverlay_pip"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"/>-->
+
+        <!--</com.example.jyn.remotemeeting.FaceTracking_3D_modeling.CameraSourcePreview>-->
+
+        <!--&lt;!&ndash;3D 모델 올릴 때 배경화면&ndash;&gt;-->
+        <!--<ImageView-->
+            <!--android:id="@+id/back_img_full_for_3D_pip"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--tools:src="@drawable/video_off_back_5"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--/>-->
+        <!--&lt;!&ndash;3D 모델 올라가는 뷰&ndash;&gt;-->
+        <!--<FrameLayout-->
+            <!--android:id="@+id/awd_model_view_pip"-->
+            <!--android:layout_width="70dp"-->
+            <!--android:layout_height="70dp"-->
+            <!--android:layout_centerInParent="true"-->
+            <!--/>-->
+        <!--&lt;!&ndash; frameLayout 테두리 둥글게 만들기 위한 back xml 넣는 뷰 &ndash;&gt;-->
+        <!--<View-->
+            <!--android:id="@+id/border_view_pip"-->
+            <!--android:layout_width="75dp"-->
+            <!--android:layout_height="75dp"-->
+            <!--android:background="@drawable/shape_3d_model_border_pip"-->
+            <!--android:layout_centerInParent="true"/>-->
+    <!--</RelativeLayout>-->
+
+
+    <!--<FrameLayout-->
+        <!--android:id="@+id/call_fragment_container"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent" />-->
+
+    <!--<FrameLayout-->
+        <!--android:id="@+id/hud_fragment_container"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_alignParentTop="true" />-->
+
+    <!--<RelativeLayout-->
+        <!--android:layout_width="80dp"-->
+        <!--android:layout_height="30dp"-->
+        <!--android:layout_marginTop="11dp"-->
+        <!--android:layout_marginRight="80dp"-->
+        <!--android:layout_alignParentEnd="true"-->
+        <!--android:gravity="center"-->
+        <!--android:layout_gravity="end">-->
+
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="30dp"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:background="@drawable/shape_time_tic"-->
+            <!--/>-->
+        <!--<Chronometer-->
+            <!--android:id="@+id/chronometer"-->
+            <!--tools:visibility="visible"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:textSize="13dp"-->
+            <!--android:textColor="#cecece"-->
+            <!--android:gravity="center"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_gravity="center"/>-->
+
+    <!--</RelativeLayout>-->
+    <!--&lt;!&ndash;<Chronometer&ndash;&gt;-->
+    <!--&lt;!&ndash;android:id="@+id/chronometer"&ndash;&gt;-->
+    <!--&lt;!&ndash;tools:visibility="visible"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_width="80dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_height="30dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_marginTop="15dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textSize="17dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:textColor="#cecece"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:gravity="center"&ndash;&gt;-->
+    <!--&lt;!&ndash;android:layout_gravity="center_horizontal" />&ndash;&gt;-->
+
+
+
+    <!--&lt;!&ndash;이미지 공유 레이아웃: 서피스뷰 포함&ndash;&gt;-->
+    <!--<RelativeLayout-->
+        <!--android:visibility="gone"-->
+        <!--tools:visibility="gone"-->
+        <!--android:id="@+id/image_share_REL"-->
+        <!--android:background="#FFF"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent">-->
+
+        <!--&lt;!&ndash;미리보기 리사이클러뷰 레이아웃&ndash;&gt;-->
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/share_image_list_REL"-->
+            <!--android:layout_width="60dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="#e9eff4"-->
+            <!--&gt;-->
+            <!--&lt;!&ndash;<View&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:background="#000000"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:alpha="0.5"/>&ndash;&gt;-->
+            <!--<android.support.v7.widget.RecyclerView-->
+                <!--android:id="@+id/recyclerView_share_image"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--tools:ignore="RtlSymmetry">-->
+            <!--</android.support.v7.widget.RecyclerView>-->
+        <!--</RelativeLayout>-->
+
+        <!--<View-->
+            <!--android:id="@+id/divider_right"-->
+            <!--android:layout_width="5dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_toEndOf="@+id/share_image_list_REL"-->
+            <!--android:background="#c6c6c6"-->
+            <!--android:alpha="1"/>-->
+
+        <!--<SurfaceView-->
+            <!--tools:visibility="visible"-->
+            <!--android:layout_toEndOf="@+id/divider_right"-->
+            <!--android:id="@+id/surface_view"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--/>-->
+
+        <!--&lt;!&ndash; 드로잉 도구 레이아웃 2 &ndash;&gt;-->
+        <!--<RelativeLayout-->
+            <!--android:visibility="gone"-->
+            <!--tools:visibility="visible"-->
+            <!--android:id="@+id/drawing_layout"-->
+            <!--android:layout_toEndOf="@+id/share_image_list_REL"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--&gt;-->
+            <!--<View-->
+                <!--android:id="@+id/stroke_alpha_bar_LIN_back_alpha"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:background="#000000"-->
+                <!--android:layout_alignBaseline="@+id/stroke_alpha_bar_LIN"-->
+                <!--android:layout_alignTop="@+id/stroke_alpha_bar_LIN"-->
+                <!--android:alpha="0.7"/>-->
+
+            <!--&lt;!&ndash; 펜 두께 / 펜 투명도 조절 시크바 레이아웃 &ndash;&gt;-->
+            <!--<LinearLayout-->
+                <!--android:id="@+id/stroke_alpha_bar_LIN"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="60dp"-->
+                <!--android:layout_marginStart="10dp"-->
+                <!--android:layout_marginEnd="10dp"-->
+                <!--android:layout_above="@+id/pencil_layout"-->
+                <!--android:orientation="horizontal">-->
+                <!--<LinearLayout-->
+                    <!--android:id="@+id/stroke_seek_bar_root"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:gravity="center"-->
+                    <!--android:orientation="vertical">-->
+
+                    <!--&lt;!&ndash;시크바, 자바에서 코드로 넣음&ndash;&gt;-->
+
+                <!--</LinearLayout>-->
+
+                <!--<LinearLayout-->
+                    <!--android:id="@+id/alpha_seek_bar_root"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:gravity="center"-->
+                    <!--android:orientation="vertical">-->
+
+                    <!--&lt;!&ndash;시크바, 자바에서 코드로 넣음&ndash;&gt;-->
+
+                <!--</LinearLayout>-->
+            <!--</LinearLayout>-->
+
+            <!--&lt;!&ndash; 색연필 &ndash;&gt;-->
+            <!--<LinearLayout-->
+                <!--android:id="@+id/pencil_layout"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:layout_centerHorizontal="true"-->
+                <!--android:gravity="center"-->
+                <!--&gt;-->
+                <!--<com.example.jyn.remotemeeting.Realm_and_drawing.PencilView-->
+                    <!--android:id="@+id/black"-->
+                    <!--android:layout_width="30dp"-->
+                    <!--android:layout_height="88.197dp"-->
+                    <!--android:layout_marginRight="1dp"-->
+                    <!--android:src="@drawable/black"/>-->
+
+                <!--<com.example.jyn.remotemeeting.Realm_and_drawing.PencilView-->
+                    <!--android:id="@+id/white"-->
+                    <!--android:layout_width="30dp"-->
+                    <!--android:layout_height="88.197dp"-->
+                    <!--android:layout_marginRight="1dp"-->
+                    <!--android:src="@drawable/white"/>-->
+
+                <!--<com.example.jyn.remotemeeting.Realm_and_drawing.PencilView-->
+                    <!--android:id="@+id/elephant"-->
+                    <!--android:layout_width="30dp"-->
+                    <!--android:layout_height="88.197dp"-->
+                    <!--android:layout_marginRight="1dp"-->
+                    <!--android:src="@drawable/elephant"/>-->
+
+                <!--<com.example.jyn.remotemeeting.Realm_and_drawing.PencilView-->
+                    <!--android:id="@+id/blue"-->
+                    <!--android:layout_width="30dp"-->
+                    <!--android:layout_height="88.197dp"-->
+                    <!--android:layout_marginRight="1dp"-->
+                    <!--android:src="@drawable/blue"/>-->
+
+                <!--<com.example.jyn.remotemeeting.Realm_and_drawing.PencilView-->
+                    <!--android:id="@+id/indigo"-->
+                    <!--android:layout_width="30dp"-->
+                    <!--android:layout_height="88.197dp"-->
+                    <!--android:layout_marginRight="1dp"-->
+                    <!--android:src="@drawable/indigo"/>-->
+
+                <!--<com.example.jyn.remotemeeting.Realm_and_drawing.PencilView-->
+                    <!--android:id="@+id/grape_jelly"-->
+                    <!--android:layout_width="30dp"-->
+                    <!--android:layout_height="88.197dp"-->
+                    <!--android:layout_marginRight="1dp"-->
+                    <!--android:src="@drawable/grape_jelly"/>-->
+
+                <!--<com.example.jyn.remotemeeting.Realm_and_drawing.PencilView-->
+                    <!--android:id="@+id/green"-->
+                    <!--android:layout_width="30dp"-->
+                    <!--android:layout_height="88.197dp"-->
+                    <!--android:layout_marginRight="1dp"-->
+                    <!--android:src="@drawable/green"/>-->
+
+                <!--<com.example.jyn.remotemeeting.Realm_and_drawing.PencilView-->
+                    <!--android:id="@+id/teal"-->
+                    <!--android:layout_width="30dp"-->
+                    <!--android:layout_height="88.197dp"-->
+                    <!--android:layout_marginRight="1dp"-->
+                    <!--android:src="@drawable/teal"/>-->
+
+                <!--<com.example.jyn.remotemeeting.Realm_and_drawing.PencilView-->
+                    <!--android:id="@+id/orange"-->
+                    <!--android:layout_width="30dp"-->
+                    <!--android:layout_height="88.197dp"-->
+                    <!--android:layout_marginRight="1dp"-->
+                    <!--android:src="@drawable/orange"/>-->
+
+                <!--<com.example.jyn.remotemeeting.Realm_and_drawing.PencilView-->
+                    <!--android:id="@+id/yellow"-->
+                    <!--android:layout_width="30dp"-->
+                    <!--android:layout_height="88.197dp"-->
+                    <!--android:layout_marginRight="1dp"-->
+                    <!--android:src="@drawable/yellow"/>-->
+
+                <!--<com.example.jyn.remotemeeting.Realm_and_drawing.PencilView-->
+                    <!--android:id="@+id/mulberry"-->
+                    <!--android:layout_width="30dp"-->
+                    <!--android:layout_height="88.197dp"-->
+                    <!--android:layout_marginRight="1dp"-->
+                    <!--android:src="@drawable/mulberry"/>-->
+
+                <!--<com.example.jyn.remotemeeting.Realm_and_drawing.PencilView-->
+                    <!--android:id="@+id/sexy_salmon"-->
+                    <!--android:layout_width="30dp"-->
+                    <!--android:layout_height="88.197dp"-->
+                    <!--android:layout_marginRight="1dp"-->
+                    <!--android:src="@drawable/sexy_salmon"/>-->
+
+            <!--</LinearLayout>-->
+
+        <!--</RelativeLayout>-->
+
+
+        <!--&lt;!&ndash;드로잉 도구 open&ndash;&gt;-->
+        <!--<ImageView-->
+            <!--android:visibility="visible"-->
+            <!--tools:visibility="visible"-->
+            <!--android:id="@+id/open_drawing_tool"-->
+            <!--android:layout_width="60dp"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:layout_marginBottom="7dp"-->
+            <!--android:layout_marginEnd="7dp"-->
+            <!--android:padding="10dp"-->
+            <!--android:src="@drawable/up_arrow"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_alignParentEnd="true"-->
+            <!--/>-->
+        <!--&lt;!&ndash;드로잉 도구 close&ndash;&gt;-->
+        <!--<ImageView-->
+            <!--android:visibility="gone"-->
+            <!--tools:visibility="gone"-->
+            <!--android:id="@+id/close_drawing_tool"-->
+            <!--android:layout_width="60dp"-->
+            <!--android:layout_height="60dp"-->
+            <!--android:layout_marginBottom="7dp"-->
+            <!--android:layout_marginEnd="7dp"-->
+            <!--android:padding="10dp"-->
+            <!--android:src="@drawable/down_arrow"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_alignParentEnd="true"-->
+            <!--/>-->
+
+        <!--&lt;!&ndash;드로잉 도구 레이아웃 1 &ndash;&gt;-->
+        <!--<RelativeLayout-->
+            <!--android:visibility="gone"-->
+            <!--tools:visibility="visible"-->
+            <!--android:id="@+id/drawing_layout_1"-->
+            <!--android:layout_width="60dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="5dp"-->
+            <!--android:layout_marginEnd="5dp"-->
+            <!--android:layout_alignParentEnd="true"-->
+            <!--&gt;-->
+            <!--&lt;!&ndash;드래그 토글 버튼&ndash;&gt;-->
+            <!--<ImageView-->
+                <!--android:id="@+id/enable_drag_btn"-->
+                <!--android:layout_width="60dp"-->
+                <!--android:layout_height="60dp"-->
+                <!--android:padding="7dp"-->
+                <!--android:src="@drawable/scroll"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--android:alpha="1"-->
+                <!--/>-->
+            <!--&lt;!&ndash;undo 토글 버튼&ndash;&gt;-->
+            <!--<ImageView-->
+                <!--android:id="@+id/undo"-->
+                <!--android:layout_below="@+id/enable_drag_btn"-->
+                <!--android:layout_width="60dp"-->
+                <!--android:layout_height="60dp"-->
+                <!--android:padding="7dp"-->
+                <!--android:src="@drawable/undo"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--/>-->
+            <!--&lt;!&ndash;이미지로 다운로드 버튼&ndash;&gt;-->
+            <!--<ImageView-->
+                <!--android:id="@+id/save_Image"-->
+                <!--android:layout_below="@+id/undo"-->
+                <!--android:layout_width="60dp"-->
+                <!--android:layout_height="60dp"-->
+                <!--android:padding="7dp"-->
+                <!--android:src="@drawable/save_image"-->
+                <!--android:layout_alignParentEnd="true"-->
+                <!--/>-->
+        <!--</RelativeLayout>-->
+        <!--&lt;!&ndash;&lt;!&ndash;드래그 토글 버튼&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/enable_drag_btn"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="60dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="60dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:padding="7dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginTop="5dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginEnd="5dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:src="@drawable/scroll"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_alignParentEnd="true"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:alpha="1"&ndash;&gt;-->
+        <!--&lt;!&ndash;/>&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;undo 토글 버튼&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/undo"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_below="@+id/enable_drag_btn"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="60dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="60dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:padding="7dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginEnd="5dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:src="@drawable/undo"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_alignParentEnd="true"&ndash;&gt;-->
+        <!--&lt;!&ndash;/>&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;이미지로 다운로드 버튼&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/save_Image"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_below="@+id/undo"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="60dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="60dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:padding="7dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_marginEnd="5dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:src="@drawable/save_image"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_alignParentEnd="true"&ndash;&gt;-->
+        <!--&lt;!&ndash;/>&ndash;&gt;-->
+
+
+    <!--</RelativeLayout>-->
+
+
+
+<!--</RelativeLayout>-->

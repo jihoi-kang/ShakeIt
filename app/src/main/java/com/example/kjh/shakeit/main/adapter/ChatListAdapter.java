@@ -1,6 +1,7 @@
 package com.example.kjh.shakeit.main.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -18,6 +19,7 @@ import com.example.kjh.shakeit.data.ChatHolder;
 import com.example.kjh.shakeit.data.ChatRoom;
 import com.example.kjh.shakeit.data.ImageHolder;
 import com.example.kjh.shakeit.data.User;
+import com.example.kjh.shakeit.main.friend.ImageDetailActivity;
 import com.example.kjh.shakeit.utils.CurrencyUnitUtil;
 import com.example.kjh.shakeit.utils.ShareUtil;
 
@@ -177,10 +179,16 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         ImageHolder imageHolder = realm.where(ImageHolder.class)
-                .equalTo("url",chatHolder.getMessageContent())
+                .equalTo("url", chatHolder.getMessageContent())
                 .findFirst();
         Bitmap compressedBitmap = BitmapFactory.decodeByteArray(imageHolder.getImageArray(),0,imageHolder.getImageArray().length);
         holder.imageContent.setImageBitmap(compressedBitmap);
+
+        holder.imageContent.setOnClickListener(view -> {
+            Intent intent = new Intent(context, ImageDetailActivity.class);
+            intent.putExtra("imageUrl", chatHolder.getMessageContent());
+            context.startActivity(intent);
+        });
 
         realm.close();
 
@@ -312,8 +320,13 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                 .findFirst();
         Bitmap compressedBitmap = BitmapFactory.decodeByteArray(imageHolder.getImageArray(),0,imageHolder.getImageArray().length);
         holder.imageContent.setImageBitmap(compressedBitmap);
-
         realm.close();
+
+        holder.imageContent.setOnClickListener(view -> {
+            Intent intent = new Intent(context, ImageDetailActivity.class);
+            intent.putExtra("imageUrl", chatHolder.getMessageContent());
+            context.startActivity(intent);
+        });
 
         try {
             JSONArray jsonArray = new JSONArray(chatHolder.getUnreadUsers());

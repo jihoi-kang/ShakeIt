@@ -114,6 +114,10 @@
             android:theme="@style/AppTheme_StatusBar_Black"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".main.friend.ImageDetailActivity"
+            android:theme="@style/AppTheme_StatusBar_Black"
+            android:screenOrientation="portrait" />
+
         <!-- Crop Image -->
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
 
